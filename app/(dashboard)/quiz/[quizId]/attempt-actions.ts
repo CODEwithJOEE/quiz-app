@@ -331,3 +331,65 @@ export async function teacherOverrideScore(
   revalidatePath(`/quiz/${attempt.quiz_id}/attempts`);
   return { ok: true };
 }
+// =====================================================
+// TEACHER: bulk terminate multiple attempts
+// =====================================================
+export async function teacherBulkTerminate(attemptIds: string[]) {
+  const me = await getCurrentProfile();
+  if (!me || me.role !== "teacher") return { error: "Forbidden" };
+  if (attemptIds.length === 0) return { error: "No attempts selected" };
+
+  const supabase = await createClient();
+
+  // Verify all attempts belong to teacher's quizzes
+  const { data: attempts, error: fetchError } = await supabase
+    .from("attempts")
+    .select(
+      `
+      id, status, quiz_id,
+      quizzes ( room_id, rooms ( teacher_id ) )
+    `,
+    )
+    .in("id", attemptIds);
+
+  if (fetchError) return { error: fetchError.message };
+  if (!attempts || attempts.length === 0) {
+    return { error: "No attempts found" };
+  }
+
+  // Filter to own attempts only
+  const ownAttempts = attempts.filter(
+    (a: any) => a.quizzes?.rooms?.teacher_id === me.id,
+  );
+
+  if (ownAttempts.length === 0) {
+    return { error: "Walang attempts na pwede mong i-terminate" };
+  }
+
+  // Only terminate in_progress ones
+  const toTerminate = ownAttempts
+    .filter((a: any) => a.status === "in_progress")
+    .map((a: any) => a.id);
+
+  if (toTerminate.length === 0) {
+    return {
+      error: "Walang in_progress attempts sa selection",
+      alreadyDone: true,
+    };
+  }
+
+  const { error } = await supabase
+    .from("attempts")
+    .update({
+      status: "terminated",
+      score: 0,
+      submitted_at: new Date().toISOString(),
+      termination_reason: "teacher:bulk_terminate",
+    })
+    .in("id", toTerminate);
+
+  if (error) return { error: error.message };
+
+  revalidatePath(`/quiz/${attempts[0].quiz_id}/attempts`);
+  return { ok: true, terminated: toTerminate.length };
+}

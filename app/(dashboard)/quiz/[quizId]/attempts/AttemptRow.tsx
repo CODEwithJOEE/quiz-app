@@ -14,6 +14,8 @@ import {
   Calendar,
   ShieldAlert,
   Save,
+  Square,
+  CheckSquare,
 } from "lucide-react";
 import {
   teacherTerminateAttempt,
@@ -22,7 +24,15 @@ import {
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 
-export default function AttemptRow({ attempt }: { attempt: any }) {
+export default function AttemptRow({
+  attempt,
+  selected,
+  onToggle,
+}: {
+  attempt: any;
+  selected?: boolean;
+  onToggle?: () => void;
+}) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [expanded, setExpanded] = useState(false);
@@ -96,12 +106,33 @@ export default function AttemptRow({ attempt }: { attempt: any }) {
   }
 
   return (
-    <li className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+    <li
+      className={`bg-card rounded-2xl border shadow-sm overflow-hidden transition-colors ${
+        selected
+          ? "border-brand bg-blue-50/30 dark:bg-blue-950/20"
+          : "border-border"
+      }`}
+    >
       {/* Row header */}
-      <div className="p-4">
-        <div className="flex items-start gap-3">
+      <div className="p-3">
+        <div className="flex items-center gap-3">
+          {/* Checkbox (kung may onToggle) */}
+          {onToggle && (
+            <button
+              onClick={onToggle}
+              className="w-5 h-5 shrink-0 flex items-center justify-center text-brand"
+              aria-label={selected ? "Deselect" : "Select"}
+            >
+              {selected ? (
+                <CheckSquare className="w-5 h-5" />
+              ) : (
+                <Square className="w-5 h-5 text-muted-foreground" />
+              )}
+            </button>
+          )}
+
           {/* Avatar */}
-          <div className="w-10 h-10 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-xs font-bold shrink-0">
+          <div className="w-9 h-9 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-[10px] font-bold shrink-0">
             {initials}
           </div>
 
@@ -114,7 +145,7 @@ export default function AttemptRow({ attempt }: { attempt: any }) {
               {attempt.profiles?.email}
             </p>
 
-            <div className="flex flex-wrap gap-1.5 mt-2">
+            <div className="flex flex-wrap gap-1.5 mt-1.5">
               <span
                 className={`inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full ${statusConfig.className}`}
               >
@@ -144,10 +175,9 @@ export default function AttemptRow({ attempt }: { attempt: any }) {
           </div>
         </div>
 
-        {/* Toggle */}
         <button
           onClick={() => setExpanded((e) => !e)}
-          className="mt-3 w-full flex items-center justify-center gap-1 text-xs text-brand font-medium py-1 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950 transition-colors"
+          className="mt-2 w-full flex items-center justify-center gap-1 text-xs text-brand font-medium py-1 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950 transition-colors"
         >
           {expanded ? (
             <>
@@ -163,7 +193,6 @@ export default function AttemptRow({ attempt }: { attempt: any }) {
         </button>
       </div>
 
-      {/* Expanded details */}
       {expanded && (
         <div className="border-t border-border p-4 space-y-4 bg-muted/30">
           {/* Timing */}
@@ -192,7 +221,7 @@ export default function AttemptRow({ attempt }: { attempt: any }) {
             </div>
           </div>
 
-          {/* Termination reason */}
+          {/* Termination */}
           {attempt.termination_reason && (
             <div className="flex items-start gap-2 p-3 rounded-xl bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300">
               <Ban className="w-4 h-4 shrink-0 mt-0.5" />

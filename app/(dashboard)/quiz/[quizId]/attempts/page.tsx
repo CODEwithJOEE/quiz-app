@@ -16,8 +16,7 @@ import { getCurrentProfile } from "@/lib/auth";
 import { getQuizAttempts, getQuizSummary } from "@/lib/quiz/attempts";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { EmptyState } from "@/components/ui/EmptyState";
-import AttemptRow from "./AttemptRow";
+import AttemptsList from "./AttemptsList";
 
 export default async function QuizAttemptsPage({
   params,
@@ -132,19 +131,7 @@ export default async function QuizAttemptsPage({
           <Badge>{attempts.length}</Badge>
         </div>
 
-        {attempts.length === 0 ? (
-          <EmptyState
-            icon={Users}
-            title="Wala pang attempts"
-            description="Hintayin ang students na mag-take ng quiz."
-          />
-        ) : (
-          <ul className="space-y-3">
-            {attempts.map((a: any) => (
-              <AttemptRow key={a.id} attempt={a} />
-            ))}
-          </ul>
-        )}
+        <AttemptsList attempts={attempts} />
       </div>
     </div>
   );
