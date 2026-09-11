@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getCurrentProfile } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { User, Mail, Shield, Palette } from "lucide-react";

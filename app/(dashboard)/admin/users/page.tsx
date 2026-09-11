@@ -1,7 +1,8 @@
+export const dynamic = "force-dynamic";
+
 import { Users, Shield, GraduationCap, Clock } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import CreateUserForm from "@/components/CreateUserForm";
-import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 

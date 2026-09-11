@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { redirect } from "next/navigation";
 import { GraduationCap, Users, Mail } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";

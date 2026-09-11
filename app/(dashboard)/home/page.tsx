@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getCurrentProfile } from "@/lib/auth";
 import { getStudentInvitations } from "@/lib/rooms";
 import { redirect } from "next/navigation";
