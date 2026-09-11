@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import PWARegister from "@/components/PWARegister";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import TopLoader from "@/components/TopLoader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,6 +65,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
+        <TopLoader />
         <ThemeProvider>
           {children}
           <PWARegister />

@@ -71,7 +71,42 @@ export default function CreateQuizForm({ roomId }: { roomId: string }) {
           className="w-full mt-1 px-3 py-2 border rounded-lg"
         />
       </div>
+      {/* Shuffle settings — DAPAT NANDITO, BEFORE SUBMIT */}
+      <div className="space-y-2 pt-2">
+        <label className="text-sm font-medium">Randomization</label>
 
+        <label className="flex items-center gap-3 p-3 rounded-xl bg-muted/50 cursor-pointer hover:bg-muted transition-colors">
+          <input
+            type="checkbox"
+            name="shuffle_questions"
+            value="true"
+            className="w-4 h-4"
+          />
+          <div className="flex-1">
+            <p className="text-sm font-medium">Shuffle questions</p>
+            <p className="text-xs text-muted-foreground">
+              Bawat student ay may iba-ibang order ng questions
+            </p>
+          </div>
+        </label>
+
+        <label className="flex items-center gap-3 p-3 rounded-xl bg-muted/50 cursor-pointer hover:bg-muted transition-colors">
+          <input
+            type="checkbox"
+            name="shuffle_options"
+            value="true"
+            className="w-4 h-4"
+          />
+          <div className="flex-1">
+            <p className="text-sm font-medium">Shuffle options</p>
+            <p className="text-xs text-muted-foreground">
+              Iba-ibang order ng A/B/C/D per student
+            </p>
+          </div>
+        </label>
+      </div>
+
+      {/* Submit button — DAPAT ITO SA DULO */}
       <button
         type="submit"
         disabled={loading}

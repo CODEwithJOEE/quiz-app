@@ -13,10 +13,12 @@ export async function startAttempt(quizId: string) {
 
   const supabase = await createClient();
 
-  // Check quiz is published
+  // 1. Fetch quiz (may shuffle settings)
   const { data: quiz } = await supabase
     .from("quizzes")
-    .select("id, status, time_limit_minutes")
+    .select(
+      "id, status, time_limit_minutes, shuffle_questions, shuffle_options",
+    )
     .eq("id", quizId)
     .single();
 
@@ -24,7 +26,7 @@ export async function startAttempt(quizId: string) {
   if (quiz.status !== "published")
     return { error: "Hindi pa available ang quiz na ito." };
 
-  // Check if attempt already exists
+  // 2. Check existing attempt
   const { data: existing } = await supabase
     .from("attempts")
     .select("id, status")
@@ -36,21 +38,41 @@ export async function startAttempt(quizId: string) {
     if (existing.status === "in_progress") {
       return { ok: true, attemptId: existing.id, resumed: true };
     }
-    // submitted or terminated — cannot retake
     return { error: "Tapos na ang attempt mo para sa quiz na ito." };
   }
 
-  // Count total points
+  // 3. Fetch questions + options
   const { data: questions } = await supabase
     .from("questions")
-    .select("points")
-    .eq("quiz_id", quizId);
+    .select("id, points, options ( id )")
+    .eq("quiz_id", quizId)
+    .order("order_index");
 
-  const totalPoints = (questions ?? []).reduce(
-    (s, q) => s + (q.points ?? 0),
-    0,
-  );
+  if (!questions || questions.length === 0) {
+    return { error: "Walang questions ang quiz na ito." };
+  }
 
+  const totalPoints = questions.reduce((s, q) => s + (q.points ?? 0), 0);
+
+  // 4. Generate shuffle orders
+  let questionOrder: string[] | null = null;
+  let optionOrder: Record<string, string[]> | null = null;
+
+  if ((quiz as any).shuffle_questions) {
+    questionOrder = shuffleArray(questions.map((q: any) => q.id));
+  }
+
+  if ((quiz as any).shuffle_options) {
+    optionOrder = {};
+    for (const q of questions) {
+      const opts = (q as any).options ?? [];
+      if (opts.length > 0) {
+        optionOrder[q.id] = shuffleArray(opts.map((o: any) => o.id));
+      }
+    }
+  }
+
+  // 5. Create the attempt
   const { data: attempt, error } = await supabase
     .from("attempts")
     .insert({
@@ -58,13 +80,32 @@ export async function startAttempt(quizId: string) {
       student_id: me.id,
       status: "in_progress",
       total_points: totalPoints,
+      question_order: questionOrder,
+      option_order: optionOrder,
     })
     .select("id")
     .single();
 
   if (error) return { error: error.message };
 
-  return { ok: true, attemptId: attempt.id, resumed: false };
+  // ⬇️⬇️⬇️ 6. RETURN DITO — ito yung hinahanap mo ⬇️⬇️⬇️
+  return {
+    ok: true,
+    attemptId: attempt.id,
+    resumed: false,
+    questionOrder: questionOrder,
+    optionOrder: optionOrder,
+  };
+}
+
+// Helper function — nasa dulo ng file
+function shuffleArray<T>(arr: T[]): T[] {
+  const result = [...arr];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
 }
 
 // =====================================================

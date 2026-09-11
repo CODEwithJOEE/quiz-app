@@ -1,31 +1,95 @@
-# Quiz App — Documentation
+# 📚 Quiz App — Documentation
 
-Welcome sa Quiz App documentation! Pumili ng guide base sa role mo:
+Welcome sa **Quiz App** documentation! Ito ang central hub ng lahat ng guides.
+
+---
 
 ## 📖 Available Guides
 
-| Guide                                            | Para kanino  | Description                                               |
-| ------------------------------------------------ | ------------ | --------------------------------------------------------- |
-| [🚀 Getting Started](./getting-started.md)       | Lahat        | Paano mag-install at mag-login                            |
-| [🎓 Teacher Guide](./teacher-guide.md)           | Teachers     | Paano gumawa ng rooms, quizzes, at mag-invite ng students |
-| [👨‍🎓 Student Guide](./student-guide.md)           | Students     | Paano mag-take ng quiz at sumali sa rooms                 |
-| [🛡️ Admin Guide](./admin-guide.md)               | Super Admins | Paano mag-manage ng users                                 |
-| [📊 Excel Import Guide](./excel-import-guide.md) | Teachers     | Format para sa bulk quiz import                           |
+Pumili base sa role mo:
 
-## 🆘 Quick Links
+| Guide                                            | Para kanino  | Description                 |
+| ------------------------------------------------ | ------------ | --------------------------- |
+| [🚀 Getting Started](./getting-started.md)       | Lahat        | Login, install, at basics   |
+| [🎓 Teacher Guide](./teacher-guide.md)           | Teachers     | Rooms, quizzes, at students |
+| [👨‍🎓 Student Guide](./student-guide.md)           | Students     | Quiz-taking at rules        |
+| [🛡️ Admin Guide](./admin-guide.md)               | Super Admins | User management             |
+| [📊 Excel Import Guide](./excel-import-guide.md) | Teachers     | Bulk quiz import            |
 
-- **Forgot password?** → Contact your school admin
-- **Can't see a quiz?** → Make sure na-accept mo yung room invitation
-- **Quiz terminated?** → See "Anti-Cheat Rules" sa Student Guide
-- **Technical issues?** → Contact your IT support
+---
 
-## 📱 Install sa Phone
+## 🎯 Mabilisang Start
 
-Ang Quiz App ay isang **PWA (Progressive Web App)** — pwedeng i-install sa phone mo parang native app:
+### Bagong User Ka Lang?
 
-1. Buksan ang app link sa browser (Chrome o Safari)
-2. Sa Chrome: Menu (⋮) → **"Add to Home screen"**
-3. Sa Safari: Share (⎋) → **"Add to Home Screen"**
-4. Tapos i-tap ang bagong icon sa home screen
+1. Basahin ang **[Getting Started Guide](./getting-started.md)**
+2. Kung student ka, basahin din ang **[Student Guide](./student-guide.md)**
+3. Kung teacher ka, basahin ang **[Teacher Guide](./teacher-guide.md)**
 
-Pag na-install, walang address bar at mas smooth ang experience.
+### Admin Ka Ba?
+
+1. Basahin ang **[Admin Guide](./admin-guide.md)**
+2. Tapos ang **[Teacher Guide](./teacher-guide.md)** — para maintindihan mo ang flow ng teachers mo
+
+---
+
+## 🆘 Common Issues
+
+| Problem                       | Solution                                             |
+| ----------------------------- | ---------------------------------------------------- |
+| **Hindi maka-login**          | Kontakin ang admin/teacher mo para sa password reset |
+| **Wala kang makitang room**   | I-accept ang invitation sa Home page                 |
+| **Hindi makita ang quiz**     | Hintayin ang teacher na mag-publish                  |
+| **Nag-crash habang nag-take** | I-refresh ang browser — naka-save ang progress       |
+| **Na-terminate ka**           | Check ang Result page — baka may violation           |
+
+---
+
+## 📱 Install sa Phone (Recommended)
+
+Ang Quiz App ay isang **Progressive Web App (PWA)** — pwede mong i-install sa phone parang native app.
+
+### Android (Chrome):
+
+1. Buksan ang app link
+2. Menu (⋮) → **"Install app"**
+3. Tap **"Install"**
+
+### iPhone (Safari):
+
+1. Buksan ang app link sa Safari
+2. Share button (⎋) → **"Add to Home Screen"**
+3. Tap **"Add"**
+
+**Bakit mag-install:**
+
+- ✅ Mabilis mag-open
+- ✅ Fullscreen mode (walang browser controls)
+- ✅ Mas secure sa quiz-taking
+
+---
+
+## 🎨 Features Overview
+
+- 🔐 **Secure login** with role-based access
+- 🚪 **Rooms** for organizing classes
+- 📝 **Quizzes** with manual + Excel import
+- ⏱ **Timed quizzes** with autosave
+- 🛡 **Anti-cheat** (fullscreen, tab-switch detection, 3-strike rule)
+- 📊 **Teacher dashboard** with search, filter, bulk actions
+- 🌙 **Dark mode** support
+- 📱 **PWA** installable
+
+---
+
+## 📞 Support
+
+Kung may problema:
+
+1. Check ang docs na ito
+2. Kontakin ang school IT support
+3. O ang admin ng school
+
+---
+
+**Salamat sa paggamit ng Quiz App!** 📚

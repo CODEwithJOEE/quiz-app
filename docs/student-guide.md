@@ -10,7 +10,7 @@ Kompletong gabay para sa mga students.
 2. I-enter ang email at password na binigay ng teacher
 3. Tap **"Sign In"**
 
-**Note:** Walang sign-up. Kung wala kang account, humingi sa teacher mo.
+**⚠️ Note:** Walang sign-up. Kung wala kang account, humingi sa teacher mo.
 
 ---
 
@@ -21,6 +21,8 @@ Pag naka-login ka, ito ang makikita mo sa **Home**:
 - **Greeting** — "Good morning, [Pangalan]!"
 - **Room Invitations** — kung may bagong invitations from teachers
 - **Quick Actions** — shortcuts papunta sa Rooms
+
+Kung may **red badge** sa Home icon sa bottom nav, ibig sabihin may pending invitations ka.
 
 ---
 
@@ -36,7 +38,7 @@ Ang teacher mo ang mag-a-invite sa'yo. Ikaw ay kailangan lang mag-accept.
    - Room name
    - Subject
    - Description (kung meron)
-4. **Tap "Accept"** para sumali, o **"Decline"** kung hindi mo gusto
+4. **Tap "Accept"** para sumali, o **"Decline"** kung ayaw mo
 
 Pag na-accept, lalabas ang room sa **Rooms** page mo.
 
@@ -45,8 +47,8 @@ Pag na-accept, lalabas ang room sa **Rooms** page mo.
 1. Tap **"Rooms"** sa bottom nav
 2. Makikita mo lahat ng rooms na sinasalihan mo
 3. Tap ang room para makita ang:
-   - Classmates list
-   - Available quizzes (kung meron)
+   - **Classmates** list
+   - **Available Quizzes** (kung meron)
    - Room description
 
 ---
@@ -57,7 +59,7 @@ Pag na-accept, lalabas ang room sa **Rooms** page mo.
 
 1. Sa room page, hanapin ang **"Available Quizzes"**
 2. Tap ang quiz na gusto mong i-take
-3. Basahin ang **"Basahin bago mag-start"** warning:
+3. Basahin ang **warning card**:
    - Once mag-start, hindi ka na pwedeng mag-back
    - Huwag lumipat ng tab o mag-minimize
    - 3 violations = auto-terminate + score 0
@@ -67,7 +69,7 @@ Pag na-accept, lalabas ang room sa **Rooms** page mo.
 
 **Bawal gawin:**
 
-- ❌ Mag-switch ng tab (browser tab)
+- ❌ Mag-switch ng tab
 - ❌ Mag-switch ng app (WhatsApp, Messenger, etc.)
 - ❌ I-minimize ang app
 - ❌ I-exit ang fullscreen mode
@@ -75,18 +77,19 @@ Pag na-accept, lalabas ang room sa **Rooms** page mo.
 - ❌ Mag-right-click
 - ❌ Mag-back button sa browser
 
-**Paano nila ito na-detect?**
+**Paano ito na-detect:**
 
-- Nakikita ng system ang bawat switch — na-log lahat
+- Nakikita ng system ang bawat switch
+- Naka-log lahat
 - Pag naka-3 violations = auto-terminate, score 0
 
 **Tips para hindi ma-flag:**
 
-- ✅ I-install ang app sa phone para fullscreen automatic
-- ✅ Patayin ang notifications bago mag-start (o i-DND mode)
+- ✅ I-install ang app sa phone
+- ✅ I-DND ang phone bago mag-start
 - ✅ I-close ang lahat ng ibang apps
+- ✅ I-inform ang pamilya na may exam ka
 - ✅ I-off ang WiFi calling
-- ✅ I-inform ang pamilya na may exam ka, wag ka istorbohin
 
 ### Paano Mag-take ng Quiz
 
@@ -94,32 +97,32 @@ Pag na-accept, lalabas ang room sa **Rooms** page mo.
 2. **Pumayag sa fullscreen request** — automatic na lalabas
 3. Basahin ang question
 4. **Tap ang sagot** — may checkmark na lalabas
-5. Tap **"Next →"** para pumunta sa susunod
-6. Tap **"← Prev"** kung gusto mong bumalik
+5. Tap **"Next →"** para sa susunod
+6. Tap **"← Prev"** para bumalik
 7. Gamitin ang **number buttons** sa ibaba para mag-jump sa specific question
 8. Pag tapos na lahat, tap **"✓ Submit Quiz"**
 
-**May Time Limit ba?**
+### Kung May Timer
 
-- Kung meron, may **timer** sa taas (amber color)
-- Pag malapit na matapos (less than 1 min), magiging red at pulse
-- Pag nag-0 ang timer, auto-submit
+- May **timer** sa taas (amber color)
+- Pag malapit na matapos (less than 1 min), magiging **red at pulse**
+- Pag nag-0 ang timer, **auto-submit** ang quiz
 
 ### Paano Mag-navigate Between Questions
 
 - **Prev/Next buttons** — isa-isang
-- **Number grid sa ilalim** — jump sa specific question
-  - Blue = current question
-  - Green = answered na
-  - Gray = hindi pa nasagot
+- **Number grid sa ibaba** — jump sa specific question
+  - 🔵 **Blue** = current question
+  - 🟢 **Green** = answered na
+  - ⚪ **Gray** = hindi pa nasagot
 
 ### Paano Makita ang Progress
 
 Sa taas ng screen:
 
 - **"Q5 / 20"** — question 5 of 20
-- **"12 answered"** — bilang ng nasagot mo na
-- **Timer** (kung may time limit)
+- **"12 answered"** — bilang ng nasagot mo
+- **Progress bar** — visual indicator
 
 ### Pag Naka-violation Ka
 
@@ -128,9 +131,11 @@ Lalabas ang **red warning banner**:
 - "⚠️ Violation 1 / 3"
 - Naka-log na ito sa system
 
-**First violation:** Warning lang, tuloy ka pa.
-**Second violation:** Warning ulit.
-**Third violation:** 🚫 **Auto-terminate! Score = 0.**
+**Consequences:**
+
+- **1st violation** — Warning lang
+- **2nd violation** — Warning ulit
+- **3rd violation** — 🚫 **Auto-terminate! Score = 0**
 
 ### Pag Tapos Na — Result Page
 
@@ -139,6 +144,7 @@ Makikita mo:
 - **Score** — X / Y (e.g., 18/20)
 - **Percentage** — (e.g., 90%)
 - **PASSED / Keep Practicing** — kung 60%+ = passed
+- **Submitted time**
 
 Kung terminated:
 
@@ -160,37 +166,36 @@ Kung terminated:
 
 ---
 
-## 6. Viewing Your History
-
-_(Hindi pa supported sa current version — naka-plan para sa future release.)_
-
-Sa ngayon, ang paraan para makita ang scores:
-
-- Pag submit mo, agad-agad lumalabas ang result
-- Kung gusto mong balikan, kontakin ang teacher mo
-
----
-
-## 7. Profile & Settings
+## 6. Profile & Settings
 
 ### Paano Makita ang Profile Mo
 
 1. Tap **"Profile"** sa bottom nav
 2. Makikita mo:
-   - Pangalan
+   - Pangalan (may initials avatar)
    - Email
-   - Role (Student)
+   - Role: Student
+   - Theme toggle (Light / Dark / System)
+
+### Dark Mode
+
+1. Sa Profile page, hanapin ang **"Appearance"** section
+2. Pumili:
+   - **Light** — Light theme
+   - **Dark** — Dark theme
+   - **System** — Auto (sumusunod sa phone settings)
 
 ### Paano Mag-logout
 
-1. Sa Profile page, tap **"Log Out"**
-2. Confirm
+1. Sa Profile page, scroll sa ilalim
+2. Tap **"Log Out"**
+3. Confirm
 
 ---
 
-## 8. Install sa Phone
+## 7. Install sa Phone (Highly Recommended!)
 
-**Highly Recommended!** Ang installed app ay may fullscreen mode, kaya mas safe mag-quiz at hindi ka basta ma-flag sa violations.
+Ang installed app ay may **fullscreen mode** — mas safe sa quiz at hindi ka basta ma-flag sa violations.
 
 ### Android:
 
@@ -200,19 +205,19 @@ Sa ngayon, ang paraan para makita ang scores:
 
 ### iPhone:
 
-1. Buksan ang app sa **Safari** (hindi Chrome)
+1. Buksan ang app sa **Safari** (⚠️ hindi Chrome)
 2. Share button (⎋) → **"Add to Home Screen"**
 3. Tap **"Add"**
 
 ---
 
-## 9. Troubleshooting
+## 8. Troubleshooting
 
 **Hindi ako maka-login**
 
 - I-check ang email spelling
 - Password is case-sensitive
-- Kung nalimutan, kontakin ang teacher mo
+- Kung nalimutan, kontakin ang teacher
 
 **Walang invitations sa Home**
 
@@ -222,7 +227,7 @@ Sa ngayon, ang paraan para makita ang scores:
 **Nag-crash yung quiz habang nag-take**
 
 - I-refresh ang browser (pull down sa mobile)
-- Naka-save ang answers mo — tuloy ka lang
+- Naka-save ang answers — tuloy ka lang
 - Kung ayaw pa rin, kontakin ang teacher
 
 **Na-terminate ako bigla**
@@ -233,9 +238,9 @@ Sa ngayon, ang paraan para makita ang scores:
 
 **Hindi ko ma-close yung quiz**
 
-- Yan ay by design — para hindi ka maka-escape
+- Yan ay by design — para hindi maka-escape
 - Pwede lang i-close via submit
-- Kung talagang stuck, force-close ang app at i-reopen — naka-save ang progress mo
+- Kung stuck, force-close ang app at i-reopen — naka-save ang progress
 
 **Hindi ko makita yung "Start Quiz" button**
 
@@ -245,7 +250,7 @@ Sa ngayon, ang paraan para makita ang scores:
 
 ---
 
-## 10. Best Practices
+## 9. Best Practices
 
 ### Bago Mag-exam:
 
@@ -274,19 +279,16 @@ Sa ngayon, ang paraan para makita ang scores:
 
 ---
 
-## 11. Frequently Asked Questions
+## 10. FAQ
 
 **Pwede bang mag-retake?**
 Hindi. One attempt lang per quiz. Kung gusto mong mag-retake, kontakin ang teacher mo.
 
 **Makikita ba ng teacher ko kung nag-switch ako ng app?**
-Oo. Naka-log ang lahat ng violations sa system.
+Oo. Naka-log lahat ng violations sa system.
 
 **Paano kung may emergency?**
-Kung kailangan mong umalis (CR, etc.), sabihin sa teacher mo bago mag-take. Or mag-take ka na lang pagkatapos ng emergency.
-
-**Pwede bang gamitin ang calculator?**
-Depende sa rules ng teacher mo. Kung math quiz at kailangan ng calculator, prepare one physically (hindi app).
+Kung kailangan mong umalis (CR, etc.), sabihin sa teacher mo bago mag-take. Or mag-take ka na lang pagkatapos.
 
 **Bakit zero ang score ko?**
 Either terminated ka (3 violations) o mali lahat ng sagot. Check ang result page for details.
@@ -294,6 +296,9 @@ Either terminated ka (3 violations) o mali lahat ng sagot. Check ang result page
 **Paano kung mali yung score na nakuha ko?**
 Kontakin ang teacher mo agad. Pwede nilang i-override ang score.
 
+**Makikita ko ba ang past attempts ko?**
+Sa ngayon, hindi pa. Pwede mong balikan ang specific quiz para makita ang result. (Future feature.)
+
 ---
 
-Kung may iba pang questions, kontakin ang teacher mo. Good luck! 📚
+**Good luck sa exams mo!** 📚

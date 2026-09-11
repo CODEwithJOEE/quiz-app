@@ -48,20 +48,22 @@ export default async function QuizPage({
       (a: any, b: any) => a.order_index - b.order_index,
     ),
   }));
+
+  // TEACHER VIEW
   if (isOwner) {
     return <QuizEditor quiz={{ ...quiz, questions: sorted }} isOwner={true} />;
   }
 
-  // Student
+  // STUDENT: quiz not published
   if (quiz.status !== "published") {
     return (
-      <div className="bg-white p-4 rounded-2xl shadow-sm text-sm text-gray-500">
+      <div className="bg-card p-4 rounded-2xl shadow-sm text-sm text-muted-foreground">
         Hindi pa available ang quiz na ito.
       </div>
     );
   }
 
-  // Check if student already has an attempt
+  // STUDENT: check attempt
   const { data: existingAttempt } = await supabase
     .from("attempts")
     .select("id, status, score, total_points")
@@ -69,11 +71,56 @@ export default async function QuizPage({
     .eq("student_id", me.id)
     .maybeSingle();
 
-  if (existingAttempt && existingAttempt.status !== "in_progress") {
-    // Already done → show result
+  // ⬇️ REDIRECT KUNG TAPOS NA
+  if (
+    existingAttempt &&
+    (existingAttempt.status === "submitted" ||
+      existingAttempt.status === "terminated")
+  ) {
     redirect(`/quiz/${quizId}/result`);
   }
+  // ⬆️ END REDIRECT
 
+  let finalQuestions = sorted;
+
+  // RESUME MODE — apply saved random order
+  if (existingAttempt?.status === "in_progress") {
+    const { data: attempt } = await supabase
+      .from("attempts")
+      .select("question_order, option_order")
+      .eq("id", existingAttempt.id)
+      .single();
+
+    if (attempt?.question_order && Array.isArray(attempt.question_order)) {
+      const orderMap = new Map<string, number>();
+      (attempt.question_order as string[]).forEach((qid, idx) => {
+        orderMap.set(qid, idx);
+      });
+
+      finalQuestions = [...sorted].sort(
+        (a, b) => (orderMap.get(a.id) ?? 0) - (orderMap.get(b.id) ?? 0),
+      );
+    }
+
+    if (attempt?.option_order) {
+      const optionOrderMap = attempt.option_order as Record<string, string[]>;
+      finalQuestions = finalQuestions.map((q: any) => {
+        const order = optionOrderMap[q.id];
+        if (!order) return q;
+        const optMap = new Map<string, number>();
+        order.forEach((oid, idx) => optMap.set(oid, idx));
+        return {
+          ...q,
+          options: [...q.options].sort(
+            (a: any, b: any) =>
+              (optMap.get(a.id) ?? 0) - (optMap.get(b.id) ?? 0),
+          ),
+        };
+      });
+    }
+  }
+
+  // Pass sa QuizStudentView (with optional shuffle applied)
   return (
     <QuizStudentView
       quiz={{
@@ -81,12 +128,11 @@ export default async function QuizPage({
         title: quiz.title,
         description: quiz.description,
         time_limit_minutes: quiz.time_limit_minutes,
-        questions: sorted.map((q: any) => ({
+        questions: finalQuestions.map((q: any) => ({
           id: q.id,
           question_text: q.question_text,
           points: q.points,
           order_index: q.order_index,
-          // ⚠️ Strip is_correct from options — students must not see the answer
           options: q.options.map((o: any) => ({
             id: o.id,
             option_text: o.option_text,

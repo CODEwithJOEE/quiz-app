@@ -14,12 +14,12 @@ import { startAttempt } from "./attempt-actions";
 import QuizRunner from "./QuizRunner";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
 
 export default function QuizStudentView({ quiz }: { quiz: any }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [attemptId, setAttemptId] = useState<string | null>(null);
+  const [reorderedQuestions, setReorderedQuestions] = useState(quiz.questions);
 
   async function handleStart() {
     setLoading(true);
@@ -32,9 +32,44 @@ export default function QuizStudentView({ quiz }: { quiz: any }) {
       setError(res.error);
       return;
     }
+
+    // Apply question order from server (kung shuffle enabled)
+    let questions = quiz.questions;
+
+    if (res?.questionOrder) {
+      const orderMap = new Map<string, number>();
+      (res.questionOrder as string[]).forEach((qid, idx) => {
+        orderMap.set(qid, idx);
+      });
+      questions = [...questions].sort(
+        (a: any, b: any) =>
+          (orderMap.get(a.id) ?? 0) - (orderMap.get(b.id) ?? 0),
+      );
+    }
+
+    // Apply option order per question
+    if (res?.optionOrder) {
+      const optionOrderMap = res.optionOrder as Record<string, string[]>;
+      questions = questions.map((q: any) => {
+        const order = optionOrderMap[q.id];
+        if (!order) return q;
+        const optMap = new Map<string, number>();
+        order.forEach((oid, idx) => optMap.set(oid, idx));
+        return {
+          ...q,
+          options: [...q.options].sort(
+            (a: any, b: any) =>
+              (optMap.get(a.id) ?? 0) - (optMap.get(b.id) ?? 0),
+          ),
+        };
+      });
+    }
+
+    setReorderedQuestions(questions);
     setAttemptId(res.attemptId!);
   }
 
+  // Quiz is running
   if (attemptId) {
     return (
       <QuizRunner
@@ -44,11 +79,12 @@ export default function QuizStudentView({ quiz }: { quiz: any }) {
           title: quiz.title,
           time_limit_minutes: quiz.time_limit_minutes,
         }}
-        questions={quiz.questions}
+        questions={reorderedQuestions}
       />
     );
   }
 
+  // Pre-start view
   const totalPoints = quiz.questions.reduce(
     (s: number, q: any) => s + q.points,
     0,

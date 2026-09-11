@@ -4,6 +4,9 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth";
 
+// =====================================================
+// CREATE QUIZ
+// =====================================================
 export async function createQuiz(formData: FormData) {
   const me = await getCurrentProfile();
   if (!me || me.role !== "teacher") return { error: "Forbidden" };
@@ -13,6 +16,10 @@ export async function createQuiz(formData: FormData) {
   const description = String(formData.get("description") ?? "").trim();
   const timeLimitRaw = formData.get("time_limit_minutes");
   const timeLimit = timeLimitRaw ? Number(timeLimitRaw) : null;
+
+  // ✅ Kunin ang shuffle settings
+  const shuffleQuestions = formData.get("shuffle_questions") === "true";
+  const shuffleOptions = formData.get("shuffle_options") === "true";
 
   if (!roomId || !title) return { error: "Title is required" };
 
@@ -36,6 +43,8 @@ export async function createQuiz(formData: FormData) {
       description: description || null,
       time_limit_minutes: timeLimit,
       status: "draft",
+      shuffle_questions: shuffleQuestions,
+      shuffle_options: shuffleOptions,
     })
     .select("id")
     .single();
@@ -46,6 +55,9 @@ export async function createQuiz(formData: FormData) {
   return { ok: true, quizId: quiz.id };
 }
 
+// =====================================================
+// UPDATE QUIZ STATUS (draft / published / closed)
+// =====================================================
 export async function updateQuizStatus(
   quizId: string,
   status: "draft" | "published" | "closed",
@@ -54,6 +66,19 @@ export async function updateQuizStatus(
   if (!me || me.role !== "teacher") return { error: "Forbidden" };
 
   const supabase = await createClient();
+
+  // Verify ownership via room
+  const { data: quiz } = await supabase
+    .from("quizzes")
+    .select("id, room_id, rooms ( teacher_id )")
+    .eq("id", quizId)
+    .single();
+
+  if (!quiz) return { error: "Quiz not found" };
+  if ((quiz as any).rooms?.teacher_id !== me.id) {
+    return { error: "Forbidden" };
+  }
+
   const { error } = await supabase
     .from("quizzes")
     .update({
@@ -65,18 +90,36 @@ export async function updateQuizStatus(
   if (error) return { error: error.message };
 
   revalidatePath("/rooms");
+  revalidatePath(`/quiz/${quizId}`);
   return { ok: true };
 }
 
+// =====================================================
+// DELETE QUIZ
+// =====================================================
 export async function deleteQuiz(quizId: string) {
   const me = await getCurrentProfile();
   if (!me || me.role !== "teacher") return { error: "Forbidden" };
 
   const supabase = await createClient();
+
+  // Verify ownership
+  const { data: quiz } = await supabase
+    .from("quizzes")
+    .select("id, room_id, rooms ( teacher_id )")
+    .eq("id", quizId)
+    .single();
+
+  if (!quiz) return { error: "Quiz not found" };
+  if ((quiz as any).rooms?.teacher_id !== me.id) {
+    return { error: "Forbidden" };
+  }
+
   const { error } = await supabase.from("quizzes").delete().eq("id", quizId);
 
   if (error) return { error: error.message };
 
   revalidatePath("/rooms");
+  revalidatePath(`/rooms/${quiz.room_id}`);
   return { ok: true };
 }
