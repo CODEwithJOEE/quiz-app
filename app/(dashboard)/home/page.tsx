@@ -10,8 +10,8 @@ import {
   Settings,
   ArrowRight,
   Inbox,
+  History,
 } from "lucide-react";
-import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import InvitationCard from "./InvitationCard";
 
@@ -43,7 +43,7 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* Invitations (student) */}
+      {/* Invitations (student) — show only kung may pending */}
       {me.role === "student" && invitations.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center gap-2">
@@ -95,13 +95,23 @@ export default async function HomePage() {
         )}
 
         {me.role === "student" && (
-          <QuickLink
-            href="/rooms"
-            icon={<DoorOpen className="w-5 h-5" />}
-            title="My Rooms"
-            description="View your classes"
-            color="blue"
-          />
+          <>
+            <QuickLink
+              href="/rooms"
+              icon={<DoorOpen className="w-5 h-5" />}
+              title="My Rooms"
+              description="View your classes"
+              color="blue"
+            />
+            {/* ✅ BAGO — nasa labas na ng invitations block */}
+            <QuickLink
+              href="/history"
+              icon={<History className="w-5 h-5" />}
+              title="Quiz History"
+              description="Tingnan ang past attempts at scores"
+              color="purple"
+            />
+          </>
         )}
       </div>
     </div>

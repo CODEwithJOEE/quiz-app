@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { getCurrentProfile } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import {
   User,
   Mail,
@@ -14,6 +15,8 @@ import {
   ClipboardList,
   TrendingUp,
   Users,
+  HelpCircle,
+  History as HistoryIcon,
   ArrowRight,
 } from "lucide-react";
 import LogoutButton from "@/components/LogoutButton";
@@ -23,8 +26,6 @@ import { Badge } from "@/components/ui/Badge";
 import EditNameModal from "./EditNameModal";
 import ChangePasswordModal from "./ChangePasswordModal";
 import { getProfileStats } from "./actions";
-import { HelpCircle } from "lucide-react";
-import Link from "next/link";
 
 const APP_VERSION = "1.0.0";
 
@@ -136,6 +137,29 @@ export default async function ProfilePage() {
         </Card>
       )}
 
+      {/* My Progress — Student only */}
+      {me.role === "student" && (
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 px-1">
+            <HistoryIcon className="w-4 h-4 text-brand" />
+            <h2 className="font-semibold text-sm">My Progress</h2>
+          </div>
+          <Link href="/history" className="block">
+            <Card className="p-4 hover:border-brand/40 transition-colors">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium">Quiz History</p>
+                  <p className="text-xs text-muted-foreground">
+                    Tingnan lahat ng past attempts mo
+                  </p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-muted-foreground" />
+              </div>
+            </Card>
+          </Link>
+        </div>
+      )}
+
       {/* Account Info */}
       <Card>
         <div className="p-4 pb-2">
@@ -177,6 +201,7 @@ export default async function ProfilePage() {
           <ThemeToggle />
         </Card>
       </div>
+
       {/* Help */}
       <div className="space-y-2">
         <div className="flex items-center gap-2 px-1">
@@ -195,6 +220,7 @@ export default async function ProfilePage() {
           </Card>
         </Link>
       </div>
+
       {/* About */}
       <div className="space-y-2">
         <div className="flex items-center gap-2 px-1">
@@ -213,14 +239,13 @@ export default async function ProfilePage() {
         </Card>
       </div>
 
-      {/* Logout */}
       <LogoutButton />
     </div>
   );
 }
 
 // =====================================================
-// Helper Components
+// Helpers
 // =====================================================
 
 function StatBox({
