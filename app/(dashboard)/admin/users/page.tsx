@@ -1,12 +1,14 @@
 export const dynamic = "force-dynamic";
 
-import { Users, Shield, GraduationCap } from "lucide-react";
+import { Users, Shield, GraduationCap, Trash2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth";
 import CreateUserForm from "@/components/CreateUserForm";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import ResetPasswordModal from "@/components/ResetPasswordModal";
+import DeleteStudentModal from "@/app/(dashboard)/students/DeleteStudentModal";
+import PendingDeletionCard from "@/app/(dashboard)/students/PendingDeletionCard";
 
 export default async function AdminUsersPage() {
   const me = await getCurrentProfile();
@@ -14,16 +16,21 @@ export default async function AdminUsersPage() {
 
   const { data: users } = await supabase
     .from("profiles")
-    .select("id, email, full_name, role, created_at")
+    .select(
+      "id, email, full_name, role, created_at, deletion_scheduled_for, deleted_at",
+    )
     .order("created_at", { ascending: false });
 
-  const teachers = (users ?? []).filter((u) => u.role === "teacher");
-  const students = (users ?? []).filter((u) => u.role === "student");
-  const admins = (users ?? []).filter((u) => u.role === "super_admin");
+  const all = users ?? [];
+  const active = all.filter((u) => !u.deletion_scheduled_for);
+  const pendingDeletion = all.filter((u) => u.deletion_scheduled_for);
+
+  const teachers = active.filter((u) => u.role === "teacher");
+  const students = active.filter((u) => u.role === "student");
+  const admins = active.filter((u) => u.role === "super_admin");
 
   return (
     <div className="space-y-5">
-      {/* Header */}
       <div>
         <h1 className="text-xl font-bold">User Management</h1>
         <p className="text-xs text-muted-foreground">
@@ -53,18 +60,35 @@ export default async function AdminUsersPage() {
         />
       </div>
 
-      {/* Create user form */}
       <CreateUserForm allowedRoles={["teacher", "student"]} />
 
-      {/* All users */}
+      {/* Pending Deletion */}
+      {pendingDeletion.length > 0 && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
+            <h2 className="font-semibold text-red-700 dark:text-red-300">
+              Pending Deletion
+            </h2>
+            <Badge variant="danger">{pendingDeletion.length}</Badge>
+          </div>
+          <ul className="space-y-2">
+            {pendingDeletion.map((u) => (
+              <PendingDeletionCard key={u.id} student={u} />
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* All Users */}
       <div className="space-y-3">
         <div className="flex items-center gap-2">
           <Users className="w-4 h-4 text-brand" />
           <h2 className="font-semibold">All Users</h2>
-          <Badge>{users?.length ?? 0}</Badge>
+          <Badge>{active.length}</Badge>
         </div>
 
-        {!users || users.length === 0 ? (
+        {active.length === 0 ? (
           <EmptyState
             icon={Users}
             title="Wala pang users"
@@ -72,7 +96,7 @@ export default async function AdminUsersPage() {
           />
         ) : (
           <ul className="space-y-2">
-            {users.map((u) => (
+            {active.map((u) => (
               <UserRow key={u.id} user={u} currentUserId={me?.id ?? ""} />
             ))}
           </ul>
@@ -151,7 +175,7 @@ function UserRow({
     .slice(0, 2)
     .toUpperCase();
 
-  const showReset = user.role !== "super_admin" && user.id !== currentUserId;
+  const showActions = user.role !== "super_admin" && user.id !== currentUserId;
 
   return (
     <li className="flex items-center gap-3 p-3 bg-card rounded-2xl border border-border shadow-sm">
@@ -168,12 +192,19 @@ function UserRow({
         <Icon className="w-3 h-3" />
         {roleConfig.label}
       </Badge>
-      {showReset && (
-        <ResetPasswordModal
-          studentId={user.id}
-          studentName={user.full_name}
-          studentEmail={user.email}
-        />
+      {showActions && (
+        <div className="flex items-center gap-1 shrink-0">
+          <ResetPasswordModal
+            studentId={user.id}
+            studentName={user.full_name}
+            studentEmail={user.email}
+          />
+          <DeleteStudentModal
+            studentId={user.id}
+            studentName={user.full_name}
+            studentEmail={user.email}
+          />
+        </div>
       )}
     </li>
   );

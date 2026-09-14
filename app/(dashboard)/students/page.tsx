@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { redirect } from "next/navigation";
-import { GraduationCap, Users, Mail } from "lucide-react";
+import { GraduationCap, Users, Mail, Trash2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth";
 import CreateUserForm from "@/components/CreateUserForm";
@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import ResetPasswordModal from "@/components/ResetPasswordModal";
 import BulkImportModal from "./BulkImportModal";
+import DeleteStudentModal from "./DeleteStudentModal";
+import PendingDeletionCard from "./PendingDeletionCard";
 
 export default async function TeacherStudentsPage() {
   const me = await getCurrentProfile();
@@ -19,44 +21,74 @@ export default async function TeacherStudentsPage() {
 
   const { data: students } = await supabase
     .from("profiles")
-    .select("id, email, full_name, created_at")
+    .select(
+      "id, email, full_name, created_at, deletion_scheduled_for, deleted_at",
+    )
     .eq("role", "student")
     .eq("created_by", me.id)
     .order("created_at", { ascending: false });
 
+  const list = students ?? [];
+  const active = list.filter((s) => !s.deletion_scheduled_for);
+  const pendingDeletion = list.filter((s) => s.deletion_scheduled_for);
+
   return (
     <div className="space-y-5">
+      {/* Header */}
       <div className="flex items-center justify-between gap-2">
         <div>
           <h1 className="text-xl font-bold">My Students</h1>
           <p className="text-xs text-muted-foreground">
-            {students?.length ?? 0} student
-            {(students?.length ?? 0) !== 1 ? "s" : ""}
+            {active.length} active
+            {pendingDeletion.length > 0 &&
+              ` • ${pendingDeletion.length} pending deletion`}
           </p>
         </div>
         <BulkImportModal />
       </div>
 
-      {/* Create student */}
+      {/* Create form */}
       <CreateUserForm allowedRoles={["student"]} />
 
-      {/* Students list */}
+      {/* Pending Deletion Section */}
+      {pendingDeletion.length > 0 && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
+            <h2 className="font-semibold text-red-700 dark:text-red-300">
+              Pending Deletion
+            </h2>
+            <Badge variant="danger">{pendingDeletion.length}</Badge>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Accounts below are scheduled for permanent deletion. Restore within
+            7 days.
+          </p>
+          <ul className="space-y-2">
+            {pendingDeletion.map((s) => (
+              <PendingDeletionCard key={s.id} student={s} />
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Active Students */}
       <div className="space-y-3">
         <div className="flex items-center gap-2">
           <GraduationCap className="w-4 h-4 text-brand" />
-          <h2 className="font-semibold">All Students</h2>
-          <Badge>{students?.length ?? 0}</Badge>
+          <h2 className="font-semibold">Active Students</h2>
+          <Badge>{active.length}</Badge>
         </div>
 
-        {!students || students.length === 0 ? (
+        {active.length === 0 ? (
           <EmptyState
             icon={Users}
-            title="Wala pang students"
+            title="Wala pang active students"
             description="Create your first student above."
           />
         ) : (
           <ul className="space-y-2">
-            {students.map((s) => (
+            {active.map((s) => (
               <StudentCard key={s.id} student={s} />
             ))}
           </ul>
@@ -86,11 +118,19 @@ function StudentCard({ student }: { student: any }) {
           <span className="truncate">{student.email}</span>
         </div>
       </div>
-      <ResetPasswordModal
-        studentId={student.id}
-        studentName={student.full_name}
-        studentEmail={student.email}
-      />
+
+      <div className="flex items-center gap-1 shrink-0">
+        <ResetPasswordModal
+          studentId={student.id}
+          studentName={student.full_name}
+          studentEmail={student.email}
+        />
+        <DeleteStudentModal
+          studentId={student.id}
+          studentName={student.full_name}
+          studentEmail={student.email}
+        />
+      </div>
     </li>
   );
 }
