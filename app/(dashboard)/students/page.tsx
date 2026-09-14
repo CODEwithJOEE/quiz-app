@@ -8,6 +8,7 @@ import CreateUserForm from "@/components/CreateUserForm";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import ResetPasswordModal from "@/components/ResetPasswordModal";
+import BulkImportModal from "./BulkImportModal";
 
 export default async function TeacherStudentsPage() {
   const me = await getCurrentProfile();
@@ -25,13 +26,15 @@ export default async function TeacherStudentsPage() {
 
   return (
     <div className="space-y-5">
-      {/* Header */}
-      <div>
-        <h1 className="text-xl font-bold">My Students</h1>
-        <p className="text-xs text-muted-foreground">
-          {students?.length ?? 0} student
-          {(students?.length ?? 0) !== 1 ? "s" : ""}
-        </p>
+      <div className="flex items-center justify-between gap-2">
+        <div>
+          <h1 className="text-xl font-bold">My Students</h1>
+          <p className="text-xs text-muted-foreground">
+            {students?.length ?? 0} student
+            {(students?.length ?? 0) !== 1 ? "s" : ""}
+          </p>
+        </div>
+        <BulkImportModal />
       </div>
 
       {/* Create student */}
