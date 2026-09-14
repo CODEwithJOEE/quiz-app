@@ -89,6 +89,7 @@ export default function BulkImportModal() {
           email: String(r.email ?? "")
             .trim()
             .toLowerCase(),
+          grade_level: String(r.grade_level ?? "").trim() || undefined,
           section: String(r.section ?? "").trim() || undefined,
         }))
         .filter((r) => r.full_name && r.email);
@@ -242,6 +243,7 @@ export default function BulkImportModal() {
                     <th className="text-left p-2 font-medium">#</th>
                     <th className="text-left p-2 font-medium">Name</th>
                     <th className="text-left p-2 font-medium">Email</th>
+                    <th className="text-left p-2 font-medium">Grade</th>
                     <th className="text-left p-2 font-medium">Section</th>
                   </tr>
                 </thead>
@@ -249,16 +251,18 @@ export default function BulkImportModal() {
                   {rows.map((r, i) => (
                     <tr key={i} className="border-t border-border">
                       <td className="p-2 text-muted-foreground">{i + 1}</td>
-                      <td className="p-2 truncate max-w-[120px]">
+                      <td className="p-2 truncate max-w-[100px]">
                         {r.full_name}
                       </td>
-                      <td className="p-2 text-muted-foreground truncate max-w-[150px]">
+                      <td className="p-2 text-muted-foreground truncate max-w-[130px]">
                         {r.email}
                       </td>
                       <td className="p-2 text-muted-foreground">
+                        {r.grade_level ?? "—"}
+                      </td>
+                      <td className="p-2 text-muted-foreground">
                         {r.section ?? "—"}
-                      </td>{" "}
-                      {/* ← BAGO */}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

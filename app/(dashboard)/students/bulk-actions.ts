@@ -23,7 +23,8 @@ function isValidEmail(email: string) {
 export type BulkRow = {
   full_name: string;
   email: string;
-  section?: string; // ← BAGO
+  grade_level?: string;
+  section?: string;
 };
 
 export type BulkResult = {
@@ -110,7 +111,8 @@ export async function bulkImportStudents(rows: BulkRow[]) {
       user_metadata: {
         full_name: name,
         role: "student",
-        section: row.section || null, // ← BAGO
+        grade_level: row.grade_level || null,
+        section: row.section || null,
         created_by: me.id,
       },
     });

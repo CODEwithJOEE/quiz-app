@@ -21,7 +21,9 @@ export default async function TeacherStudentsPage() {
 
   const { data: students } = await supabase
     .from("profiles")
-    .select("id, email, full_name, created_at, section, deletion_scheduled_for")
+    .select(
+      "id, email, full_name, created_at, grade_level, section, deletion_scheduled_for",
+    )
     .eq("role", "student")
     .eq("created_by", me.id)
     .order("created_at", { ascending: false });
@@ -115,10 +117,19 @@ function StudentCard({ student }: { student: any }) {
           <Mail className="w-3 h-3" />
           <span className="truncate">{student.email}</span>
         </div>
-        {student.section && (
-          <span className="inline-block mt-1 text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
-            {student.section}
-          </span>
+        {(student.grade_level || student.section) && (
+          <div className="flex flex-wrap gap-1 mt-1">
+            {student.grade_level && (
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300">
+                {student.grade_level}
+              </span>
+            )}
+            {student.section && (
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300">
+                {student.section}
+              </span>
+            )}
+          </div>
         )}
       </div>
 

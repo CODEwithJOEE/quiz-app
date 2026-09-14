@@ -50,9 +50,9 @@ export default async function RoomDetailPage({
     .from("room_members")
     .select(
       `
-      id, status, invited_at, joined_at,
-      profiles:student_id ( id, full_name, email )
-    `,
+    id, status, invited_at, joined_at,
+    profiles:student_id ( id, full_name, email, grade_level, section )
+  `,
     )
     .eq("room_id", roomId)
     .order("invited_at", { ascending: false });
@@ -66,7 +66,7 @@ export default async function RoomDetailPage({
     // My students (created by me)
     const { data: ownStudents } = await supabase
       .from("profiles")
-      .select("id, full_name, email, section, created_by")
+      .select("id, full_name, email, grade_level, section, created_by")
       .eq("role", "student")
       .eq("created_by", me.id)
       .order("full_name");
@@ -76,7 +76,7 @@ export default async function RoomDetailPage({
     // All students (for cross-teacher invite)
     const { data: everyone } = await supabase
       .from("profiles")
-      .select("id, full_name, email, section, created_by")
+      .select("id, full_name, email, grade_level, section, created_by")
       .eq("role", "student")
       .order("full_name");
 
@@ -316,6 +316,21 @@ function StudentRow({
         <p className="text-xs text-muted-foreground truncate">
           {student.email}
         </p>
+        {/* ✅ BAGO — Grade + Section badges */}
+        {(student.grade_level || student.section) && (
+          <div className="flex flex-wrap gap-1 mt-1">
+            {student.grade_level && (
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300">
+                {student.grade_level}
+              </span>
+            )}
+            {student.section && (
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300">
+                {student.section}
+              </span>
+            )}
+          </div>
+        )}
       </div>
       {canRemove && roomId && (
         <RemoveStudentModal

@@ -180,6 +180,24 @@ export default async function ProfilePage() {
             value={roleLabel[me.role]}
           />
         </div>
+        {me.role === "student" && (me.grade_level || me.section) && (
+          <>
+            {me.grade_level && (
+              <InfoRow
+                icon={<GraduationCap className="w-4 h-4" />}
+                label="Grade Level"
+                value={me.grade_level}
+              />
+            )}
+            {me.section && (
+              <InfoRow
+                icon={<Users className="w-4 h-4" />}
+                label="Section"
+                value={me.section}
+              />
+            )}
+          </>
+        )}
       </Card>
 
       {/* Security */}

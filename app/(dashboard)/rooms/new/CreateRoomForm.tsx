@@ -54,7 +54,7 @@ export default function CreateRoomForm() {
         <Input
           name="name"
           label="Room Name *"
-          placeholder="e.g. Math 101 - Section A"
+          placeholder="e.g. Grade 8 - Section A"
           required
           autoFocus
         />

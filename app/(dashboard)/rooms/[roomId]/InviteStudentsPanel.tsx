@@ -2,15 +2,7 @@
 
 import { useState, useTransition, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import {
-  UserPlus,
-  Check,
-  Search,
-  Filter,
-  X,
-  Loader2,
-  Mail,
-} from "lucide-react";
+import { UserPlus, Check, Search, Filter } from "lucide-react";
 import { inviteStudents } from "../actions";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -21,6 +13,7 @@ type Student = {
   id: string;
   full_name: string;
   email: string;
+  grade_level?: string | null;
   section?: string | null;
   created_by?: string;
 };
@@ -59,6 +52,9 @@ export default function InviteStudentsPanel({
 
       const matchesSection =
         !sectionFilter ||
+        (s.grade_level ?? "")
+          .toLowerCase()
+          .includes(sectionFilter.toLowerCase()) ||
         (s.section ?? "").toLowerCase().includes(sectionFilter.toLowerCase());
 
       return matchesSearch && matchesSection;
@@ -69,7 +65,13 @@ export default function InviteStudentsPanel({
   const allSections = useMemo(() => {
     const set = new Set<string>();
     allStudents.forEach((s) => {
-      if (s.section) set.add(s.section);
+      if (s.grade_level && s.section) {
+        set.add(`${s.grade_level} - ${s.section}`);
+      } else if (s.section) {
+        set.add(s.section);
+      } else if (s.grade_level) {
+        set.add(s.grade_level);
+      }
     });
     return Array.from(set).sort();
   }, [allStudents]);
@@ -321,9 +323,14 @@ export default function InviteStudentsPanel({
                     >
                       {s.email}
                     </p>
-                    <div className="flex items-center gap-1.5 mt-0.5">
+                    <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                      {s.grade_level && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300">
+                          {s.grade_level}
+                        </span>
+                      )}
                       {s.section && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300">
                           {s.section}
                         </span>
                       )}

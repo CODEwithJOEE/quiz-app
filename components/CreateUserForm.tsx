@@ -9,6 +9,7 @@ import {
   Lock,
   CheckCircle2,
   AlertCircle,
+  GraduationCap,
 } from "lucide-react";
 import { Button } from "./ui/Button";
 import { Input } from "./ui/Input";
@@ -26,6 +27,8 @@ export default function CreateUserForm({
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [role, setRole] = useState<AllowedRole>(allowedRoles[0]);
+  const [gradeLevel, setGradeLevel] = useState("");
+  const [section, setSection] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{
     type: "ok" | "err";
@@ -40,7 +43,14 @@ export default function CreateUserForm({
     const res = await fetch("/api/admin/create-user", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, full_name: fullName, role }),
+      body: JSON.stringify({
+        email,
+        password,
+        full_name: fullName,
+        role,
+        grade_level: role === "student" ? gradeLevel : null,
+        section: role === "student" ? section : null,
+      }),
     });
 
     const data = await res.json();
@@ -55,34 +65,11 @@ export default function CreateUserForm({
     setEmail("");
     setPassword("");
     setFullName("");
+    setGradeLevel("");
+    setSection("");
     router.refresh();
   }
-  const [section, setSection] = useState("");
 
-  // Sa form, bago ang Role selector (kung student):
-  {
-    role === "student" && (
-      <div>
-        <label className="text-sm font-medium">Section (optional)</label>
-        <input
-          type="text"
-          value={section}
-          onChange={(e) => setSection(e.target.value)}
-          placeholder="e.g. Grade 8-A"
-          className="w-full mt-1 px-3 py-2 border border-border rounded-lg bg-background"
-        />
-      </div>
-    );
-  }
-
-  // Sa handleSubmit, idagdag sa body:
-  body: JSON.stringify({
-    email,
-    password,
-    full_name: fullName,
-    role,
-    section: role === "student" ? section : null,
-  });
   return (
     <Card className="p-5 space-y-4">
       <div className="flex items-center gap-2">
@@ -175,6 +162,32 @@ export default function CreateUserForm({
                 </button>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* ✅ Grade Level + Section — para sa students lang */}
+        {role === "student" && (
+          <div className="space-y-3 pt-2">
+            <div className="flex items-center gap-1.5">
+              <GraduationCap className="w-3.5 h-3.5 text-brand" />
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                Grade & Section (Optional)
+              </p>
+            </div>
+
+            <Input
+              label="Grade Level"
+              placeholder="e.g. Grade 8"
+              value={gradeLevel}
+              onChange={(e) => setGradeLevel(e.target.value)}
+            />
+
+            <Input
+              label="Section"
+              placeholder="e.g. A Hydrogen"
+              value={section}
+              onChange={(e) => setSection(e.target.value)}
+            />
           </div>
         )}
 
