@@ -10,8 +10,6 @@ import {
   CheckCircle2,
   XCircle,
   Calendar,
-  TrendingUp,
-  ArrowRight,
 } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -225,7 +223,7 @@ function HistoryCard({ attempt }: { attempt: any }) {
   return (
     <li>
       <Link
-        href={`/quiz/${quiz.id}/result`}
+        href={`/quiz/${quiz.id}/result?from=history`}
         className="block bg-card rounded-2xl border border-border shadow-sm hover:border-brand/40 hover:shadow-md transition-all active:scale-[0.99]"
       >
         <div className="p-4 flex items-start gap-3">

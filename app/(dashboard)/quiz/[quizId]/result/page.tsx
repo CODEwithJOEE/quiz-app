@@ -1,9 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { redirect, notFound } from "next/navigation";
-import Link from "next/link";
 import {
-  ArrowLeft,
   PartyPopper,
   BookOpen,
   ShieldX,
@@ -12,9 +10,9 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth";
-import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import BackButton from "./BackButton";
 
 export default async function ResultPage({
   params,
@@ -50,12 +48,8 @@ export default async function ResultPage({
             Wala kang attempt para sa quiz na ito.
           </p>
         </Card>
-        <Link href={`/rooms/${quiz.room_id}`}>
-          <Button variant="secondary" className="w-full">
-            <ArrowLeft className="w-4 h-4" />
-            Back to Room
-          </Button>
-        </Link>
+        {/* Back button — smart destination */}
+        <BackButton roomId={quiz.room_id} />
       </div>
     );
   }
@@ -175,12 +169,8 @@ export default async function ResultPage({
       </Card>
 
       {/* Back button */}
-      <Link href={`/rooms/${quiz.room_id}`}>
-        <Button variant="secondary" size="lg" className="w-full">
-          <ArrowLeft className="w-4 h-4" />
-          Back to Room
-        </Button>
-      </Link>
+      {/* Back button — smart destination */}
+      <BackButton roomId={quiz.room_id} />
     </div>
   );
 }
