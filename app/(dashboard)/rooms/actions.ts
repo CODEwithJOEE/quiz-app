@@ -64,19 +64,31 @@ export async function inviteStudents(roomId: string, studentIds: string[]) {
 
   if (!room) return { error: "Room not found" };
 
-  // Upsert: if already invited, keep existing status
-  const rows = studentIds.map((sid) => ({
+  // Verify lahat ng studentIds ay valid students
+  const { data: students } = await supabase
+    .from("profiles")
+    .select("id, role, full_name, email")
+    .in("id", studentIds)
+    .eq("role", "student");
+
+  if (!students || students.length === 0) {
+    return { error: "Walang valid students sa selection" };
+  }
+
+  // Upsert: kung may existing invitation, skip
+  const rows = students.map((s) => ({
     room_id: roomId,
-    student_id: sid,
+    student_id: s.id,
     status: "pending" as const,
   }));
 
-  const { error } = await supabase
-    .from("room_members")
-    .upsert(rows, { onConflict: "room_id,student_id", ignoreDuplicates: true });
+  const { error } = await supabase.from("room_members").upsert(rows, {
+    onConflict: "room_id,student_id",
+    ignoreDuplicates: true,
+  });
 
   if (error) return { error: error.message };
 
   revalidatePath(`/rooms/${roomId}`);
-  return { ok: true };
+  return { ok: true, invited: students.length };
 }

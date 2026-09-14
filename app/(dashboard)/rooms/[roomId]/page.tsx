@@ -57,17 +57,28 @@ export default async function RoomDetailPage({
 
   const memberIds = new Set((members ?? []).map((m: any) => m.profiles?.id));
 
-  let availableStudents: any[] = [];
-  if (isOwner) {
-    const { data: allStudents } = await supabase
-      .from("profiles")
-      .select("id, full_name, email")
-      .eq("role", "student")
-      .eq("created_by", me.id);
+  let myStudents: any[] = [];
+  let allStudents: any[] = [];
 
-    availableStudents = (allStudents ?? []).filter(
-      (s: any) => !memberIds.has(s.id),
-    );
+  if (isOwner) {
+    // My students (created by me)
+    const { data: ownStudents } = await supabase
+      .from("profiles")
+      .select("id, full_name, email, section, created_by")
+      .eq("role", "student")
+      .eq("created_by", me.id)
+      .order("full_name");
+
+    myStudents = (ownStudents ?? []).filter((s: any) => !memberIds.has(s.id));
+
+    // All students (for cross-teacher invite)
+    const { data: everyone } = await supabase
+      .from("profiles")
+      .select("id, full_name, email, section, created_by")
+      .eq("role", "student")
+      .order("full_name");
+
+    allStudents = (everyone ?? []).filter((s: any) => !memberIds.has(s.id));
   }
 
   const accepted = (members ?? []).filter((m: any) => m.status === "accepted");
@@ -180,7 +191,9 @@ export default async function RoomDetailPage({
         <>
           <InviteStudentsPanel
             roomId={room.id}
-            availableStudents={availableStudents}
+            availableStudents={myStudents}
+            allStudents={allStudents}
+            currentUserId={me.id}
           />
 
           {/* Joined students */}

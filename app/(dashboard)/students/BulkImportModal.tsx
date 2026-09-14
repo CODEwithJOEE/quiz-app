@@ -77,7 +77,7 @@ export default function BulkImportModal() {
       const first = raw[0];
       if (!("full_name" in first) || !("email" in first)) {
         setError(
-          "Missing columns. Required: full_name, email. Download the template.",
+          "Missing columns. Required: full_name, email. Optional: section",
         );
         return;
       }
@@ -89,6 +89,7 @@ export default function BulkImportModal() {
           email: String(r.email ?? "")
             .trim()
             .toLowerCase(),
+          section: String(r.section ?? "").trim() || undefined,
         }))
         .filter((r) => r.full_name && r.email);
 
@@ -241,18 +242,23 @@ export default function BulkImportModal() {
                     <th className="text-left p-2 font-medium">#</th>
                     <th className="text-left p-2 font-medium">Name</th>
                     <th className="text-left p-2 font-medium">Email</th>
+                    <th className="text-left p-2 font-medium">Section</th>
                   </tr>
                 </thead>
                 <tbody>
                   {rows.map((r, i) => (
                     <tr key={i} className="border-t border-border">
                       <td className="p-2 text-muted-foreground">{i + 1}</td>
-                      <td className="p-2 truncate max-w-[150px]">
+                      <td className="p-2 truncate max-w-[120px]">
                         {r.full_name}
                       </td>
-                      <td className="p-2 text-muted-foreground truncate max-w-[180px]">
+                      <td className="p-2 text-muted-foreground truncate max-w-[150px]">
                         {r.email}
                       </td>
+                      <td className="p-2 text-muted-foreground">
+                        {r.section ?? "—"}
+                      </td>{" "}
+                      {/* ← BAGO */}
                     </tr>
                   ))}
                 </tbody>

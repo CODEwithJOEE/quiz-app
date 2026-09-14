@@ -57,7 +57,32 @@ export default function CreateUserForm({
     setFullName("");
     router.refresh();
   }
+  const [section, setSection] = useState("");
 
+  // Sa form, bago ang Role selector (kung student):
+  {
+    role === "student" && (
+      <div>
+        <label className="text-sm font-medium">Section (optional)</label>
+        <input
+          type="text"
+          value={section}
+          onChange={(e) => setSection(e.target.value)}
+          placeholder="e.g. Grade 8-A"
+          className="w-full mt-1 px-3 py-2 border border-border rounded-lg bg-background"
+        />
+      </div>
+    );
+  }
+
+  // Sa handleSubmit, idagdag sa body:
+  body: JSON.stringify({
+    email,
+    password,
+    full_name: fullName,
+    role,
+    section: role === "student" ? section : null,
+  });
   return (
     <Card className="p-5 space-y-4">
       <div className="flex items-center gap-2">

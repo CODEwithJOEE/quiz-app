@@ -8,6 +8,7 @@ const schema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
   full_name: z.string().min(1, "Full name is required"),
   role: z.enum(["teacher", "student"]),
+  section: z.string().nullable().optional(),
 });
 
 export async function POST(req: Request) {
@@ -39,7 +40,9 @@ export async function POST(req: Request) {
       { status: 400 },
     );
   }
-  const { email, password, full_name, role } = parsed.data;
+
+  // ✅ ITO ANG FIX — kasama na ang `section`
+  const { email, password, full_name, role, section } = parsed.data;
 
   // 3. Teachers can only create students
   if (me.role === "teacher" && role !== "student") {
@@ -58,6 +61,7 @@ export async function POST(req: Request) {
     user_metadata: {
       full_name,
       role,
+      section: section || null,
       created_by: user.id,
     },
   });
