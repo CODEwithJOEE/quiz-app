@@ -14,6 +14,7 @@ import {
   ClipboardList,
   TrendingUp,
   Users,
+  ArrowRight,
 } from "lucide-react";
 import LogoutButton from "@/components/LogoutButton";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -22,6 +23,8 @@ import { Badge } from "@/components/ui/Badge";
 import EditNameModal from "./EditNameModal";
 import ChangePasswordModal from "./ChangePasswordModal";
 import { getProfileStats } from "./actions";
+import { HelpCircle } from "lucide-react";
+import Link from "next/link";
 
 const APP_VERSION = "1.0.0";
 
@@ -174,7 +177,24 @@ export default async function ProfilePage() {
           <ThemeToggle />
         </Card>
       </div>
-
+      {/* Help */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 px-1">
+          <HelpCircle className="w-4 h-4 text-brand" />
+          <h2 className="font-semibold text-sm">Help</h2>
+        </div>
+        <Link href="/help" className="block">
+          <Card className="p-4 hover:border-brand/40 transition-colors">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">Documentation</p>
+                <p className="text-xs text-muted-foreground">Guides at FAQs</p>
+              </div>
+              <ArrowRight className="w-4 h-4 text-muted-foreground" />
+            </div>
+          </Card>
+        </Link>
+      </div>
       {/* About */}
       <div className="space-y-2">
         <div className="flex items-center gap-2 px-1">
