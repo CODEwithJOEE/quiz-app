@@ -87,7 +87,7 @@ export default function InviteStudentsPanel({
           placeholder="Search students..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full h-10 pl-9 pr-3 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-brand/40"
+          className="w-full h-10 pl-9 pr-3 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-brand/40"
         />
       </div>
 
@@ -108,22 +108,44 @@ export default function InviteStudentsPanel({
                 type="button"
                 onClick={() => toggle(s.id)}
                 className={`w-full flex items-center gap-3 p-3 text-left transition-colors ${
-                  isSelected ? "bg-blue-50 dark:bg-blue-950" : "hover:bg-muted"
+                  isSelected
+                    ? "bg-blue-50 dark:bg-blue-950/40"
+                    : "hover:bg-muted/50"
                 }`}
               >
-                <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center text-xs font-bold shrink-0">
+                <div
+                  className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-colors ${
+                    isSelected
+                      ? "bg-blue-600 text-white"
+                      : "bg-muted text-muted-foreground"
+                  }`}
+                >
                   {initials}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{s.full_name}</p>
-                  <p className="text-xs text-muted-foreground truncate">
+                  <p
+                    className={`text-sm font-medium truncate transition-colors ${
+                      isSelected
+                        ? "text-blue-900 dark:text-blue-100"
+                        : "text-foreground"
+                    }`}
+                  >
+                    {s.full_name}
+                  </p>
+                  <p
+                    className={`text-xs truncate transition-colors ${
+                      isSelected
+                        ? "text-blue-700 dark:text-blue-200"
+                        : "text-muted-foreground"
+                    }`}
+                  >
                     {s.email}
                   </p>
                 </div>
                 <div
                   className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-colors ${
                     isSelected
-                      ? "bg-brand border-brand text-white"
+                      ? "bg-blue-600 border-blue-600 text-white"
                       : "border-border"
                   }`}
                 >

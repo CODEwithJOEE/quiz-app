@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Sparkles } from "lucide-react";
 import { createQuiz } from "../../quiz-actions";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
 
 export default function CreateQuizForm({ roomId }: { roomId: string }) {
   const router = useRouter();
@@ -23,97 +28,90 @@ export default function CreateQuizForm({ roomId }: { roomId: string }) {
       return;
     }
 
-    // Redirect to quiz editor
     router.push(`/quiz/${res.quizId}`);
     router.refresh();
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white p-4 rounded-2xl shadow-sm space-y-3"
-    >
+    <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 p-2 rounded">{error}</p>
+        <div className="bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300 p-3 rounded-xl text-sm">
+          {error}
+        </div>
       )}
 
-      <input type="hidden" name="room_id" value={roomId} />
+      <Card className="p-4 space-y-4">
+        <input type="hidden" name="room_id" value={roomId} />
 
-      <div>
-        <label className="text-sm font-medium">Quiz Title *</label>
-        <input
+        <Input
           name="title"
-          required
+          label="Quiz Title *"
           placeholder="e.g. Chapter 1 Quiz"
-          className="w-full mt-1 px-3 py-2 border rounded-lg"
+          required
+          autoFocus
         />
-      </div>
 
-      <div>
-        <label className="text-sm font-medium">Description</label>
-        <textarea
+        <Textarea
           name="description"
+          label="Description"
           rows={2}
-          placeholder="Optional"
-          className="w-full mt-1 px-3 py-2 border rounded-lg"
+          placeholder="Optional notes about this quiz"
         />
-      </div>
 
-      <div>
-        <label className="text-sm font-medium">
-          Time Limit (minutes, optional)
-        </label>
-        <input
+        <Input
           type="number"
           name="time_limit_minutes"
+          label="Time Limit (minutes, optional)"
           min={1}
-          placeholder="Leave blank for no limit"
-          className="w-full mt-1 px-3 py-2 border rounded-lg"
+          placeholder="Leave blank for no time limit"
         />
-      </div>
-      {/* Shuffle settings — DAPAT NANDITO, BEFORE SUBMIT */}
-      <div className="space-y-2 pt-2">
-        <label className="text-sm font-medium">Randomization</label>
+      </Card>
 
-        <label className="flex items-center gap-3 p-3 rounded-xl bg-muted/50 cursor-pointer hover:bg-muted transition-colors">
+      {/* Shuffle settings */}
+      <Card className="p-4 space-y-3">
+        <div className="flex items-center gap-2 mb-1">
+          <Sparkles className="w-4 h-4 text-brand" />
+          <h3 className="font-semibold text-sm">Randomization</h3>
+        </div>
+
+        <label className="flex items-start gap-3 p-3 rounded-xl bg-muted/50 hover:bg-muted cursor-pointer transition-colors">
           <input
             type="checkbox"
             name="shuffle_questions"
             value="true"
-            className="w-4 h-4"
+            className="w-4 h-4 mt-0.5 accent-blue-600"
           />
-          <div className="flex-1">
-            <p className="text-sm font-medium">Shuffle questions</p>
-            <p className="text-xs text-muted-foreground">
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-foreground">
+              Shuffle questions
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">
               Bawat student ay may iba-ibang order ng questions
             </p>
           </div>
         </label>
 
-        <label className="flex items-center gap-3 p-3 rounded-xl bg-muted/50 cursor-pointer hover:bg-muted transition-colors">
+        <label className="flex items-start gap-3 p-3 rounded-xl bg-muted/50 hover:bg-muted cursor-pointer transition-colors">
           <input
             type="checkbox"
             name="shuffle_options"
             value="true"
-            className="w-4 h-4"
+            className="w-4 h-4 mt-0.5 accent-blue-600"
           />
-          <div className="flex-1">
-            <p className="text-sm font-medium">Shuffle options</p>
-            <p className="text-xs text-muted-foreground">
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-foreground">
+              Shuffle options
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">
               Iba-ibang order ng A/B/C/D per student
             </p>
           </div>
         </label>
-      </div>
+      </Card>
 
-      {/* Submit button — DAPAT ITO SA DULO */}
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium disabled:opacity-50"
-      >
+      <Button type="submit" size="lg" className="w-full" loading={loading}>
         {loading ? "Creating..." : "Create Quiz"}
-      </button>
+      </Button>
     </form>
   );
 }
