@@ -1,18 +1,21 @@
 export type HelpSection = {
   heading: string;
-  body: string; // Supports markdown-like syntax: **bold**, `code`, - bullets
+  body: string;
 };
 
 export type HelpArticle = {
   slug: string;
   title: string;
   description: string;
-  icon: string; // Lucide icon name
+  icon: string;
   roles: ("super_admin" | "teacher" | "student")[];
   sections: HelpSection[];
 };
 
 export const HELP_ARTICLES: HelpArticle[] = [
+  // =====================================================
+  // GETTING STARTED — All roles
+  // =====================================================
   {
     slug: "getting-started",
     title: "Getting Started",
@@ -54,7 +57,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
 - 📋 **Quiz** — Quiz listing
 - 🎓 **Students** — (Teacher only) Manage students
 - ⚙️ **Users** — (Admin only) Manage all users
-- 👤 **Profile** — Account info, dark mode, logout`,
+- 👤 **Profile** — Account info, dark mode, logout, help`,
       },
       {
         heading: "Dark Mode",
@@ -65,11 +68,20 @@ export const HELP_ARTICLES: HelpArticle[] = [
    - **System** — Auto (sumusunod sa phone settings)`,
       },
       {
+        heading: "Help Center",
+        body: `Para sa lahat ng guides:
+1. Puntahan ang **Profile** page
+2. Hanapin ang **"Help"** section
+3. Click **"Documentation"**
+
+Makikita mo ang lahat ng guides base sa role mo.`,
+      },
+      {
         heading: "Common Issues",
         body: `**Hindi maka-login**
 - I-check ang email spelling
 - Password is case-sensitive
-- Kung nalimutan, kontakin ang admin/teacher
+- Kung nalimutan, kontakin ang teacher mo (students) o super admin (teachers)
 
 **Wala kang makitang room**
 - I-accept ang invitation sa Home page
@@ -77,11 +89,19 @@ export const HELP_ARTICLES: HelpArticle[] = [
 
 **Hindi lumalabas ang app icon**
 - iPhone: dapat **Safari** (hindi Chrome)
-- Android: dapat **Chrome** (hindi Firefox)`,
+- Android: dapat **Chrome** (hindi Firefox)
+
+**Nag-crash habang nag-take ng quiz**
+- I-refresh ang browser (pull down)
+- Naka-save ang progress mo
+- Kung hindi pa rin, kontakin ang teacher`,
       },
     ],
   },
 
+  // =====================================================
+  // TEACHER GUIDE
+  // =====================================================
   {
     slug: "teacher-guide",
     title: "Teacher Guide",
@@ -91,15 +111,61 @@ export const HELP_ARTICLES: HelpArticle[] = [
     sections: [
       {
         heading: "Managing Students",
-        body: `**Paano Gumawa ng Student**
+        body: `**Paano Gumawa ng Student (Manu-mano)**
 1. Tap **"Students"** sa bottom nav
 2. Sa "Create New User" form, i-fill:
    - **Full Name** — e.g. Juan Dela Cruz
    - **Email** — valid email
    - **Password** — minimum 6 characters
+   - **Section** — e.g. Grade 8-A (optional but recommended)
 3. Tap **"Create User"**
 
-**Note:** Makikita mo lang ang **iyong** students. Ang students ng ibang teachers ay hindi makikita.`,
+**Note:** Ang students na ginawa mo ay makikita rin ng ibang teachers sa kanilang "All Students" tab — kaya isang account lang per student, kahit 8 teachers siya.`,
+      },
+      {
+        heading: "Bulk Import Students",
+        body: `Para sa 20+ students, mas mabilis gamitin ang bulk import.
+
+**Format (Excel/CSV):**
+\`\`\`
+full_name        | email                  | section
+Juan Dela Cruz   | juan@school.com        | Grade 8-A
+Maria Santos     | maria@school.com       | Grade 8-A
+\`\`\`
+
+**Paano:**
+1. Puntahan **/students** page
+2. Click **"Bulk Import"** (green button)
+3. Download ang **CSV template**
+4. Fill in sa Google Sheets o Excel
+5. Save as **.csv** o **.xlsx**
+6. Upload pabalik sa app
+7. **Preview** ang list
+8. Click **"Import"**
+9. **Print** o i-copy ang credentials
+10. Ibigay sa students
+
+**Limits:**
+- Max **100 students** per batch
+- Auto-generated ang passwords (8 chars)
+- I-print ang credentials at ibigay sa students`,
+      },
+      {
+        heading: "Cross-Teacher Invite (High School)",
+        body: `**Scenario:** Ikaw ay subject teacher (Filipino), pero ibang teacher (Science) ang gumawa ng students.
+
+**Flow:**
+1. Buksan ang room mo
+2. Sa **"Invite Students"** panel, may 2 tabs:
+   - **My Students** — sarili mong ginawa
+   - **All Students** — lahat ng students sa system
+3. Click **"All Students"** tab
+4. Search by name, email, o section
+5. Pumili ng students → **Invite**
+
+**Note:** Ang students ay may badge na **"From other teacher"** para malaman mo kung kanino galing.
+
+**Result:** Isang account lang per student kahit 8 subjects pa siya.`,
       },
       {
         heading: "Creating Rooms",
@@ -110,26 +176,10 @@ export const HELP_ARTICLES: HelpArticle[] = [
 **Paano Gumawa:**
 1. Tap **"Rooms"** → **"+ New Room"**
 2. Fill in:
-   - **Room Name** — e.g. Math 101 - Section A
-   - **Subject** — e.g. Mathematics
+   - **Room Name** — e.g. Science 8-A
+   - **Subject** — e.g. Science
    - **Description** — optional
 3. Tap **"Create Room"**`,
-      },
-      {
-        heading: "Inviting Students",
-        body: `1. Buksan ang room
-2. Sa "Invite Students" panel:
-   - **Search** ang pangalan ng student
-   - **Tap** ang student para i-select
-   - Pwedeng marami
-3. Tap **"Invite Selected"**
-
-**Anong mangyayari:**
-- Makikita ng student ang invitation sa Home dashboard
-- Kailangan nilang **i-accept** para makasali
-- Sa room detail, makikita mo:
-  - **Joined Students** — naka-accept na
-  - **Pending Invitations** — hindi pa nag-a-accept`,
       },
       {
         heading: "Creating Quizzes",
@@ -184,10 +234,48 @@ export const HELP_ARTICLES: HelpArticle[] = [
 4. **Filter** — by status
 5. **Export CSV** — download sa Excel
 6. Click **"Show details"** — makita ang integrity events
+7. **Override Score** — manual adjustment
 
 **Bulk actions:**
 - Select multiple attempts → **Bulk Terminate**
 - **"Select X in-progress"** quick button`,
+      },
+      {
+        heading: "Password Reset (Students)",
+        body: `Kung nakalimutan ng student ang password:
+
+1. Puntahan **/students** page
+2. Hanapin ang student
+3. Click **"Reset Password"** button (amber)
+4. Pumili:
+   - **Auto-generate** — secure random password
+   - **Custom** — type your own
+5. Click **"Reset Password"**
+6. **Copy** ang password → ibigay sa student
+
+**Note:** Hindi na gagana ang lumang password.`,
+      },
+      {
+        heading: "Delete Student Account",
+        body: `**7-day retention system:** Hindi tuluyang nabura agad.
+
+**Paano:**
+1. Sa **/students** page, click **"Delete"** (red)
+2. Confirm ang delete
+3. **Countdown starts:** 7 days
+
+**During 7-day period:**
+- Student **hindi na makaka-login**
+- **Naka-save pa ang data** (attempts, quizzes)
+- **Pwedeng i-restore** anytime
+
+**After 7 days:**
+- Permanent delete (once admin purges)
+
+**Restore:**
+1. Hanapin ang student sa **"Pending Deletion"** section
+2. Click **"Restore"** → confirm
+3. Student can login again`,
       },
       {
         heading: "Anti-Cheat Rules",
@@ -212,6 +300,9 @@ export const HELP_ARTICLES: HelpArticle[] = [
     ],
   },
 
+  // =====================================================
+  // STUDENT GUIDE
+  // =====================================================
   {
     slug: "student-guide",
     title: "Student Guide",
@@ -228,7 +319,9 @@ export const HELP_ARTICLES: HelpArticle[] = [
 2. Hanapin ang **"Room Invitations"**
 3. Tap **"Accept"** para sumali, o **"Decline"**
 
-Pag na-accept, lalabas ang room sa **Rooms** page.`,
+Pag na-accept, lalabas ang room sa **Rooms** page.
+
+**Note:** Kung may 8 subjects ka, lahat ng teachers mo ay makakapag-invite sa **isang account** mo. Hindi mo kailangan ng iba't-ibang accounts.`,
       },
       {
         heading: "Taking a Quiz",
@@ -249,6 +342,21 @@ Pag na-accept, lalabas ang room sa **Rooms** page.`,
 **Kung may timer:**
 - May countdown sa taas
 - Pag nag-0, auto-submit`,
+      },
+      {
+        heading: "My Quiz History",
+        body: `Tingnan lahat ng past quizzes mo:
+
+1. Puntahan ang **Profile** page
+2. Click **"Quiz History"** sa **"My Progress"** section
+3. Makikita mo:
+   - **Stats** — total quizzes taken, average score, best score, terminated count
+   - **Listahan** ng lahat ng attempts
+   - **Search** — hanapin ang quiz or room
+   - **Filter** — by status
+   - **Sort** — by recent, oldest, score
+
+Click any attempt → makita ang detailed result.`,
       },
       {
         heading: "Anti-Cheat Rules",
@@ -292,12 +400,18 @@ Oo. Naka-log lahat ng violations.
 **Bakit zero ang score ko?**
 Either terminated (3 violations) o mali lahat ng sagot.
 
+**Nakalimutan ko ang password ko, ano gagawin?**
+Kontakin ang teacher mo. Pwede nilang i-reset ang password mo.
+
 **Paano kung mali ang score?**
 Kontakin ang teacher mo — pwede nilang i-override.`,
       },
     ],
   },
 
+  // =====================================================
+  // ADMIN GUIDE
+  // =====================================================
   {
     slug: "admin-guide",
     title: "Admin Guide",
@@ -329,23 +443,51 @@ Kontakin ang teacher mo — pwede nilang i-override.`,
 |--------|:-----:|:-------:|:-------:|
 | Manage all users | ✅ | ❌ | ❌ |
 | Create teachers | ✅ | ❌ | ❌ |
-| Create students | ✅ | ✅ (own) | ❌ |
+| Create students | ✅ | ✅ (any) | ❌ |
 | Create rooms | ✅ | ✅ (own) | ❌ |
 | Create quizzes | ✅ | ✅ (own) | ❌ |
-| Take quizzes | ❌ | ❌ | ✅ |`,
+| Invite students | ✅ | ✅ (any) | ❌ |
+| Take quizzes | ❌ | ❌ | ✅ |
+| Reset passwords | ✅ | ✅ (own students) | ❌ |
+| Delete accounts | ✅ | ✅ (own students) | ❌ |`,
       },
       {
         heading: "Password Reset",
-        body: `**Para sa ngayon, manual via Supabase dashboard:**
+        body: `**Para sa Teachers (kung nalimutan):**
+1. Login as **super admin**
+2. Puntahan **/admin/users**
+3. Hanapin ang teacher
+4. Click **"Reset Password"** (amber button)
+5. Auto-generate o custom password
+6. **Copy** at ibigay sa teacher (secure channel)
 
-1. Login sa Supabase dashboard
-2. Authentication → Users
-3. Hanapin ang email
-4. Tap **"..."** → **"Reset password"**
-5. Set bagong password
-6. Ibigay sa user
+**Note:** Pwede ring i-reset ang students mula dito.
 
-**Future:** Pwedeng i-add in-app reset flow later.`,
+**Manual recovery via Supabase:**
+Kung naka-lock out ka mismo:
+1. Supabase dashboard → Authentication → Users
+2. Hanapin ang email
+3. **"..."** menu → **"Reset password"**`,
+      },
+      {
+        heading: "Delete Users",
+        body: `**7-day retention system:**
+
+1. Sa **/admin/users**, hanapin ang user
+2. Click **"Delete"** (red)
+3. Confirm → countdown starts
+
+**During 7 days:**
+- User cannot login
+- Data preserved
+- Pwedeng i-restore
+
+**After 7 days:**
+- **Purge** — pwede i-trigger manually via admin action (future: cron job)
+
+**Restore:**
+- Hanapin sa **"Pending Deletion"** section
+- Click **"Restore"**`,
       },
       {
         heading: "Security Notes",
@@ -353,20 +495,24 @@ Kontakin ang teacher mo — pwede nilang i-override.`,
 - ⚠️ **Never** i-commit ang \`.env.local\` sa Git
 - ✅ I-enable ang Row Level Security (naka-set na)
 - ✅ I-review ang terminated attempts regularly
-- ✅ I-backup ang database weekly`,
+- ✅ I-backup ang database weekly
+- ✅ I-setup ang **backup super admin account** as fallback`,
       },
     ],
   },
 
+  // =====================================================
+  // EXCEL IMPORT GUIDE
+  // =====================================================
   {
     slug: "excel-import",
     title: "Excel Import Guide",
-    description: "Bulk quiz import format",
+    description: "Bulk quiz at student import format",
     icon: "FileSpreadsheet",
     roles: ["teacher", "super_admin"],
     sections: [
       {
-        heading: "Required Format",
+        heading: "Quiz Questions Import",
         body: `**Column Headers (Row 1):**
 
 | Header | Required | Example |
@@ -385,12 +531,45 @@ Kontakin ang teacher mo — pwede nilang i-override.`,
 - Pwedeng 2, 3, o 4 options`,
       },
       {
-        heading: "Example",
+        heading: "Quiz Questions Example",
         body: `| question | option_a | option_b | option_c | option_d | correct | points |
 |----------|----------|----------|----------|----------|---------|--------|
 | What is 2+2? | 3 | 4 | 5 | 6 | B | 1 |
 | Capital of France? | London | Berlin | Paris | Rome | C | 1 |
 | The sun is a star. | True | False | | | A | 1 |`,
+      },
+      {
+        heading: "Students Bulk Import",
+        body: `**Column Headers (Row 1):**
+
+| Header | Required | Example |
+|--------|:--------:|---------|
+| \`full_name\` | ✅ | Juan Dela Cruz |
+| \`email\` | ✅ | juan@school.com |
+| \`section\` | ⚪ | Grade 8-A |
+
+**⚠️ Important:**
+- Email ay dapat **unique** — hindi pwede duplicate
+- Password ay **auto-generated** (8 chars)
+- Max **100 students** per batch
+
+**Paano:**
+1. Puntahan **/students** page
+2. Click **"Bulk Import"**
+3. Download template
+4. Fill in sa Excel/Sheets
+5. Save as .xlsx o .csv
+6. Upload pabalik sa app
+7. **Print credentials** at ibigay sa students`,
+      },
+      {
+        heading: "Students Bulk Example",
+        body: `| full_name | email | section |
+|-----------|-------|---------|
+| Juan Dela Cruz | juan@school.com | Grade 8-A |
+| Maria Santos | maria@school.com | Grade 8-A |
+| Pedro Reyes | pedro@school.com | Grade 8-A |
+| Ana Garcia | ana@school.com | Grade 8-B |`,
       },
       {
         heading: "Common Mistakes",
@@ -399,16 +578,9 @@ Kontakin ang teacher mo — pwede nilang i-override.`,
 | \`Question\` | \`question\` | Case-sensitive |
 | \`A. 3\` | \`3\` | Walang prefix |
 | \`true\` sa correct | \`A\` | Letter lang |
-| 5+ options | Max 4 | Hindi supported |`,
-      },
-      {
-        heading: "Paano Mag-upload",
-        body: `1. Buksan ang quiz → **"Import"** tab
-2. Tap **"Download Template"** (kung wala pang file)
-3. Fill in sa Excel/Google Sheets
-4. Save as \`.xlsx\` o \`.csv\`
-5. Tap **file upload area** sa app
-6. Select ang file → auto-import`,
+| 5+ options | Max 4 | Hindi supported |
+| \`Full Name\` | \`full_name\` | Exact header |
+| Duplicate email | Unique emails | Import mag-fail |`,
       },
     ],
   },

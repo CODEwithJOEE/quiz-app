@@ -96,12 +96,41 @@ function ParsedLine({ line }: { line: string }) {
   // Empty line → spacing
   if (line.trim() === "") return <div className="h-1" />;
 
-  // Table row (|...|)
+  // Code block boundaries (```) — skip
+  if (line.trim() === "```") return null;
+
+  // Table row (|...|) — simple table rendering
   if (line.trim().startsWith("|")) {
+    const cells = line
+      .split("|")
+      .map((c) => c.trim())
+      .filter((c) => c.length > 0);
+
+    // Skip separator rows (|---|---|)
+    if (cells.every((c) => /^:?-+:?$/.test(c))) return null;
+
     return (
-      <p className="font-mono text-xs text-muted-foreground whitespace-pre">
+      <div className="flex gap-2 text-xs py-1 border-b border-border/50 last:border-b-0">
+        {cells.map((cell, i) => (
+          <span
+            key={i}
+            className={`flex-1 min-w-0 ${
+              i === 0 ? "font-medium" : "text-muted-foreground"
+            }`}
+          >
+            <InlineMarkdown text={cell} />
+          </span>
+        ))}
+      </div>
+    );
+  }
+
+  // Code block content (multiline with special chars)
+  if (line.trim().startsWith("```") || line.includes("\\`\\`\\`")) {
+    return (
+      <pre className="bg-muted p-2 rounded text-xs font-mono overflow-x-auto">
         {line}
-      </p>
+      </pre>
     );
   }
 
