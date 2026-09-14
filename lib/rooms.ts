@@ -40,9 +40,22 @@ export async function getStudentInvitations(studentId: string) {
     .eq("status", "pending")
     .order("invited_at", { ascending: false });
 
-  if (error) throw error;
+  if (error) {
+    console.error("[getStudentInvitations] query error:", error);
+    throw error;
+  }
 
-  // Filter out rows where nested rooms is null (RLS blocked or deleted room)
+  // Debug logging (only sa development)
+  if (process.env.NODE_ENV === "development") {
+    const withNull = (data ?? []).filter((r: any) => r.rooms === null);
+    if (withNull.length > 0) {
+      console.warn(
+        `[getStudentInvitations] ${withNull.length} invitation(s) have null rooms data — check RLS policy on 'rooms' table`,
+      );
+    }
+  }
+
+  // Keep filter as safety net
   return (data ?? []).filter((row: any) => row.rooms !== null);
 }
 
@@ -61,7 +74,19 @@ export async function getStudentRooms(studentId: string) {
     .eq("status", "accepted")
     .order("joined_at", { ascending: false });
 
-  if (error) throw error;
+  if (error) {
+    console.error("[getStudentRooms] query error:", error);
+    throw error;
+  }
+
+  if (process.env.NODE_ENV === "development") {
+    const withNull = (data ?? []).filter((r: any) => r.rooms === null);
+    if (withNull.length > 0) {
+      console.warn(
+        `[getStudentRooms] ${withNull.length} room(s) have null rooms data — check RLS policy on 'rooms' table`,
+      );
+    }
+  }
 
   return (data ?? []).filter((row: any) => row.rooms !== null);
 }
