@@ -23,6 +23,8 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import InviteStudentsPanel from "./InviteStudentsPanel";
 import DeleteRoomButton from "./DeleteRoomButton";
 import QuizStatusBadge from "@/components/QuizStatusBadge";
+import EditRoomModal from "./EditRoomModal";
+import RemoveStudentModal from "./RemoveStudentModal";
 
 export default async function RoomDetailPage({
   params,
@@ -104,6 +106,7 @@ export default async function RoomDetailPage({
         <Link
           href="/rooms"
           className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center hover:bg-border transition-colors shrink-0"
+          aria-label="Back to rooms"
         >
           <ArrowLeft className="w-4 h-4" />
         </Link>
@@ -116,6 +119,14 @@ export default async function RoomDetailPage({
             </div>
           )}
         </div>
+        {isOwner && (
+          <EditRoomModal
+            roomId={room.id}
+            initialName={room.name}
+            initialSubject={room.subject}
+            initialDescription={room.description}
+          />
+        )}
       </div>
 
       {/* Description */}
@@ -213,7 +224,12 @@ export default async function RoomDetailPage({
             ) : (
               <ul className="space-y-2">
                 {accepted.map((m: any) => (
-                  <StudentRow key={m.id} student={m.profiles} />
+                  <StudentRow
+                    key={m.id}
+                    student={m.profiles}
+                    roomId={room.id}
+                    canRemove={true}
+                  />
                 ))}
               </ul>
             )}
@@ -229,7 +245,13 @@ export default async function RoomDetailPage({
               </div>
               <ul className="space-y-2">
                 {pending.map((m: any) => (
-                  <StudentRow key={m.id} student={m.profiles} pending />
+                  <StudentRow
+                    key={m.id}
+                    student={m.profiles}
+                    pending
+                    roomId={room.id}
+                    canRemove={true}
+                  />
                 ))}
               </ul>
             </div>
@@ -258,7 +280,17 @@ export default async function RoomDetailPage({
   );
 }
 
-function StudentRow({ student, pending }: { student: any; pending?: boolean }) {
+function StudentRow({
+  student,
+  pending,
+  roomId,
+  canRemove,
+}: {
+  student: any;
+  pending?: boolean;
+  roomId?: string;
+  canRemove?: boolean;
+}) {
   if (!student) return null;
 
   const initials = student.full_name
@@ -285,6 +317,14 @@ function StudentRow({ student, pending }: { student: any; pending?: boolean }) {
           {student.email}
         </p>
       </div>
+      {canRemove && roomId && (
+        <RemoveStudentModal
+          roomId={roomId}
+          studentId={student.id}
+          studentName={student.full_name}
+          studentEmail={student.email}
+        />
+      )}
     </li>
   );
 }
