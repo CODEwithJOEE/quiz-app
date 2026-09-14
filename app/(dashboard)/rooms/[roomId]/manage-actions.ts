@@ -96,3 +96,38 @@ export async function removeStudentFromRoom(roomId: string, studentId: string) {
     studentEmail: student?.email,
   };
 }
+// =====================================================
+// BULK REMOVE students from room
+// =====================================================
+export async function bulkRemoveStudentsFromRoom(
+  roomId: string,
+  studentIds: string[],
+) {
+  const me = await getCurrentProfile();
+  if (!me || me.role !== "teacher") return { error: "Forbidden" };
+  if (studentIds.length === 0) return { error: "No students selected" };
+
+  const supabase = await createClient();
+
+  // Verify room ownership
+  const { data: room } = await supabase
+    .from("rooms")
+    .select("id")
+    .eq("id", roomId)
+    .eq("teacher_id", me.id)
+    .single();
+
+  if (!room) return { error: "Room not found or hindi mo ito" };
+
+  // Delete all selected memberships
+  const { error, count } = await supabase
+    .from("room_members")
+    .delete({ count: "exact" })
+    .eq("room_id", roomId)
+    .in("student_id", studentIds);
+
+  if (error) return { error: error.message };
+
+  revalidatePath(`/rooms/${roomId}`);
+  return { ok: true, removed: count ?? studentIds.length };
+}

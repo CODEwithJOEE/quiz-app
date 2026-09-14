@@ -4,14 +4,10 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft,
-  DoorOpen,
   BookOpen,
-  Users,
-  Clock,
   Plus,
   FileText,
   ClipboardList,
-  UserCheck,
   UserPlus,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -24,7 +20,9 @@ import InviteStudentsPanel from "./InviteStudentsPanel";
 import DeleteRoomButton from "./DeleteRoomButton";
 import QuizStatusBadge from "@/components/QuizStatusBadge";
 import EditRoomModal from "./EditRoomModal";
-import RemoveStudentModal from "./RemoveStudentModal";
+import Collapsible from "@/components/ui/Collapsible";
+import RoomStudentsSection from "./RoomStudentsSection";
+import ClassmatesSection from "./ClassmatesSection";
 
 export default async function RoomDetailPage({
   params,
@@ -63,7 +61,6 @@ export default async function RoomDetailPage({
   let allStudents: any[] = [];
 
   if (isOwner) {
-    // My students (created by me)
     const { data: ownStudents } = await supabase
       .from("profiles")
       .select("id, full_name, email, grade_level, section, created_by")
@@ -73,7 +70,6 @@ export default async function RoomDetailPage({
 
     myStudents = (ownStudents ?? []).filter((s: any) => !memberIds.has(s.id));
 
-    // All students (for cross-teacher invite)
     const { data: everyone } = await supabase
       .from("profiles")
       .select("id, full_name, email, grade_level, section, created_by")
@@ -200,146 +196,40 @@ export default async function RoomDetailPage({
       {/* Teacher: members & invite */}
       {isOwner && (
         <>
-          <InviteStudentsPanel
+          <Collapsible
+            title="Invite Students"
+            icon={<UserPlus className="w-4 h-4 text-brand" />}
+            count={myStudents.length + allStudents.length}
+            badge={<Badge>{myStudents.length + allStudents.length}</Badge>}
+          >
+            <InviteStudentsPanel
+              roomId={room.id}
+              availableStudents={myStudents}
+              allStudents={allStudents}
+              currentUserId={me.id}
+            />
+          </Collapsible>
+
+          <RoomStudentsSection
             roomId={room.id}
-            availableStudents={myStudents}
-            allStudents={allStudents}
+            accepted={accepted}
+            pending={pending}
             currentUserId={me.id}
           />
-
-          {/* Joined students */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <UserCheck className="w-4 h-4 text-green-600" />
-              <h2 className="font-semibold">Joined Students</h2>
-              <Badge variant="success">{accepted.length}</Badge>
-            </div>
-
-            {accepted.length === 0 ? (
-              <EmptyState
-                icon={Users}
-                title="Wala pang joined"
-                description="Mag-invite ng students sa itaas."
-              />
-            ) : (
-              <ul className="space-y-2">
-                {accepted.map((m: any) => (
-                  <StudentRow
-                    key={m.id}
-                    student={m.profiles}
-                    roomId={room.id}
-                    canRemove={true}
-                  />
-                ))}
-              </ul>
-            )}
-          </div>
-
-          {/* Pending */}
-          {pending.length > 0 && (
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-amber-600" />
-                <h2 className="font-semibold">Pending Invitations</h2>
-                <Badge variant="warning">{pending.length}</Badge>
-              </div>
-              <ul className="space-y-2">
-                {pending.map((m: any) => (
-                  <StudentRow
-                    key={m.id}
-                    student={m.profiles}
-                    pending
-                    roomId={room.id}
-                    canRemove={true}
-                  />
-                ))}
-              </ul>
-            </div>
-          )}
 
           <DeleteRoomButton roomId={room.id} />
         </>
       )}
 
-      {/* Student: classmates */}
-      {!isOwner && accepted.length > 0 && (
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <Users className="w-4 h-4 text-brand" />
-            <h2 className="font-semibold">Classmates</h2>
-            <Badge>{accepted.length}</Badge>
-          </div>
-          <ul className="space-y-2">
-            {accepted.map((m: any) => (
-              <StudentRow key={m.id} student={m.profiles} />
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function StudentRow({
-  student,
-  pending,
-  roomId,
-  canRemove,
-}: {
-  student: any;
-  pending?: boolean;
-  roomId?: string;
-  canRemove?: boolean;
-}) {
-  if (!student) return null;
-
-  const initials = student.full_name
-    .split(" ")
-    .map((w: string) => w[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-
-  return (
-    <li className="flex items-center gap-3 p-3 bg-card rounded-2xl border border-border shadow-sm">
-      <div
-        className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-          pending
-            ? "bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300"
-            : "bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300"
-        }`}
-      >
-        {initials}
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium truncate">{student.full_name}</p>
-        <p className="text-xs text-muted-foreground truncate">
-          {student.email}
-        </p>
-        {/* ✅ BAGO — Grade + Section badges */}
-        {(student.grade_level || student.section) && (
-          <div className="flex flex-wrap gap-1 mt-1">
-            {student.grade_level && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300">
-                {student.grade_level}
-              </span>
-            )}
-            {student.section && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300">
-                {student.section}
-              </span>
-            )}
-          </div>
-        )}
-      </div>
-      {canRemove && roomId && (
-        <RemoveStudentModal
-          roomId={roomId}
-          studentId={student.id}
-          studentName={student.full_name}
-          studentEmail={student.email}
+      {/* Student: classmates — with search + collapsible */}
+      {!isOwner && (
+        <ClassmatesSection
+          classmates={accepted
+            .filter((m: any) => m.profiles?.id !== me.id)
+            .map((m: any) => m.profiles)
+            .filter(Boolean)}
         />
       )}
-    </li>
+    </div>
   );
 }
