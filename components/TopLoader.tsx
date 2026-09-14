@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import NProgress from "nprogress";
 
-// Configure NProgress
 NProgress.configure({
   showSpinner: false,
   trickleSpeed: 200,
@@ -13,15 +12,12 @@ NProgress.configure({
 
 export default function TopLoader() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
-    // Done loading when pathname changes
     NProgress.done();
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   useEffect(() => {
-    // Start on link clicks
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const anchor = target.closest("a");
