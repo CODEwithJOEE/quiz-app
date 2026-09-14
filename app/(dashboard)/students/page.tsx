@@ -5,9 +5,9 @@ import { GraduationCap, Users, Mail } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth";
 import CreateUserForm from "@/components/CreateUserForm";
-import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
+import ResetPasswordModal from "@/components/ResetPasswordModal";
 
 export default async function TeacherStudentsPage() {
   const me = await getCurrentProfile();
@@ -83,6 +83,11 @@ function StudentCard({ student }: { student: any }) {
           <span className="truncate">{student.email}</span>
         </div>
       </div>
+      <ResetPasswordModal
+        studentId={student.id}
+        studentName={student.full_name}
+        studentEmail={student.email}
+      />
     </li>
   );
 }

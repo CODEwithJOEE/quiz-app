@@ -1,12 +1,15 @@
 export const dynamic = "force-dynamic";
 
-import { Users, Shield, GraduationCap, Clock } from "lucide-react";
+import { Users, Shield, GraduationCap } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile } from "@/lib/auth";
 import CreateUserForm from "@/components/CreateUserForm";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
+import ResetPasswordModal from "@/components/ResetPasswordModal";
 
 export default async function AdminUsersPage() {
+  const me = await getCurrentProfile();
   const supabase = await createClient();
 
   const { data: users } = await supabase
@@ -14,7 +17,6 @@ export default async function AdminUsersPage() {
     .select("id, email, full_name, role, created_at")
     .order("created_at", { ascending: false });
 
-  // Group by role
   const teachers = (users ?? []).filter((u) => u.role === "teacher");
   const students = (users ?? []).filter((u) => u.role === "student");
   const admins = (users ?? []).filter((u) => u.role === "super_admin");
@@ -71,7 +73,7 @@ export default async function AdminUsersPage() {
         ) : (
           <ul className="space-y-2">
             {users.map((u) => (
-              <UserRow key={u.id} user={u} />
+              <UserRow key={u.id} user={u} currentUserId={me?.id ?? ""} />
             ))}
           </ul>
         )}
@@ -111,7 +113,13 @@ function StatCard({
   );
 }
 
-function UserRow({ user }: { user: any }) {
+function UserRow({
+  user,
+  currentUserId,
+}: {
+  user: any;
+  currentUserId: string;
+}) {
   const roleConfig = {
     super_admin: {
       label: "Admin",
@@ -143,6 +151,8 @@ function UserRow({ user }: { user: any }) {
     .slice(0, 2)
     .toUpperCase();
 
+  const showReset = user.role !== "super_admin" && user.id !== currentUserId;
+
   return (
     <li className="flex items-center gap-3 p-3 bg-card rounded-2xl border border-border shadow-sm">
       <div
@@ -158,6 +168,13 @@ function UserRow({ user }: { user: any }) {
         <Icon className="w-3 h-3" />
         {roleConfig.label}
       </Badge>
+      {showReset && (
+        <ResetPasswordModal
+          studentId={user.id}
+          studentName={user.full_name}
+          studentEmail={user.email}
+        />
+      )}
     </li>
   );
 }
