@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth";
+import type { ParsedQuestion } from "@/lib/quiz/parseExcel";
 
 export async function addQuestion(
   quizId: string,
@@ -95,15 +96,7 @@ export async function deleteQuestion(questionId: string, quizId: string) {
 
 export async function bulkInsertQuestions(
   quizId: string,
-  parsed: {
-    question_text: string;
-    points: number;
-    options: {
-      option_text: string;
-      is_correct: boolean;
-      order_index: number;
-    }[];
-  }[],
+  parsed: ParsedQuestion[],
 ) {
   const me = await getCurrentProfile();
   if (!me || me.role !== "teacher") return { error: "Forbidden" };
@@ -124,29 +117,47 @@ export async function bulkInsertQuestions(
   let inserted = 0;
 
   for (const q of parsed) {
+    // Determine question type (default to multiple_choice for old format)
+    const questionType = q.question_type ?? "multiple_choice";
+
     const { data: question, error } = await supabase
       .from("questions")
       .insert({
         quiz_id: quizId,
         question_text: q.question_text,
-        question_type: "multiple_choice",
+        question_type: questionType,
         points: q.points,
         order_index: nextOrder++,
+        // Essay fields (null for MCQ)
+        word_limit_min:
+          questionType === "essay" ? (q.word_limit_min ?? null) : null,
+        word_limit_max:
+          questionType === "essay" ? (q.word_limit_max ?? null) : null,
+        rubric: questionType === "essay" ? (q.rubric ?? null) : null,
       })
       .select("id")
       .single();
 
     if (error) continue;
 
-    const optionRows = q.options.map((o) => ({
-      question_id: question.id,
-      option_text: o.option_text,
-      is_correct: o.is_correct,
-      order_index: o.order_index,
-    }));
+    // Insert options (MCQ only)
+    if (questionType === "multiple_choice" && q.options.length > 0) {
+      const optionRows = q.options.map((o) => ({
+        question_id: question.id,
+        option_text: o.option_text,
+        is_correct: o.is_correct,
+        order_index: o.order_index,
+      }));
 
-    const { error: optErr } = await supabase.from("options").insert(optionRows);
-    if (!optErr) inserted++;
+      const { error: optErr } = await supabase
+        .from("options")
+        .insert(optionRows);
+
+      if (!optErr) inserted++;
+    } else {
+      // Essay — no options, count as inserted
+      inserted++;
+    }
   }
 
   revalidatePath(`/quiz/${quizId}`);

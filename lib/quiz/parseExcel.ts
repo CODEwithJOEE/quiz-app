@@ -2,8 +2,16 @@ import * as XLSX from "xlsx";
 
 export type ParsedQuestion = {
   question_text: string;
+  question_type: "multiple_choice" | "essay";
   points: number;
-  options: { option_text: string; is_correct: boolean; order_index: number }[];
+  options: {
+    option_text: string;
+    is_correct: boolean;
+    order_index: number;
+  }[];
+  word_limit_min?: number | null;
+  word_limit_max?: number | null;
+  rubric?: string | null;
 };
 
 export function parseQuizExcel(file: File): Promise<ParsedQuestion[]> {
@@ -22,20 +30,54 @@ export function parseQuizExcel(file: File): Promise<ParsedQuestion[]> {
           return;
         }
 
-        // Required columns
-        const required = ["question", "option_a", "option_b", "correct"];
         const firstRow = rows[0];
-        const missing = required.filter((c) => !(c in firstRow));
-        if (missing.length > 0) {
-          reject(
-            new Error(
-              `Missing columns: ${missing.join(", ")}. Check the template.`,
-            ),
-          );
+        if (!("question" in firstRow)) {
+          reject(new Error("Missing 'question' column. Check the template."));
           return;
         }
 
+        // Check if new format has question_type
+        const hasTypeColumn = "question_type" in firstRow;
+
         const parsed: ParsedQuestion[] = rows.map((r, i) => {
+          // Determine question type
+          const type = hasTypeColumn
+            ? String(r.question_type ?? "multiple_choice")
+                .trim()
+                .toLowerCase()
+            : "multiple_choice";
+
+          if (!["multiple_choice", "essay"].includes(type)) {
+            throw new Error(
+              `Row ${i + 2}: Invalid question_type "${r.question_type}". Use "multiple_choice" or "essay".`,
+            );
+          }
+
+          const questionText = String(r.question ?? "").trim();
+          if (!questionText) {
+            throw new Error(`Row ${i + 2}: Question text is required.`);
+          }
+
+          const points = Number(r.points) || 1;
+
+          if (type === "essay") {
+            // Essay parsing
+            return {
+              question_text: questionText,
+              question_type: "essay",
+              points,
+              options: [],
+              word_limit_min: r.word_limit_min
+                ? Number(r.word_limit_min)
+                : null,
+              word_limit_max: r.word_limit_max
+                ? Number(r.word_limit_max)
+                : null,
+              rubric: String(r.rubric ?? "").trim() || null,
+            };
+          }
+
+          // MCQ parsing (existing logic)
           const correctLetter = String(r.correct ?? "")
             .trim()
             .toUpperCase();
@@ -71,8 +113,9 @@ export function parseQuizExcel(file: File): Promise<ParsedQuestion[]> {
           }
 
           return {
-            question_text: String(r.question).trim(),
-            points: Number(r.points) || 1,
+            question_text: questionText,
+            question_type: "multiple_choice",
+            points,
             options: opts,
           };
         });

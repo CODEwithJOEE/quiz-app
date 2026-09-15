@@ -1,4 +1,5 @@
-question,option_a,option_b,option_c,option_d,correct,points
-What is 2+2?,3,4,5,6,B,1
-Capital of France?,London,Berlin,Paris,Rome,C,1
-Largest planet in the solar system?,Earth,Mars,Jupiter,Venus,C,1
+question_type,question,option_a,option_b,option_c,option_d,correct,points,word_limit_min,word_limit_max,rubric
+multiple_choice,What is 2 + 2?,3,4,5,6,B,1,,,
+multiple_choice,Capital of France?,London,Berlin,Paris,Rome,C,1,,,
+essay,Explain the water cycle in your own words.,,,,,20,50,300,"Content: 10pts, Grammar: 5pts"
+essay,Describe the importance of trees.,,,,,15,100,500,"Content: 10pts, Grammar: 5pts"

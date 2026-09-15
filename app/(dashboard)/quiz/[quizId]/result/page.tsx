@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { redirect, notFound } from "next/navigation";
+import Link from "next/link";
 import {
   PartyPopper,
   BookOpen,
@@ -8,11 +9,14 @@ import {
   TrendingUp,
   Target,
   Clock,
+  AlertTriangle,
+  ArrowLeft,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import BackButton from "./BackButton";
 
 export default async function ResultPage({
@@ -26,13 +30,44 @@ export default async function ResultPage({
 
   const supabase = await createClient();
 
-  const { data: quiz } = await supabase
+  const { data: quiz, error: quizError } = await supabase
     .from("quizzes")
-    .select("id, title, room_id, rooms(name)")
+    .select("id, title, room_id, status, rooms(id, name, teacher_id)")
     .eq("id", quizId)
     .single();
 
-  if (!quiz) notFound();
+  // Handle missing quiz gracefully instead of 404
+  if (!quiz) {
+    // Try fetching via attempt if student has one
+    const { data: attemptFallback } = await supabase
+      .from("attempts")
+      .select("id, quiz_id")
+      .eq("quiz_id", quizId)
+      .eq("student_id", me.id)
+      .maybeSingle();
+
+    if (attemptFallback) {
+      // Student has an attempt, but quiz is inaccessible
+      // Show a friendly message
+      return (
+        <Card className="p-6 text-center space-y-3">
+          <AlertTriangle className="w-8 h-8 text-amber-600 mx-auto" />
+          <p className="font-semibold">Quiz na-delete o hindi na accessible</p>
+          <p className="text-sm text-muted-foreground">
+            Kontakin ang teacher mo para sa iyong score.
+          </p>
+          <Link href="/rooms">
+            <Button variant="secondary" size="sm">
+              Back to Rooms
+            </Button>
+          </Link>
+        </Card>
+      );
+    }
+
+    // Truly missing
+    notFound();
+  }
 
   const { data: attempt } = await supabase
     .from("attempts")

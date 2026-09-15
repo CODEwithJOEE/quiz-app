@@ -154,6 +154,7 @@ export default function ExcelImport({ quizId }: { quizId: string }) {
         <p className="text-xs font-semibold">Required columns:</p>
         <div className="flex flex-wrap gap-1">
           {[
+            "question_type",
             "question",
             "option_a",
             "option_b",
@@ -161,6 +162,9 @@ export default function ExcelImport({ quizId }: { quizId: string }) {
             "option_d",
             "correct",
             "points",
+            "word_limit_min",
+            "word_limit_max",
+            "rubric",
           ].map((col) => (
             <code
               key={col}
@@ -170,11 +174,22 @@ export default function ExcelImport({ quizId }: { quizId: string }) {
             </code>
           ))}
         </div>
-        <p className="text-xs text-muted-foreground">
-          <code className="text-[10px]">correct</code> = A / B / C / D.
-          <code className="text-[10px] ml-1">option_c</code> and{" "}
-          <code className="text-[10px]">option_d</code> optional.
-        </p>
+        <div className="text-xs text-muted-foreground space-y-1">
+          <p>
+            <code className="text-[10px]">correct</code> = A / B / C / D (for
+            MCQ).
+          </p>
+          <p>
+            <code className="text-[10px]">question_type</code> ={" "}
+            <code className="text-[10px]">multiple_choice</code> or{" "}
+            <code className="text-[10px]">essay</code>.
+          </p>
+          <p>
+            Essay: use <code className="text-[10px]">word_limit_min</code>,{" "}
+            <code className="text-[10px]">word_limit_max</code>,{" "}
+            <code className="text-[10px]">rubric</code>.
+          </p>
+        </div>
       </div>
     </Card>
   );

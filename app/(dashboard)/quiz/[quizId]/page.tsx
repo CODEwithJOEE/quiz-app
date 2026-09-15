@@ -1,8 +1,12 @@
 export const dynamic = "force-dynamic";
 
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { Clock, Lock, AlertTriangle, ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 import QuizEditor from "./QuizEditor";
 import QuizStudentView from "./QuizStudentView";
 
@@ -29,7 +33,29 @@ export default async function QuizPage({
     .eq("id", quizId)
     .single();
 
-  if (!quiz) notFound();
+  if (!quiz) {
+    // Instead of 404, show a friendly message
+    return (
+      <div className="space-y-4">
+        <Card className="p-6 text-center space-y-3">
+          <div className="w-16 h-16 rounded-3xl bg-muted text-muted-foreground flex items-center justify-center mx-auto">
+            <AlertTriangle className="w-8 h-8" />
+          </div>
+          <p className="font-semibold">Hindi ma-load ang quiz</p>
+          <p className="text-sm text-muted-foreground">
+            Baka na-delete na ito ng teacher mo. Kontakin siya para sa
+            clarification.
+          </p>
+          <Link href="/rooms">
+            <Button variant="secondary" size="sm" className="mt-2">
+              <ArrowLeft className="w-4 h-4" />
+              Back to Rooms
+            </Button>
+          </Link>
+        </Card>
+      </div>
+    );
+  }
 
   const isOwner = (quiz as any).rooms?.teacher_id === me.id;
 
@@ -57,12 +83,45 @@ export default async function QuizPage({
     return <QuizEditor quiz={{ ...quiz, questions: sorted }} isOwner={true} />;
   }
 
-  // STUDENT: quiz not published
-  if (quiz.status !== "published") {
+  // STUDENT: quiz not published OR closed
+  if (quiz.status === "draft") {
     return (
-      <div className="bg-card p-4 rounded-2xl shadow-sm text-sm text-muted-foreground">
-        Hindi pa available ang quiz na ito.
-      </div>
+      <Card className="p-6 text-center space-y-3">
+        <div className="w-16 h-16 rounded-3xl bg-muted text-muted-foreground flex items-center justify-center mx-auto">
+          <Clock className="w-8 h-8" />
+        </div>
+        <div>
+          <p className="font-semibold">Hindi pa available</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Hintayin ang teacher mo na i-publish ang quiz na ito.
+          </p>
+        </div>
+      </Card>
+    );
+  }
+
+  if (quiz.status === "closed") {
+    return (
+      <Card className="p-6 text-center space-y-3">
+        <div className="w-16 h-16 rounded-3xl bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300 flex items-center justify-center mx-auto">
+          <Lock className="w-8 h-8" />
+        </div>
+        <div>
+          <p className="font-semibold text-red-800 dark:text-red-300">
+            Sarado na ang quiz na ito
+          </p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Hindi na tumatanggap ng bagong attempts. Kontakin ang teacher mo
+            kung may tanong.
+          </p>
+        </div>
+        <Link href={`/rooms/${quiz.room_id}`}>
+          <Button variant="secondary" size="sm" className="mt-2">
+            <ArrowLeft className="w-4 h-4" />
+            Back to Room
+          </Button>
+        </Link>
+      </Card>
     );
   }
 
