@@ -50,12 +50,20 @@ export default function InviteStudentsPanel({
         s.full_name.toLowerCase().includes(q) ||
         s.email.toLowerCase().includes(q);
 
-      const matchesSection =
-        !sectionFilter ||
-        (s.grade_level ?? "")
-          .toLowerCase()
-          .includes(sectionFilter.toLowerCase()) ||
-        (s.section ?? "").toLowerCase().includes(sectionFilter.toLowerCase());
+      let matchesSection = true;
+      if (sectionFilter) {
+        const [filterGrade, filterSection] = sectionFilter
+          .split(" - ")
+          .map((p) => p.trim().toLowerCase());
+
+        const studentGrade = (s.grade_level ?? "").trim().toLowerCase();
+        const studentSection = (s.section ?? "").trim().toLowerCase();
+
+        const matchesGrade = !filterGrade || studentGrade === filterGrade;
+        const sectionMatch = !filterSection || studentSection === filterSection;
+
+        matchesSection = matchesGrade && sectionMatch;
+      }
 
       return matchesSearch && matchesSection;
     });
