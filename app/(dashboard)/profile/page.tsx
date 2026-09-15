@@ -18,7 +18,9 @@ import {
   HelpCircle,
   History as HistoryIcon,
   ArrowRight,
+  Camera,
 } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "@/components/LogoutButton";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Card } from "@/components/ui/Card";
@@ -26,6 +28,8 @@ import { Badge } from "@/components/ui/Badge";
 import EditNameModal from "./EditNameModal";
 import ChangePasswordModal from "./ChangePasswordModal";
 import { getProfileStats } from "./actions";
+import Avatar from "@/components/Avatar";
+import AvatarUpload from "./AvatarUpload";
 
 const APP_VERSION = "1.0.0";
 
@@ -54,6 +58,16 @@ export default async function ProfilePage() {
     .slice(0, 2)
     .toUpperCase();
 
+  // Get signed URL for avatar
+  let signedAvatarUrl: string | null = null;
+  if (me.avatar_url) {
+    const supabase = await createClient();
+    const { data } = await supabase.storage
+      .from("avatars")
+      .createSignedUrl(me.avatar_url, 3600);
+    signedAvatarUrl = data?.signedUrl ?? null;
+  }
+
   return (
     <div className="space-y-5">
       <h1 className="text-xl font-bold">Profile</h1>
@@ -61,9 +75,12 @@ export default async function ProfilePage() {
       {/* Profile card */}
       <Card className="p-6">
         <div className="flex flex-col items-center text-center space-y-3">
-          <div className="w-20 h-20 rounded-full bg-brand text-brand-foreground flex items-center justify-center text-2xl font-bold shadow-lg shadow-brand/20">
-            {initials}
-          </div>
+          <Avatar
+            url={signedAvatarUrl}
+            initials={initials}
+            size="xl"
+            pending={me.avatar_pending}
+          />
           <div className="space-y-1">
             <p className="font-semibold text-lg">{me.full_name}</p>
             <Badge variant={roleVariant[me.role]}>
@@ -71,7 +88,15 @@ export default async function ProfilePage() {
               {roleLabel[me.role]}
             </Badge>
           </div>
-          <EditNameModal currentName={me.full_name} />
+          <div className="flex flex-col items-center gap-1">
+            <EditNameModal currentName={me.full_name} />
+            <AvatarUpload
+              currentUrl={me.avatar_url}
+              pending={me.avatar_pending}
+              rejectedReason={me.avatar_rejected_reason}
+              role={me.role}
+            />
+          </div>
         </div>
       </Card>
 
@@ -135,6 +160,29 @@ export default async function ProfilePage() {
             )}
           </div>
         </Card>
+      )}
+
+      {/* Student Photos — teacher only */}
+      {me.role === "teacher" && (
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 px-1">
+            <Camera className="w-4 h-4 text-brand" />
+            <h2 className="font-semibold text-sm">Student Photos</h2>
+          </div>
+          <Link href="/pending-photos" className="block">
+            <Card className="p-4 hover:border-brand/40 transition-colors">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium">Review Pending Photos</p>
+                  <p className="text-xs text-muted-foreground">
+                    Approve o reject student photos
+                  </p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-muted-foreground" />
+              </div>
+            </Card>
+          </Link>
+        </div>
       )}
 
       {/* My Progress — Student only */}

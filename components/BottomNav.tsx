@@ -11,6 +11,7 @@ import {
   User,
   type LucideIcon,
 } from "lucide-react";
+import { Camera } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 const ICONS: Record<string, LucideIcon> = {
@@ -20,6 +21,7 @@ const ICONS: Record<string, LucideIcon> = {
   graduation: GraduationCap,
   settings: Settings,
   user: User,
+  camera: Camera,
 };
 
 export type NavItem = {

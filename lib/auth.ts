@@ -8,6 +8,9 @@ export type Profile = {
   created_by: string | null;
   grade_level: string | null;
   section: string | null;
+  avatar_url: string | null;
+  avatar_pending: boolean;
+  avatar_rejected_reason: string | null;
 };
 
 export async function getCurrentProfile(): Promise<Profile | null> {
@@ -19,7 +22,9 @@ export async function getCurrentProfile(): Promise<Profile | null> {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, email, full_name, role, created_by, grade_level, section")
+    .select(
+      "id, email, full_name, role, created_by, grade_level, section, avatar_url, avatar_pending, avatar_rejected_reason",
+    )
     .eq("id", user.id)
     .single();
 
