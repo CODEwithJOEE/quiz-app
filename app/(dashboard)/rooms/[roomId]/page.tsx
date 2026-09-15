@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth";
+import { attachSignedAvatarUrls } from "@/lib/avatars";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -44,26 +45,34 @@ export default async function RoomDetailPage({
   if (!room) notFound();
   const isOwner = room.teacher_id === me.id;
 
+  // =====================================================
+  // FETCH MEMBERS
+  // =====================================================
   const { data: members } = await supabase
     .from("room_members")
     .select(
       `
-    id, status, invited_at, joined_at,
-    profiles:student_id ( id, full_name, email, grade_level, section )
-  `,
+      id, status, invited_at, joined_at,
+      profiles:student_id ( id, full_name, email, grade_level, section, avatar_url, avatar_pending )
+    `,
     )
     .eq("room_id", roomId)
     .order("invited_at", { ascending: false });
 
   const memberIds = new Set((members ?? []).map((m: any) => m.profiles?.id));
 
+  // =====================================================
+  // FETCH AVAILABLE STUDENTS (for teacher)
+  // =====================================================
   let myStudents: any[] = [];
   let allStudents: any[] = [];
 
   if (isOwner) {
     const { data: ownStudents } = await supabase
       .from("profiles")
-      .select("id, full_name, email, grade_level, section, created_by")
+      .select(
+        "id, full_name, email, grade_level, section, created_by, avatar_url, avatar_pending",
+      )
       .eq("role", "student")
       .eq("created_by", me.id)
       .order("full_name");
@@ -72,16 +81,63 @@ export default async function RoomDetailPage({
 
     const { data: everyone } = await supabase
       .from("profiles")
-      .select("id, full_name, email, grade_level, section, created_by")
+      .select(
+        "id, full_name, email, grade_level, section, created_by, avatar_url, avatar_pending",
+      )
       .eq("role", "student")
       .order("full_name");
 
     allStudents = (everyone ?? []).filter((s: any) => !memberIds.has(s.id));
   }
 
-  const accepted = (members ?? []).filter((m: any) => m.status === "accepted");
-  const pending = (members ?? []).filter((m: any) => m.status === "pending");
+  // =====================================================
+  // BATCH GENERATE SIGNED AVATAR URLs
+  // =====================================================
+  const allProfiles = [
+    ...(members ?? []).map((m: any) => m.profiles).filter(Boolean),
+    ...myStudents,
+    ...allStudents,
+  ];
 
+  // Dedupe by id, then generate signed URLs
+  const uniqueProfiles = Array.from(
+    new Map(allProfiles.map((p: any) => [p.id, p])).values(),
+  );
+  const profilesWithUrls = await attachSignedAvatarUrls(uniqueProfiles);
+
+  // Build URL lookup map
+  const urlMap = new Map<string, string | null>(
+    profilesWithUrls.map((p: any) => [p.id, p.signedAvatarUrl]),
+  );
+
+  // Attach signed URLs to members
+  const membersWithUrls = (members ?? []).map((m: any) => ({
+    ...m,
+    profiles: m.profiles
+      ? { ...m.profiles, signedAvatarUrl: urlMap.get(m.profiles.id) ?? null }
+      : null,
+  }));
+
+  // Attach signed URLs to available students (for invite panel)
+  const myStudentsWithUrls = myStudents.map((s: any) => ({
+    ...s,
+    signedAvatarUrl: urlMap.get(s.id) ?? null,
+  }));
+
+  const allStudentsWithUrls = allStudents.map((s: any) => ({
+    ...s,
+    signedAvatarUrl: urlMap.get(s.id) ?? null,
+  }));
+
+  // =====================================================
+  // DERIVE ACCEPTED + PENDING (with signed URLs)
+  // =====================================================
+  const accepted = membersWithUrls.filter((m: any) => m.status === "accepted");
+  const pending = membersWithUrls.filter((m: any) => m.status === "pending");
+
+  // =====================================================
+  // FETCH QUIZZES
+  // =====================================================
   const { data: quizzes } = await supabase
     .from("quizzes")
     .select("id, title, description, status, created_at, published_at")
@@ -199,13 +255,17 @@ export default async function RoomDetailPage({
           <Collapsible
             title="Invite Students"
             icon={<UserPlus className="w-4 h-4 text-brand" />}
-            count={myStudents.length + allStudents.length}
-            badge={<Badge>{myStudents.length + allStudents.length}</Badge>}
+            count={myStudentsWithUrls.length + allStudentsWithUrls.length}
+            badge={
+              <Badge>
+                {myStudentsWithUrls.length + allStudentsWithUrls.length}
+              </Badge>
+            }
           >
             <InviteStudentsPanel
               roomId={room.id}
-              availableStudents={myStudents}
-              allStudents={allStudents}
+              availableStudents={myStudentsWithUrls}
+              allStudents={allStudentsWithUrls}
               currentUserId={me.id}
             />
           </Collapsible>

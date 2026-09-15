@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import RemoveStudentModal from "./RemoveStudentModal";
 import BulkRemoveModal from "./BulkRemoveModal";
 import Collapsible from "@/components/ui/Collapsible";
+import Avatar from "@/components/Avatar";
 
 type Member = {
   id: string;
@@ -154,9 +155,12 @@ export default function RoomStudentsSection({
                         )}
                       </button>
 
-                      <div className="w-9 h-9 rounded-full bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300 flex items-center justify-center text-xs font-bold shrink-0">
-                        {initials}
-                      </div>
+                      <Avatar
+                        url={student.signedAvatarUrl}
+                        initials={initials}
+                        size="sm"
+                        pending={false}
+                      />
 
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">
@@ -262,9 +266,12 @@ export default function RoomStudentsSection({
                         )}
                       </button>
 
-                      <div className="w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 flex items-center justify-center text-xs font-bold shrink-0">
-                        {initials}
-                      </div>
+                      <Avatar
+                        url={student.signedAvatarUrl}
+                        initials={initials}
+                        size="sm"
+                        pending={true}
+                      />
 
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">

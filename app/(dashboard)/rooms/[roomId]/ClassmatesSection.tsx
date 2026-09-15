@@ -5,6 +5,7 @@ import { Users, Search } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import Collapsible from "@/components/ui/Collapsible";
+import Avatar from "@/components/Avatar";
 
 type Classmate = {
   id: string;
@@ -12,6 +13,9 @@ type Classmate = {
   email: string;
   grade_level?: string | null;
   section?: string | null;
+  avatar_url?: string | null;
+  avatar_pending?: boolean | null;
+  signedAvatarUrl?: string | null;
 };
 
 export default function ClassmatesSection({
@@ -94,9 +98,12 @@ function ClassmateRow({ classmate }: { classmate: Classmate }) {
 
   return (
     <li className="flex items-center gap-3 p-3 bg-card rounded-2xl border border-border shadow-sm">
-      <div className="w-9 h-9 rounded-full bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300 flex items-center justify-center text-xs font-bold shrink-0">
-        {initials}
-      </div>
+      <Avatar
+        url={classmate.signedAvatarUrl}
+        initials={initials}
+        size="sm"
+        pending={false}
+      />
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium truncate">{classmate.full_name}</p>
         <p className="text-xs text-muted-foreground truncate">

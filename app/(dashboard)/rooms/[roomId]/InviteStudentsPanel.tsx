@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Badge } from "@/components/ui/Badge";
+import Avatar from "@/components/Avatar";
 
 type Student = {
   id: string;
@@ -16,6 +17,9 @@ type Student = {
   grade_level?: string | null;
   section?: string | null;
   created_by?: string;
+  avatar_url?: string | null;
+  avatar_pending?: boolean | null;
+  signedAvatarUrl?: string | null;
 };
 
 export default function InviteStudentsPanel({
@@ -302,14 +306,18 @@ export default function InviteStudentsPanel({
                       : "hover:bg-muted/50"
                   }`}
                 >
-                  <div
-                    className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-colors ${
-                      isSelected
-                        ? "bg-blue-600 text-white"
-                        : "bg-muted text-muted-foreground"
-                    }`}
-                  >
-                    {initials}
+                  <div className="relative shrink-0">
+                    <Avatar
+                      url={s.signedAvatarUrl}
+                      initials={initials}
+                      size="sm"
+                      pending={s.avatar_pending ?? false}
+                    />
+                    {isSelected && (
+                      <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-blue-600 text-white flex items-center justify-center ring-2 ring-card">
+                        <Check className="w-2.5 h-2.5" />
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex-1 min-w-0">

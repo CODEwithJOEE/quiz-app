@@ -1,15 +1,14 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Link from "next/link";
 import { Search, Filter, Mail, Users, GraduationCap } from "lucide-react";
-import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import Collapsible from "@/components/ui/Collapsible";
 import ResetPasswordModal from "@/components/ResetPasswordModal";
 import DeleteStudentModal from "./DeleteStudentModal";
 import PendingDeletionCard from "./PendingDeletionCard";
+import Avatar from "@/components/Avatar";
 
 type Student = {
   id: string;
@@ -18,6 +17,9 @@ type Student = {
   grade_level?: string | null;
   section?: string | null;
   created_at: string;
+  avatar_url?: string | null;
+  avatar_pending?: boolean | null;
+  signedAvatarUrl?: string | null; // ← ADD
   deletion_scheduled_for?: string | null;
 };
 
@@ -222,6 +224,7 @@ export default function StudentsList({
 // Student Row
 // =====================================================
 function StudentRow({ student }: { student: Student }) {
+  if (!student) return null;
   const initials = student.full_name
     .split(" ")
     .map((w: string) => w[0])
@@ -231,9 +234,12 @@ function StudentRow({ student }: { student: Student }) {
 
   return (
     <li className="flex items-center gap-3 p-3 bg-card rounded-2xl border border-border shadow-sm">
-      <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300 flex items-center justify-center font-bold text-xs shrink-0">
-        {initials}
-      </div>
+      <Avatar
+        url={student.signedAvatarUrl}
+        initials={initials}
+        size="sm"
+        pending={student.avatar_pending ?? false}
+      />
 
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium truncate">{student.full_name}</p>

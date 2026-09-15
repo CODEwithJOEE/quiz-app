@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth";
+import { attachSignedAvatarUrls } from "@/lib/avatars";
 import CreateUserForm from "@/components/CreateUserForm";
 import BulkImportModal from "./BulkImportModal";
 import StudentsList from "./StudentsList";
@@ -17,15 +18,17 @@ export default async function TeacherStudentsPage() {
   const { data: students } = await supabase
     .from("profiles")
     .select(
-      "id, email, full_name, created_at, grade_level, section, deletion_scheduled_for",
+      "id, email, full_name, created_at, grade_level, section, avatar_url, avatar_pending, deletion_scheduled_for",
     )
     .eq("role", "student")
     .eq("created_by", me.id)
     .order("created_at", { ascending: false });
 
-  const list = students ?? [];
-  const activeStudents = list.filter((s) => !s.deletion_scheduled_for);
-  const pendingDeletion = list.filter((s) => s.deletion_scheduled_for);
+  // ✅ Generate signed URLs
+  const withAvatars = await attachSignedAvatarUrls(students ?? []);
+
+  const activeStudents = withAvatars.filter((s) => !s.deletion_scheduled_for);
+  const pendingDeletion = withAvatars.filter((s) => s.deletion_scheduled_for);
 
   return (
     <div className="space-y-5">
@@ -45,7 +48,7 @@ export default async function TeacherStudentsPage() {
       {/* Create form */}
       <CreateUserForm allowedRoles={["student"]} />
 
-      {/* Students list (collapsible + search + filter) */}
+      {/* Students list */}
       <StudentsList
         activeStudents={activeStudents}
         pendingDeletion={pendingDeletion}
