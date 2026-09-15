@@ -192,7 +192,6 @@ export async function submitAttempt(
 
   const supabase = await createClient();
 
-  // Fetch attempt + verify
   const { data: attempt } = await supabase
     .from("attempts")
     .select("id, student_id, status, quiz_id, total_points")
@@ -200,39 +199,49 @@ export async function submitAttempt(
     .single();
 
   if (!attempt) return { error: "Attempt not found" };
-
-  // Students can only submit own; teacher cannot force (yet)
   if (me.role === "student" && attempt.student_id !== me.id)
     return { error: "Forbidden" };
-
   if (attempt.status !== "in_progress") return { ok: true, alreadyDone: true };
 
-  // Compute score
+  // Compute score — MCQ lang auto-graded
   const { data: answers } = await supabase
     .from("answers")
     .select(
       `
-      id, question_id, selected_option_id,
-      questions ( points ),
+      id, question_id, selected_option_id, answer_text,
+      questions ( points, question_type ),
       options:selected_option_id ( is_correct )
     `,
     )
     .eq("attempt_id", attemptId);
 
   let score = 0;
-  for (const a of answers ?? []) {
-    const isCorrect = (a as any).options?.is_correct === true;
-    const points = (a as any).questions?.points ?? 0;
-    if (isCorrect) score += points;
+  let hasEssay = false;
 
-    // update the answer row's is_correct
-    await supabase
-      .from("answers")
-      .update({ is_correct: isCorrect })
-      .eq("id", a.id);
+  for (const a of answers ?? []) {
+    const qType = (a as any).questions?.question_type ?? "multiple_choice";
+    const points = (a as any).questions?.points ?? 0;
+
+    if (qType === "essay") {
+      hasEssay = true;
+      // Hindi pa auto-grade — set is_correct to null
+      await supabase
+        .from("answers")
+        .update({ is_correct: null })
+        .eq("id", a.id);
+    } else {
+      const isCorrect = (a as any).options?.is_correct === true;
+      if (isCorrect) score += points;
+      await supabase
+        .from("answers")
+        .update({ is_correct: isCorrect })
+        .eq("id", a.id);
+    }
   }
 
-  // Update attempt
+  // Grading status
+  const gradingStatus = hasEssay ? "pending" : "auto";
+
   const { error } = await supabase
     .from("attempts")
     .update({
@@ -241,13 +250,19 @@ export async function submitAttempt(
       submitted_at: new Date().toISOString(),
       termination_reason:
         reason === "terminated" ? "integrity_violation" : null,
+      grading_status: gradingStatus,
     })
     .eq("id", attemptId);
 
   if (error) return { error: error.message };
 
   revalidatePath(`/quiz/${attempt.quiz_id}`);
-  return { ok: true, score, total: attempt.total_points };
+  return {
+    ok: true,
+    score,
+    total: attempt.total_points,
+    gradingStatus,
+  };
 }
 
 // =====================================================
@@ -433,4 +448,43 @@ export async function teacherBulkTerminate(attemptIds: string[]) {
 
   revalidatePath(`/quiz/${attempts[0].quiz_id}/attempts`);
   return { ok: true, terminated: toTerminate.length };
+}
+// =====================================================
+// SAVE essay answer (autosave)
+// =====================================================
+export async function saveEssayAnswer(
+  attemptId: string,
+  questionId: string,
+  answerText: string,
+) {
+  const me = await getCurrentProfile();
+  if (!me || me.role !== "student") return { error: "Forbidden" };
+
+  const supabase = await createClient();
+
+  // Confirm attempt ownership + in_progress
+  const { data: attempt } = await supabase
+    .from("attempts")
+    .select("id, status")
+    .eq("id", attemptId)
+    .eq("student_id", me.id)
+    .single();
+
+  if (!attempt) return { error: "Attempt not found" };
+  if (attempt.status !== "in_progress")
+    return { error: "Attempt is no longer active" };
+
+  // Upsert essay answer
+  const { error } = await supabase.from("answers").upsert(
+    {
+      attempt_id: attemptId,
+      question_id: questionId,
+      answer_text: answerText,
+      answered_at: new Date().toISOString(),
+    },
+    { onConflict: "attempt_id,question_id" },
+  );
+
+  if (error) return { error: error.message };
+  return { ok: true };
 }

@@ -9,14 +9,24 @@ export async function addQuestion(
   questionText: string,
   options: { text: string; isCorrect: boolean }[],
   points = 1,
+  questionType: "multiple_choice" | "essay" = "multiple_choice",
+  extras?: {
+    wordLimitMin?: number | null;
+    wordLimitMax?: number | null;
+    rubric?: string | null;
+  },
 ) {
   const me = await getCurrentProfile();
   if (!me || me.role !== "teacher") return { error: "Forbidden" };
 
   if (!questionText.trim()) return { error: "Question text required" };
-  if (options.length < 2) return { error: "At least 2 options required" };
-  if (!options.some((o) => o.isCorrect))
-    return { error: "Mark one option as correct" };
+
+  // Validate based sa type
+  if (questionType === "multiple_choice") {
+    if (options.length < 2) return { error: "At least 2 options required" };
+    if (!options.some((o) => o.isCorrect))
+      return { error: "Mark one option as correct" };
+  }
 
   const supabase = await createClient();
 
@@ -31,29 +41,37 @@ export async function addQuestion(
   const nextOrder =
     existing?.[0]?.order_index != null ? existing[0].order_index + 1 : 0;
 
+  // Insert question
   const { data: question, error } = await supabase
     .from("questions")
     .insert({
       quiz_id: quizId,
       question_text: questionText,
-      question_type: "multiple_choice",
+      question_type: questionType,
       points,
       order_index: nextOrder,
+      word_limit_min: extras?.wordLimitMin ?? null,
+      word_limit_max: extras?.wordLimitMax ?? null,
+      rubric: extras?.rubric ?? null,
     })
     .select("id")
     .single();
 
   if (error) return { error: error.message };
 
-  const optionRows = options.map((o, i) => ({
-    question_id: question.id,
-    option_text: o.text,
-    is_correct: o.isCorrect,
-    order_index: i,
-  }));
+  // Insert options (MCQ lang)
+  if (questionType === "multiple_choice") {
+    const optionRows = options.map((o, i) => ({
+      question_id: question.id,
+      option_text: o.text,
+      is_correct: o.isCorrect,
+      order_index: i,
+    }));
 
-  const { error: optErr } = await supabase.from("options").insert(optionRows);
-  if (optErr) return { error: optErr.message };
+    const { error: optErr } = await supabase.from("options").insert(optionRows);
+
+    if (optErr) return { error: optErr.message };
+  }
 
   revalidatePath(`/quiz/${quizId}`);
   return { ok: true };

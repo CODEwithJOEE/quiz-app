@@ -26,7 +26,6 @@ import ExcelImport from "./ExcelImport";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { EmptyState } from "@/components/ui/EmptyState";
 import QuizStatusBadge from "@/components/QuizStatusBadge";
@@ -61,7 +60,58 @@ export default function QuizEditor({ quiz }: { quiz: any; isOwner: boolean }) {
     (s: number, q: Question) => s + q.points,
     0,
   );
+  // Sa taas ng form state, idagdag:
+  const [questionType, setQuestionType] = useState<"multiple_choice" | "essay">(
+    "multiple_choice",
+  );
+  const [wordLimitMin, setWordLimitMin] = useState<string>("");
+  const [wordLimitMax, setWordLimitMax] = useState<string>("");
+  const [rubric, setRubric] = useState<string>("");
 
+  // Sa handleAddQuestion, i-update:
+  function handleAddQuestion() {
+    setError(null);
+
+    if (questionType === "multiple_choice") {
+      const cleaned = opts.filter((o) => o.text.trim() !== "");
+      if (cleaned.length < 2) {
+        setError("Kailangan at least 2 options.");
+        return;
+      }
+      startTransition(async () => {
+        const res = await addQuestion(
+          quiz.id,
+          qText,
+          cleaned,
+          points,
+          "multiple_choice",
+        );
+        if (res?.error) {
+          setError(res.error);
+          return;
+        }
+        resetForm();
+        router.refresh();
+      });
+    } else {
+      // Essay
+      startTransition(async () => {
+        const res = await addQuestion(quiz.id, qText, [], points, "essay", {
+          wordLimitMin: wordLimitMin ? Number(wordLimitMin) : null,
+          wordLimitMax: wordLimitMax ? Number(wordLimitMax) : null,
+          rubric: rubric || null,
+        });
+        if (res?.error) {
+          setError(res.error);
+          return;
+        }
+        resetForm();
+        router.refresh();
+      });
+    }
+  }
+
+  // Reset form update:
   function resetForm() {
     setQText("");
     setOpts([
@@ -71,24 +121,10 @@ export default function QuizEditor({ quiz }: { quiz: any; isOwner: boolean }) {
       { text: "", isCorrect: false },
     ]);
     setPoints(1);
-  }
-
-  function handleAddQuestion() {
-    setError(null);
-    const cleaned = opts.filter((o) => o.text.trim() !== "");
-    if (cleaned.length < 2) {
-      setError("Kailangan at least 2 options.");
-      return;
-    }
-    startTransition(async () => {
-      const res = await addQuestion(quiz.id, qText, cleaned, points);
-      if (res?.error) {
-        setError(res.error);
-        return;
-      }
-      resetForm();
-      router.refresh();
-    });
+    setQuestionType("multiple_choice");
+    setWordLimitMin("");
+    setWordLimitMax("");
+    setRubric("");
   }
 
   function toggleCorrect(idx: number) {
@@ -244,6 +280,7 @@ export default function QuizEditor({ quiz }: { quiz: any; isOwner: boolean }) {
       {tab === "questions" && (
         <div className="space-y-4">
           {/* Add question form */}
+
           <Card className="p-5 space-y-4">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-brand text-brand-foreground flex items-center justify-center">
@@ -252,52 +289,134 @@ export default function QuizEditor({ quiz }: { quiz: any; isOwner: boolean }) {
               <h2 className="font-semibold text-sm">Add Question</h2>
             </div>
 
+            {/* Question Type Selector */}
+            <div className="flex gap-1 p-1 bg-muted rounded-xl">
+              <button
+                type="button"
+                onClick={() => setQuestionType("multiple_choice")}
+                className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  questionType === "multiple_choice"
+                    ? "bg-card shadow-sm text-foreground"
+                    : "text-muted-foreground"
+                }`}
+              >
+                Multiple Choice
+              </button>
+              <button
+                type="button"
+                onClick={() => setQuestionType("essay")}
+                className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  questionType === "essay"
+                    ? "bg-card shadow-sm text-foreground"
+                    : "text-muted-foreground"
+                }`}
+              >
+                Essay
+              </button>
+            </div>
+
+            {error && (
+              <p className="text-sm text-red-600 bg-red-50 p-2 rounded">
+                {error}
+              </p>
+            )}
+
             <Textarea
-              placeholder="Type your question here..."
-              rows={2}
+              placeholder={
+                questionType === "essay"
+                  ? "Essay prompt or question..."
+                  : "Type your question here..."
+              }
+              rows={3}
               value={qText}
               onChange={(e) => setQText(e.target.value)}
             />
 
-            <div className="space-y-2">
-              <p className="text-xs text-muted-foreground font-medium">
-                Options (click radio to mark correct answer)
-              </p>
-              {opts.map((o, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => toggleCorrect(i)}
-                    className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-                      o.isCorrect
-                        ? "bg-green-600 text-white"
-                        : "bg-muted text-muted-foreground hover:bg-border"
-                    }`}
-                  >
-                    {o.isCorrect ? (
-                      <Check className="w-4 h-4" />
-                    ) : (
-                      <span className="text-xs font-bold">
-                        {String.fromCharCode(65 + i)}
-                      </span>
-                    )}
-                  </button>
-                  <input
-                    placeholder={`Option ${String.fromCharCode(65 + i)}`}
-                    value={o.text}
-                    onChange={(e) =>
-                      setOpts((prev) =>
-                        prev.map((p, idx) =>
-                          idx === i ? { ...p, text: e.target.value } : p,
-                        ),
-                      )
-                    }
-                    className="flex-1 h-11 px-3.5 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-brand/40"
-                  />
-                </div>
-              ))}
-            </div>
+            {/* MCQ options */}
+            {questionType === "multiple_choice" && (
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground font-medium">
+                  Options (click radio to mark correct answer)
+                </p>
+                {opts.map((o, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => toggleCorrect(i)}
+                      className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                        o.isCorrect
+                          ? "bg-green-600 text-white"
+                          : "bg-muted text-muted-foreground hover:bg-border"
+                      }`}
+                    >
+                      {o.isCorrect ? (
+                        <Check className="w-4 h-4" />
+                      ) : (
+                        <span className="text-xs font-bold">
+                          {String.fromCharCode(65 + i)}
+                        </span>
+                      )}
+                    </button>
+                    <input
+                      placeholder={`Option ${String.fromCharCode(65 + i)}`}
+                      value={o.text}
+                      onChange={(e) =>
+                        setOpts((prev) =>
+                          prev.map((p, idx) =>
+                            idx === i ? { ...p, text: e.target.value } : p,
+                          ),
+                        )
+                      }
+                      className="flex-1 h-11 px-3.5 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-brand/40"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
 
+            {/* Essay fields */}
+            {questionType === "essay" && (
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground">
+                      Min Words
+                    </label>
+                    <input
+                      type="number"
+                      min={0}
+                      value={wordLimitMin}
+                      onChange={(e) => setWordLimitMin(e.target.value)}
+                      placeholder="Optional"
+                      className="w-full h-10 mt-1 px-3 rounded-xl border border-border bg-background text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground">
+                      Max Words
+                    </label>
+                    <input
+                      type="number"
+                      min={0}
+                      value={wordLimitMax}
+                      onChange={(e) => setWordLimitMax(e.target.value)}
+                      placeholder="Optional"
+                      className="w-full h-10 mt-1 px-3 rounded-xl border border-border bg-background text-sm"
+                    />
+                  </div>
+                </div>
+
+                <Textarea
+                  label="Rubric / Guidelines (optional)"
+                  placeholder="e.g. Content: 10pts, Grammar: 5pts, Structure: 5pts"
+                  rows={2}
+                  value={rubric}
+                  onChange={(e) => setRubric(e.target.value)}
+                />
+              </div>
+            )}
+
+            {/* Points */}
             <div className="flex items-center gap-3">
               <label className="text-sm font-medium shrink-0">Points:</label>
               <input
@@ -305,7 +424,7 @@ export default function QuizEditor({ quiz }: { quiz: any; isOwner: boolean }) {
                 min={1}
                 value={points}
                 onChange={(e) => setPoints(Number(e.target.value) || 1)}
-                className="w-20 h-10 px-3 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-brand/40"
+                className="w-20 h-10 px-3 rounded-xl border border-border bg-background text-sm"
               />
             </div>
 
@@ -319,7 +438,6 @@ export default function QuizEditor({ quiz }: { quiz: any; isOwner: boolean }) {
               {pending ? "Adding..." : "Add Question"}
             </Button>
           </Card>
-
           {/* Questions list */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
@@ -370,10 +488,12 @@ function QuestionCard({
   index,
   onDelete,
 }: {
-  question: Question;
+  question: any;
   index: number;
   onDelete: () => void;
 }) {
+  const isEssay = question.question_type === "essay";
+
   return (
     <li className="bg-card rounded-2xl border border-border shadow-sm p-4 space-y-3">
       <div className="flex justify-between items-start gap-2">
@@ -381,7 +501,15 @@ function QuestionCard({
           <div className="w-6 h-6 rounded-lg bg-brand text-brand-foreground text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
             {index + 1}
           </div>
-          <p className="font-medium text-sm">{question.question_text}</p>
+          <div className="flex-1 min-w-0">
+            <p className="font-medium text-sm">{question.question_text}</p>
+            {isEssay && (
+              <Badge variant="info" className="mt-1">
+                <FileText className="w-3 h-3" />
+                Essay
+              </Badge>
+            )}
+          </div>
         </div>
         <button
           onClick={onDelete}
@@ -392,24 +520,49 @@ function QuestionCard({
         </button>
       </div>
 
-      <ul className="space-y-1.5">
-        {question.options.map((o, oi) => (
-          <li
-            key={o.id}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
-              o.is_correct
-                ? "bg-green-50 dark:bg-green-950 text-green-800 dark:text-green-300 font-medium"
-                : "bg-muted text-muted-foreground"
-            }`}
-          >
-            <span className="text-xs font-bold w-4">
-              {String.fromCharCode(65 + oi)}
-            </span>
-            <span className="flex-1 truncate">{o.option_text}</span>
-            {o.is_correct && <Check className="w-3.5 h-3.5 shrink-0" />}
-          </li>
-        ))}
-      </ul>
+      {/* MCQ options */}
+      {!isEssay && (
+        <ul className="space-y-1.5">
+          {question.options.map((o: any, oi: number) => (
+            <li
+              key={o.id}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
+                o.is_correct
+                  ? "bg-green-50 dark:bg-green-950 text-green-800 dark:text-green-300 font-medium"
+                  : "bg-muted text-muted-foreground"
+              }`}
+            >
+              <span className="text-xs font-bold w-4">
+                {String.fromCharCode(65 + oi)}
+              </span>
+              <span className="flex-1 truncate">{o.option_text}</span>
+              {o.is_correct && <Check className="w-3.5 h-3.5 shrink-0" />}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Essay info */}
+      {isEssay && (
+        <div className="text-xs text-muted-foreground space-y-1">
+          {(question.word_limit_min || question.word_limit_max) && (
+            <p>
+              Word limit:{" "}
+              {question.word_limit_min ? `${question.word_limit_min} - ` : ""}
+              {question.word_limit_max ? `${question.word_limit_max}` : ""}{" "}
+              words
+            </p>
+          )}
+          {question.rubric && (
+            <p className="italic">
+              <b>Rubric:</b> {question.rubric}
+            </p>
+          )}
+          <p className="text-amber-600 dark:text-amber-400">
+            ⚠️ Manual grading required
+          </p>
+        </div>
+      )}
 
       <Badge variant="info">{question.points} pt(s)</Badge>
     </li>

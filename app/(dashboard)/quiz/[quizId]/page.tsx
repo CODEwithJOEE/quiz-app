@@ -37,9 +37,10 @@ export default async function QuizPage({
     .from("questions")
     .select(
       `
-      id, question_text, question_type, points, order_index,
-      options ( id, option_text, is_correct, order_index )
-    `,
+    id, question_text, question_type, points, order_index,
+    word_limit_min, word_limit_max, rubric,
+    options ( id, option_text, is_correct, order_index )
+  `,
     )
     .eq("quiz_id", quizId)
     .order("order_index", { ascending: true });
@@ -135,6 +136,10 @@ export default async function QuizPage({
           question_text: q.question_text,
           points: q.points,
           order_index: q.order_index,
+          question_type: q.question_type,
+          word_limit_min: q.word_limit_min,
+          word_limit_max: q.word_limit_max,
+          rubric: q.rubric,
           options: q.options.map((o: any) => ({
             id: o.id,
             option_text: o.option_text,

@@ -25,8 +25,8 @@ export default function InviteStudentsPanel({
   currentUserId,
 }: {
   roomId: string;
-  availableStudents: Student[]; // Own students (created by me)
-  allStudents: Student[]; // All students in system
+  availableStudents: Student[];
+  allStudents: Student[];
   currentUserId: string;
 }) {
   const router = useRouter();

@@ -7,6 +7,7 @@ import {
   ShieldX,
   TrendingUp,
   Target,
+  Clock,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth";
@@ -35,7 +36,9 @@ export default async function ResultPage({
 
   const { data: attempt } = await supabase
     .from("attempts")
-    .select("id, status, score, total_points, submitted_at, termination_reason")
+    .select(
+      "id, status, score, total_points, submitted_at, termination_reason, grading_status, teacher_feedback",
+    )
     .eq("quiz_id", quizId)
     .eq("student_id", me.id)
     .maybeSingle();
@@ -72,8 +75,31 @@ export default async function ResultPage({
         </p>
       </div>
 
-      {/* Terminated */}
-      {isTerminated ? (
+      {attempt.grading_status === "pending" ? (
+        // Pending grading
+        <Card className="p-6 text-center border-2 border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-amber-950/40">
+          <div className="w-16 h-16 rounded-3xl bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto mb-3">
+            <Clock className="w-8 h-8" />
+          </div>
+          <p className="font-bold text-amber-800 dark:text-amber-300 text-lg">
+            Pending Grading
+          </p>
+          <p className="text-xs text-amber-700 dark:text-amber-400 mt-1">
+            May essay questions na kailangan i-grade ng teacher mo.
+          </p>
+          <div className="mt-5 pt-5 border-t border-amber-200 dark:border-amber-900">
+            <p className="text-xs text-muted-foreground uppercase tracking-wide">
+              Current Score
+            </p>
+            <p className="text-2xl font-bold mt-1">
+              {attempt.score} / {attempt.total_points}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              (Essay points pending)
+            </p>
+          </div>
+        </Card>
+      ) : isTerminated ? (
         <Card className="p-6 border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/40 text-center">
           <div className="w-16 h-16 rounded-3xl bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400 flex items-center justify-center mx-auto mb-3">
             <ShieldX className="w-8 h-8" />

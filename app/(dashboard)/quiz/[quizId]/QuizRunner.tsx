@@ -13,6 +13,7 @@ import {
 import { useAntiCheat } from "@/lib/quiz/useAntiCheat";
 import {
   saveAnswer,
+  saveEssayAnswer as saveEssayAnswerAction,
   logIntegrityEvent,
   submitAttempt,
   terminateAttempt,
@@ -20,6 +21,8 @@ import {
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { Textarea } from "@/components/ui/Textarea";
+import { cn } from "@/lib/cn";
 
 type Option = { id: string; option_text: string; order_index: number };
 type Question = {
@@ -27,10 +30,21 @@ type Question = {
   question_text: string;
   points: number;
   order_index: number;
+  question_type: "multiple_choice" | "essay";
+  word_limit_min: number | null;
+  word_limit_max: number | null;
+  rubric: string | null;
   options: Option[];
 };
 
 const MAX_STRIKES = 3;
+
+function getWordCount(text: string): number {
+  return text
+    .trim()
+    .split(/\s+/)
+    .filter((w) => w.length > 0).length;
+}
 
 export default function QuizRunner({
   attemptId,
@@ -44,18 +58,24 @@ export default function QuizRunner({
   const router = useRouter();
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selected, setSelected] = useState<Record<string, string>>({});
+  const [essayAnswers, setEssayAnswers] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [warning, setWarning] = useState<{
     type: string;
     count: number;
   } | null>(null);
+
   const [timeLeft, setTimeLeft] = useState<number | null>(
     quiz.time_limit_minutes ? quiz.time_limit_minutes * 60 : null,
   );
   const terminatedRef = useRef(false);
 
   const current = questions[currentIdx];
-  const answeredCount = Object.keys(selected).length;
+
+  // Answered count = MCQs + non-empty essays
+  const answeredCount =
+    Object.keys(selected).length +
+    Object.values(essayAnswers).filter((a) => a.trim().length > 0).length;
 
   // ---------- Anti-cheat ----------
   const handleViolation = useCallback(
@@ -135,7 +155,6 @@ export default function QuizRunner({
   const isFirst = currentIdx === 0;
   const progressPercent = (answeredCount / questions.length) * 100;
 
-  // Timer color
   const timerUrgent = timeLeft !== null && timeLeft < 60;
   const mm =
     timeLeft !== null
@@ -171,7 +190,6 @@ export default function QuizRunner({
             )}
           </div>
 
-          {/* Progress bar */}
           <div className="mt-2 h-1.5 bg-muted rounded-full overflow-hidden">
             <div
               className="h-full bg-brand transition-all duration-300"
@@ -199,47 +217,105 @@ export default function QuizRunner({
       )}
 
       {/* Question card */}
-      <Card className="p-5">
-        <div className="flex items-start justify-between gap-3 mb-4">
+      <Card className="p-5 space-y-4">
+        {/* Question header */}
+        <div className="flex items-start justify-between gap-3">
           <p className="font-semibold text-base leading-relaxed flex-1">
             {current.question_text}
           </p>
           <Badge>{current.points} pt(s)</Badge>
         </div>
 
-        <div className="space-y-2">
-          {current.options.map((o, i) => {
-            const isSelected = selected[current.id] === o.id;
-            return (
-              <button
-                key={o.id}
-                onClick={() => pickOption(o.id)}
-                className={`w-full text-left px-4 py-3.5 rounded-2xl border-2 transition-all flex items-center gap-3 active:scale-[0.99] ${
-                  isSelected
-                    ? "border-brand bg-blue-50 dark:bg-blue-950 text-brand"
-                    : "border-border bg-card hover:border-muted-foreground/40"
-                }`}
+        {/* Answer area — essay or MCQ */}
+        {current.question_type === "essay" ? (
+          <div className="space-y-3">
+            {/* Word limit info */}
+            {(current.word_limit_min || current.word_limit_max) && (
+              <div className="text-xs text-muted-foreground bg-muted p-2 rounded-lg">
+                Word limit:{" "}
+                {current.word_limit_min ? `${current.word_limit_min} min` : ""}
+                {current.word_limit_min && current.word_limit_max ? " • " : ""}
+                {current.word_limit_max ? `${current.word_limit_max} max` : ""}
+              </div>
+            )}
+
+            {/* Rubric */}
+            {current.rubric && (
+              <div className="text-xs bg-blue-50 dark:bg-blue-950 text-blue-800 dark:text-blue-200 p-2 rounded-lg">
+                <b>Rubric:</b> {current.rubric}
+              </div>
+            )}
+
+            {/* Textarea */}
+            <Textarea
+              placeholder="Type your essay here..."
+              rows={8}
+              value={essayAnswers[current.id] ?? ""}
+              onChange={(e) => {
+                const text = e.target.value;
+                setEssayAnswers((prev) => ({ ...prev, [current.id]: text }));
+              }}
+              onBlur={() =>
+                saveEssayAnswerAction(
+                  attemptId,
+                  current.id,
+                  essayAnswers[current.id] ?? "",
+                )
+              }
+            />
+
+            {/* Word counter */}
+            <div className="flex items-center justify-between text-xs">
+              <span
+                className={cn(
+                  "text-muted-foreground",
+                  current.word_limit_min &&
+                    getWordCount(essayAnswers[current.id] ?? "") <
+                      current.word_limit_min &&
+                    "text-amber-600 dark:text-amber-400 font-medium",
+                )}
               >
-                <div
-                  className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 transition-colors ${
+                {getWordCount(essayAnswers[current.id] ?? "")} words
+                {current.word_limit_min && ` / min ${current.word_limit_min}`}
+                {current.word_limit_max && ` / max ${current.word_limit_max}`}
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {current.options.map((o, i) => {
+              const isSelected = selected[current.id] === o.id;
+              return (
+                <button
+                  key={o.id}
+                  onClick={() => pickOption(o.id)}
+                  className={`w-full text-left px-4 py-3.5 rounded-2xl border-2 transition-all flex items-center gap-3 active:scale-[0.99] ${
                     isSelected
-                      ? "bg-brand text-brand-foreground"
-                      : "bg-muted text-muted-foreground"
+                      ? "border-brand bg-blue-50 dark:bg-blue-950 text-brand"
+                      : "border-border bg-card hover:border-muted-foreground/40"
                   }`}
                 >
-                  {isSelected ? (
-                    <CheckCircle2 className="w-4 h-4" />
-                  ) : (
-                    String.fromCharCode(65 + i)
-                  )}
-                </div>
-                <span className="flex-1 text-sm font-medium">
-                  {o.option_text}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+                  <div
+                    className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 transition-colors ${
+                      isSelected
+                        ? "bg-brand text-brand-foreground"
+                        : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    {isSelected ? (
+                      <CheckCircle2 className="w-4 h-4" />
+                    ) : (
+                      String.fromCharCode(65 + i)
+                    )}
+                  </div>
+                  <span className="flex-1 text-sm font-medium">
+                    {o.option_text}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </Card>
 
       {/* Prev / Next */}
@@ -283,7 +359,10 @@ export default function QuizRunner({
         <div className="flex flex-wrap gap-1.5">
           {questions.map((q, i) => {
             const isCurrent = i === currentIdx;
-            const isAnswered = !!selected[q.id];
+            const isAnswered =
+              q.question_type === "essay"
+                ? (essayAnswers[q.id] ?? "").trim().length > 0
+                : !!selected[q.id];
             return (
               <button
                 key={q.id}

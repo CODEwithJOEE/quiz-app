@@ -7,8 +7,8 @@ export async function getQuizAttempts(quizId: string) {
     .from("attempts")
     .select(
       `
-      id, status, score, total_points, started_at, submitted_at,
-      termination_reason,
+      id, quiz_id, status, score, total_points, started_at, submitted_at,
+      termination_reason, grading_status,
       profiles:student_id ( id, full_name, email ),
       integrity_events ( id, event_type, occurred_at, metadata )
     `,

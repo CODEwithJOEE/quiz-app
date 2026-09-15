@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   ChevronDown,
   ChevronUp,
@@ -16,6 +17,8 @@ import {
   Save,
   Square,
   CheckSquare,
+  Check,
+  Award,
 } from "lucide-react";
 import {
   teacherTerminateAttempt,
@@ -152,6 +155,21 @@ export default function AttemptRow({
                 <StatusIcon className="w-3 h-3" />
                 {statusConfig.label}
               </span>
+
+              {/* Grading status badge */}
+              {attempt.grading_status === "pending" && (
+                <Badge variant="warning">
+                  <Clock className="w-3 h-3" />
+                  Ungraded
+                </Badge>
+              )}
+              {attempt.grading_status === "graded" && (
+                <Badge variant="success">
+                  <Check className="w-3 h-3" />
+                  Graded
+                </Badge>
+              )}
+
               {attempt.integrity_count > 0 && (
                 <Badge variant="warning">
                   <AlertTriangle className="w-3 h-3" />
@@ -275,7 +293,30 @@ export default function AttemptRow({
                 {pending ? "Terminating..." : "Force Terminate"}
               </Button>
             )}
+            {/* Grade button — for ungraded attempts */}
+            {attempt.grading_status === "pending" && (
+              <Link
+                href={`/quiz/${attempt.quiz_id}/attempts/${attempt.id}/grade`}
+              >
+                <Button variant="primary" className="w-full">
+                  <Award className="w-4 h-4" />
+                  Grade Now
+                </Button>
+              </Link>
+            )}
 
+            {attempt.grading_status === "graded" && (
+              <Link
+                href={`/quiz/${attempt.quiz_id}/attempts/${attempt.id}/grade`}
+              >
+                <Button variant="secondary" className="w-full">
+                  <Check className="w-4 h-4" />
+                  View / Edit Grade
+                </Button>
+              </Link>
+            )}
+
+            {/* Existing override score */}
             {attempt.status !== "in_progress" && (
               <div className="space-y-1.5">
                 <p className="text-xs text-muted-foreground font-medium">
