@@ -1,7 +1,7 @@
-export default function RoomsLoading() {
+export default function RoomsListLoading() {
   return (
     <div className="space-y-5 animate-pulse">
-      {/* Header with button */}
+      {/* Header with "+ New Room" button placeholder */}
       <div className="flex items-center justify-between">
         <div className="space-y-2">
           <div className="h-6 w-32 bg-muted rounded-lg" />
