@@ -82,7 +82,7 @@ export default async function HomePage() {
 
         {me.role === "super_admin" && (
           <QuickLink
-            href="/admin/users"
+            href={`/admin/users?from=${encodeURIComponent("/home")}`}
             icon={<Settings className="w-5 h-5" />}
             title="Manage Users"
             description="Create teachers & students"

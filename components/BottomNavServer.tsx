@@ -9,7 +9,7 @@ export default async function BottomNavServer() {
   const me = await getCurrentProfile();
   if (!me) return null;
 
-  // Fetch badge counts in parallel
+  // Fetch badge counts
   let homeBadge = 0;
   let roomsBadge = 0;
 
@@ -23,10 +23,16 @@ export default async function BottomNavServer() {
 
   const items: NavItem[] = [
     { href: "/home", label: "Home", icon: "home", badge: homeBadge },
-    { href: "/rooms", label: "Rooms", icon: "door", badge: roomsBadge },
   ];
 
+  // Rooms — for teachers and students only
   if (me.role === "teacher" || me.role === "student") {
+    items.push({
+      href: "/rooms",
+      label: "Rooms",
+      icon: "door",
+      badge: roomsBadge,
+    });
     items.push({ href: "/quiz", label: "Quiz", icon: "clipboard" });
   }
 
@@ -36,7 +42,11 @@ export default async function BottomNavServer() {
   }
 
   if (me.role === "super_admin") {
-    items.push({ href: "/admin/users", label: "Users", icon: "settings" });
+    items.push({
+      href: "/admin/dashboard",
+      label: "Dashboard",
+      icon: "settings",
+    });
   }
 
   items.push({ href: "/profile", label: "Profile", icon: "user" });

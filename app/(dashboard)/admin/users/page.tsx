@@ -6,12 +6,19 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth";
 import { attachSignedAvatarUrls } from "@/lib/avatars";
 import CreateUserForm from "@/components/CreateUserForm";
-import { Card } from "@/components/ui/Card";
+import BackButton from "@/components/BackButton";
 import UsersList from "./UsersList";
 
-export default async function AdminUsersPage() {
+export default async function AdminUsersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ from?: string }>;
+}) {
   const me = await getCurrentProfile();
   if (!me || me.role !== "super_admin") redirect("/home");
+
+  const { from } = await searchParams;
+  const backHref = from ? decodeURIComponent(from) : "/home";
 
   const supabase = await createClient();
 
@@ -22,27 +29,26 @@ export default async function AdminUsersPage() {
     )
     .order("created_at", { ascending: false });
 
-  // Generate signed avatars
   const usersWithAvatars = await attachSignedAvatarUrls(users ?? []);
-
-  // Filter active users (exclude pending deletion)
   const activeUsers = usersWithAvatars.filter(
     (u: any) => !u.deletion_scheduled_for,
   );
 
-  // Stats
   const teachers = activeUsers.filter((u) => u.role === "teacher");
   const students = activeUsers.filter((u) => u.role === "student");
   const admins = activeUsers.filter((u) => u.role === "super_admin");
 
   return (
     <div className="space-y-5">
-      {/* Header */}
-      <div>
-        <h1 className="text-xl font-bold">User Management</h1>
-        <p className="text-xs text-muted-foreground">
-          Manage teachers and students
-        </p>
+      {/* Header with back button */}
+      <div className="flex items-center gap-2">
+        <BackButton href={backHref} ariaLabel="Back" />
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl font-bold">User Management</h1>
+          <p className="text-xs text-muted-foreground">
+            Manage teachers and students
+          </p>
+        </div>
       </div>
 
       {/* Stats */}
@@ -70,7 +76,7 @@ export default async function AdminUsersPage() {
       {/* Create user form */}
       <CreateUserForm allowedRoles={["teacher", "student"]} />
 
-      {/* Users list — collapsible + search + filter */}
+      {/* Users list */}
       <UsersList users={activeUsers} currentUserId={me.id} />
     </div>
   );
