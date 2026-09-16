@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { getCurrentProfile } from "@/lib/auth";
 import { getStudentInvitations } from "@/lib/rooms";
+import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
@@ -13,6 +14,7 @@ import {
   History,
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
+import Avatar from "@/components/Avatar";
 import InvitationCard from "./InvitationCard";
 
 export default async function HomePage() {
@@ -30,13 +32,26 @@ export default async function HomePage() {
     .slice(0, 2)
     .toUpperCase();
 
+  // ✅ Generate signed URL for own avatar
+  let signedAvatarUrl: string | null = null;
+  if (me.avatar_url && !me.avatar_pending) {
+    const supabase = await createClient();
+    const { data } = await supabase.storage
+      .from("avatars")
+      .createSignedUrl(me.avatar_url, 3600);
+    signedAvatarUrl = data?.signedUrl ?? null;
+  }
+
   return (
     <div className="space-y-6">
       {/* Greeting */}
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-2xl bg-brand text-brand-foreground flex items-center justify-center font-bold shadow-md shadow-brand/20">
-          {initials}
-        </div>
+        <Avatar
+          url={signedAvatarUrl}
+          initials={initials}
+          size="lg"
+          pending={me.avatar_pending}
+        />
         <div className="flex-1 min-w-0">
           <p className="text-xs text-muted-foreground">{greeting},</p>
           <p className="font-semibold text-lg truncate">{me.full_name}</p>
