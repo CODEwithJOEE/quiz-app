@@ -38,7 +38,6 @@ export default async function BottomNavServer() {
 
   if (me.role === "teacher") {
     items.push({ href: "/students", label: "Students", icon: "graduation" });
-    items.push({ href: "/pending-photos", label: "Photos", icon: "camera" });
   }
 
   if (me.role === "super_admin") {
