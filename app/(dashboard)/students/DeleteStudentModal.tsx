@@ -73,10 +73,11 @@ export default function DeleteStudentModal({
       <button
         type="button"
         onClick={handleOpen}
-        className="inline-flex items-center gap-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 px-2.5 py-1.5 rounded-lg transition-colors"
+        className="inline-flex items-center justify-center w-8 h-8 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 rounded-lg transition-colors"
+        title="Delete"
+        aria-label="Delete"
       >
-        <Trash2 className="w-3.5 h-3.5" />
-        Delete
+        <Trash2 className="w-4 h-4" />
       </button>
     );
   }

@@ -99,10 +99,11 @@ export default function ResetPasswordModal({
           reset();
           setOpen(true);
         }}
-        className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950 px-2.5 py-1.5 rounded-lg transition-colors"
+        className="inline-flex items-center justify-center w-8 h-8 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950 rounded-lg transition-colors"
+        title="Reset Password"
+        aria-label="Reset Password"
       >
-        <KeyRound className="w-3.5 h-3.5" />
-        Reset Password
+        <KeyRound className="w-4 h-4" />
       </button>
     );
   }
