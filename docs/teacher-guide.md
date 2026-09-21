@@ -1,6 +1,27 @@
 # 🎓 Teacher Guide
 
-Kompletong gabay para sa mga teachers.
+Complete guide for teachers — managing students, rooms, quizzes, and results.
+
+---
+
+## Table of Contents
+
+1. [First Time Setup](#1-first-time-setup)
+2. [Managing Students](#2-managing-students)
+3. [Student Photo Approval](#3-student-photo-approval)
+4. [Creating Rooms](#4-creating-rooms)
+5. [Managing Room Members](#5-managing-room-members)
+6. [Creating Quizzes](#6-creating-quizzes)
+7. [Adding Questions](#7-adding-questions)
+8. [Importing Questions from Excel](#8-importing-questions-from-excel)
+9. [Publishing and Closing Quizzes](#9-publishing-and-closing-quizzes)
+10. [Monitoring Results](#10-monitoring-results)
+11. [Grading Essay Answers](#11-grading-essay-answers)
+12. [Bulk Actions](#12-bulk-actions)
+13. [Understanding Integrity Events](#13-understanding-integrity-events)
+14. [Managing Student Accounts](#14-managing-student-accounts)
+15. [Tips for Teachers](#15-tips-for-teachers)
+16. [Troubleshooting](#16-troubleshooting)
 
 ---
 
@@ -8,324 +29,638 @@ Kompletong gabay para sa mga teachers.
 
 ### Login
 
-1. Buksan ang app
-2. I-enter ang email at password na binigay ng **super admin** mo
+1. Open the app
+2. Enter the email and password provided by your **super admin**
 3. Tap **"Sign In"**
 
-### Recommended: Install sa Phone
+### Recommended: Install on Phone
 
-See [Getting Started Guide](./getting-started.md#paano-mag-install-sa-phone)
+See [Getting Started Guide](./getting-started.md) → "Install on Phone"
 
 ---
 
 ## 2. Managing Students
 
-Bago ka makagawa ng rooms at quizzes, kailangan mo munang gumawa ng **student accounts**.
+Before you can create rooms and quizzes, you need **student accounts**.
 
-### Paano Gumawa ng Student
+### How to Create a Student (Manual)
 
-1. Tap **"Students"** sa bottom nav (🎓 icon)
-2. Sa "Create New User" form, i-fill:
-   - **Full Name** — Buong pangalan (e.g., `Juan Dela Cruz`)
-   - **Email** — Valid email (e.g., `juan.delacruz@school.com`)
-   - **Password** — Minimum 6 characters. Ibigay ito sa student.
+1. Tap **"Students"** in the bottom nav (🎓 icon)
+2. In the "Create New User" form, fill in:
+   - **Full Name** — e.g. `Juan Dela Cruz`
+   - **Email** — valid email, e.g. `juan.delacruz@school.com`
+   - **Password** — minimum 6 characters. Give this to the student.
+   - **Grade Level** — e.g. `Grade 8` (optional, recommended)
+   - **Section** — e.g. `A Hydrogen` (optional, recommended)
 3. Tap **"Create User"**
 
-**⚠️ Paalala:**
+**⚠️ Reminders:**
 
-- Lalabas lang ang student sa **iyong list** — hindi makikita ng ibang teachers ang students mo
-- Isulat ang password para maibigay sa student
+- A student only appears in **your list** by default
+- But other teachers can still invite your students to their rooms via the **"All Students"** tab (see [Section 4](#4-creating-rooms))
+- Write down the password to hand to the student
 
-### Paano Mag-view ng Students List
+### Bulk Import Students (Excel/CSV)
 
-Sa `/students` page, makikita mo:
+For 20+ students, use bulk import.
 
-- **Total count** sa taas
-- **Listahan** ng lahat ng students mo
+**Format (`.csv` or `.xlsx`):**
+
+```csv
+full_name,email,grade_level,section
+Juan Dela Cruz,juan.delacruz@school.com,Grade 8,A Hydrogen
+Maria Santos,maria.santos@school.com,Grade 8,A Hydrogen
+Pedro Reyes,pedro.reyes@school.com,Grade 8,B Oxygen
+```
+
+**How to:**
+
+1. Go to the **/students** page
+2. Tap **"Bulk Import"** (green button)
+3. Tap **"Download template"** for a starter file
+4. Fill in the rows in Google Sheets or Excel
+5. Save as `.csv` or `.xlsx`
+6. Upload back to the app
+7. **Preview** the list
+8. Tap **"Import"**
+9. **Print** or copy the credentials sheet
+10. Hand passwords to students
+
+**Limits:**
+
+- Max **100 students** per batch
+- Passwords are **auto-generated** (8 characters)
+- **Print credentials** and give to students
+
+### How to View Your Students
+
+On the **/students** page, you'll see:
+
+- **Total count** at the top
+- **Active Students** list (collapsible)
+- **Pending Deletion** list (collapsible, if any)
+
+**Search and Filter:**
+
+- **Search box** — find a student by name or email
+- **Section filter** — filter by Grade + Section
 
 ---
 
-## 3. Creating Rooms
+## 3. Student Photo Approval
 
-Ang **Room** ay parang section o class. Naglalaman ito ng:
+Students can upload profile photos, but they need **teacher approval** before appearing on their account.
 
-- Listahan ng students
-- Lahat ng quizzes para sa class na ito
+### When a Student Uploads a Photo
 
-### Paano Gumawa ng Room
+1. The photo goes into a **pending** state
+2. You (or the super admin) get a **"Pending Photos"** entry
+3. The student sees "⏳ Pending approval ng teacher mo" on their profile
 
-1. Tap **"Rooms"** sa bottom nav
-2. Tap **"+ New Room"** button
-3. Fill ang form:
-   - **Room Name\*** — Halimbawa: `Math 101 - Section A`
-   - **Subject** — Halimbawa: `Mathematics`
-   - **Description** — Optional notes para sa students
+### How to Review Pending Photos
+
+1. Go to **Profile** page
+2. Look for the **"Student Photos"** section
+3. Tap **"Review Pending Photos"**
+4. You'll see each student's uploaded photo with:
+   - Student name and email
+   - Upload timestamp
+   - **Approve** and **Reject** buttons
+
+### Approving a Photo
+
+1. Tap **"Approve"**
+2. The photo immediately appears on the student's profile, in the room member list, and in classmate lists
+
+### Rejecting a Photo
+
+1. Tap **"Reject"**
+2. Optionally enter a **reason** (e.g. "Blurry photo", "Inappropriate")
+3. Tap **"Confirm Reject"**
+4. The photo is deleted from storage
+5. The student sees the rejection reason on their profile and can upload a new one
+
+**Note:** Teachers and super admins don't need approval — their photos are auto-approved.
+
+---
+
+## 4. Creating Rooms
+
+A **Room** is like a class or section. It contains:
+
+- A student roster
+- All quizzes for that class
+
+### How to Create a Room
+
+1. Tap **"Rooms"** in the bottom nav
+2. Tap **"+ New Room"**
+3. Fill in the form:
+   - **Room Name\*** — e.g. `Math 101 - Section A`
+   - **Subject** — e.g. `Mathematics`
+   - **Description** — optional notes for students
 4. Tap **"Create Room"**
 
-### Paano Mag-invite ng Students
+### How to Edit a Room
 
-1. Buksan ang room (tap sa room name)
-2. Hanapin ang **"Invite Students"** panel
-3. **Search** mo ang pangalan ng student
-4. **Tap ang student** para i-select (may checkmark)
-5. Pwede kang pumili ng **marami**
-6. Tap **"Invite Selected (N)"**
+1. Open the room
+2. Tap the **"Edit"** button (pencil icon) next to the room name
+3. Update the name, subject, or description
+4. Tap **"Save Changes"**
 
-**Anong mangyayari:**
+### How to Invite Students
 
-- Makikita ng student ang invitation sa Home dashboard nila
-- Kailangan nilang **i-accept** para makasali
-- Sa room detail page mo, makikita mo:
-  - **Joined Students** — naka-accept
-  - **Pending Invitations** — hindi pa nag-a-accept
+1. Open the room
+2. Find the **"Invite Students"** panel
+3. Choose a tab:
+   - **My Students** — students you created
+   - **All Students** — every student in the system (including those created by other teachers)
+4. **Search** by name or email
+5. **Tap a student** to select them (a checkmark appears)
+6. Select multiple students if needed
+7. Tap **"Invite Selected (N)"**
 
-### Paano I-delete ang Room
+**What happens:**
 
-1. Buksan ang room
-2. Scroll down sa pinakailalim
+- The student sees the invitation on their **Home** dashboard
+- They need to **accept** to join
+- On your room page you'll see:
+  - **Joined Students** — accepted
+  - **Pending Invitations** — not yet accepted
+
+**Cross-teacher note:** If a student was created by another teacher, they still only need **one account**. The "All Students" tab lets any teacher invite any student to their room. Students show a **"From other teacher"** badge so you know who created them.
+
+### How to Delete a Room
+
+1. Open the room
+2. Scroll to the bottom
 3. Tap **"Delete Room"**
 4. Confirm
 
-**⚠️ Warning:** Mabubura lahat ng quizzes at attempts sa room.
+**⚠️ Warning:** Deleting a room removes all its quizzes and attempts. This cannot be undone.
 
 ---
 
-## 4. Creating Quizzes
+## 5. Managing Room Members
 
-Ang **Quiz** ay nasa loob ng isang room. May 3 statuses:
+### Removing a Single Student
 
-| Status        | Meaning                                         |
-| ------------- | ----------------------------------------------- |
-| **Draft**     | Hindi pa visible sa students; pwede pang i-edit |
-| **Published** | Visible na sa students; pwede nang mag-take     |
-| **Closed**    | Hindi na pwede mag-take ng bagong attempts      |
+1. Open the room
+2. Find the student under **"Joined Students"** or **"Pending Invitations"**
+3. Tap the **remove icon** (red trash icon) on their row
+4. Confirm
 
-### Paano Gumawa ng Quiz
+**What happens:**
 
-1. Buksan ang room
-2. Tap **"+ New Quiz"** button
-3. Fill ang form:
-   - **Quiz Title\*** — Halimbawa: `Chapter 1 Quiz`
-   - **Description** — Optional
-   - **Time Limit (minutes)** — Optional. Kung may value, may countdown timer ang students. Blank = walang limit.
-4. Tap **"Create Quiz"**
+- The student is removed from this room only
+- Their attempts and account are **preserved**
+- You can re-invite them anytime
 
-### Pag-add ng Questions — Manu-mano
+### Bulk Removing Students
 
-Sa quiz editor, sa **"Questions"** tab:
+1. Open the room
+2. In the "Joined Students" or "Pending Invitations" section, **check the boxes** next to students you want to remove
+3. A **"Remove (N)"** button appears
+4. Tap it, confirm the preview list, and confirm
+5. Removed students no longer see the room
 
-1. I-type ang **question text**
-2. Fill in ang options (A, B, C, D):
-   - **Tap ang letter button** sa kaliwa para i-mark ang **correct answer** (magiging green)
-   - Fill in ang option text
-3. **Points** — Default 1. Palitan kung weighted.
+---
+
+## 6. Creating Quizzes
+
+A **Quiz** lives inside a room. It has 3 statuses:
+
+| Status        | Meaning                                             |
+| ------------- | --------------------------------------------------- |
+| **Draft**     | Not visible to students; still editable             |
+| **Published** | Visible to students; they can take it               |
+| **Closed**    | No new attempts allowed; existing results preserved |
+
+### How to Create a Quiz
+
+1. Open the room
+2. Tap **"+ New Quiz"**
+3. Fill in the form:
+   - **Quiz Title\*** — e.g. `Chapter 1 Quiz`
+   - **Description** — optional
+   - **Time Limit (minutes)** — optional. If set, students see a countdown timer. Leave blank for no limit.
+4. Configure **Randomization**:
+   - ✅ **Shuffle questions** — each student gets a different question order
+   - ✅ **Shuffle options** — each student gets a different A/B/C/D order per question
+5. Tap **"Create Quiz"**
+
+**Notes on Shuffle:**
+
+- The order is fixed **once a student starts** — the same order is used when they resume
+- Shuffle works **per student**, not per room
+- Combine both for maximum anti-cheating
+
+---
+
+## 7. Adding Questions
+
+Quizzes support **two question types**:
+
+- **Multiple Choice (MCQ)** — auto-graded
+- **Essay** — manually graded by you
+
+You can mix both types in a single quiz.
+
+### Adding a Multiple Choice Question (Manual)
+
+1. In the quiz editor, on the **"Questions"** tab
+2. Choose the **"Multiple Choice"** type
+3. Fill in:
+   - **Question text**
+   - **Options A, B, C, D**
+   - Tap the **letter button** next to the correct option (turns green)
+   - **Points** — default 1
 4. Tap **"Add Question"**
 
-Repeat hanggang matapos.
+Repeat as needed.
 
 **Tips:**
 
-- Pwedeng 2, 3, o 4 options — basta at least 2
-- Isa lang ang pwedeng "correct answer" per question
-- Iwan blank kung hindi gagamitin ang option
+- 2, 3, or 4 options allowed (minimum 2)
+- Only **one** correct answer per question
+- Leave unused options blank
 
-### Pag-add ng Questions — Bulk (Excel Import)
+### Adding an Essay Question (Manual)
 
-Para sa mabilisang pag-add ng maraming questions:
+1. In the quiz editor, on the **"Questions"** tab
+2. Choose the **"Essay"** type
+3. Fill in:
+   - **Question text** (the essay prompt)
+   - **Points** — set explicitly (essays are usually higher points)
+   - **Minimum Words** — optional, e.g. `50`
+   - **Maximum Words** — optional, e.g. `300`
+   - **Rubric / Guidelines** — optional, shown to students and used during grading
+4. Tap **"Add Question"**
 
-1. Sa quiz editor, tap ang **"Import"** tab
-2. Tap **"Download template"** para sa sample
-3. Buksan sa Excel/Google Sheets
-4. Fill in bawat row
-5. Save as `.xlsx` o `.csv`
-6. Sa app, tap ang **file upload area** → select ang file
-7. Auto-import lahat
+**Notes:**
 
-**See:** [Excel Import Guide](./excel-import-guide.md)
+- Essay questions do **not** have options or a "correct" answer
+- Essay answers are **manually graded** — students see a "Pending Grading" state until you grade them
+- The rubric is displayed to students before they answer and to you during grading
 
-### Paano I-publish ang Quiz
+### Deleting a Question
 
-Pag tapos na lahat ng questions:
+1. On the question card, tap the **trash icon**
+2. Confirm
 
-1. Sa quiz header, tap **"Publish"** button
+### Deleting the Whole Quiz
+
+1. In the quiz header, tap **"Delete"**
+2. Confirm
+
+**⚠️ Warning:** Deletes all questions, options, and attempts. Cannot be undone.
+
+---
+
+## 8. Importing Questions from Excel
+
+For bulk-adding questions, use Excel/CSV import.
+
+### How to Import
+
+1. In the quiz editor, tap the **"Import"** tab
+2. Tap **"Download template"** for a sample file
+3. Fill in the rows in Excel/Google Sheets
+4. Save as `.xlsx` or `.csv`
+5. Upload the file to the app
+6. Questions are added to the quiz automatically
+
+### Supported Columns
+
+| Column           | MCQ | Essay |
+| ---------------- | :-: | :---: |
+| `question_type`  | ⚪  |  ⚪   |
+| `question`       | ✅  |  ✅   |
+| `option_a..d`    | ✅  |  ❌   |
+| `correct`        | ✅  |  ❌   |
+| `points`         | ⚪  |  ⚪   |
+| `word_limit_min` | ❌  |  ⚪   |
+| `word_limit_max` | ❌  |  ⚪   |
+| `rubric`         | ❌  |  ⚪   |
+
+**See:** [Excel Import Guide](./excel-import-guide.md) for full details, examples, and common mistakes.
+
+---
+
+## 9. Publishing and Closing Quizzes
+
+### Publishing a Quiz
+
+Once all questions are added:
+
+1. In the quiz header, tap **"Publish"**
 2. Requirement: at least 1 question
 
-Pag na-publish, maaari nang mag-take ang students.
+Once published, students can take the quiz.
 
-### Paano I-close ang Quiz
+### Closing a Quiz
 
-Pag tapos na ang quiz period:
+When the quiz period is over:
 
-1. Sa quiz header, tap **"Close"**
-2. Status: **Closed** — hindi na makakapag-take ng bagong attempts
-3. Pwedeng i-reopen via **"Re-open"** button
-
-### Paano I-delete ang Question
-
-1. Sa question card, tap ang **trash icon** (🗑️)
-2. Confirm
-
-### Paano I-delete ang Buong Quiz
-
-1. Sa quiz header, tap **"Delete"**
-2. Confirm
-
-**⚠️ Warning:** Mabubura lahat ng questions, options, at attempts.
+1. In the quiz header, tap **"Close"**
+2. Status: **Closed** — no new attempts allowed
+3. Reopen at any time via **"Re-open"**
 
 ---
 
-## 5. Monitoring Results
+## 10. Monitoring Results
 
-### Paano Makita ang Attempts ng Students
+### Viewing Attempts
 
-1. Buksan ang quiz
-2. Tap **"Attempts"** button sa header
+1. Open the quiz
+2. Tap **"Attempts"** in the header
 
-Makikita mo:
+You'll see:
 
 - **Summary stats** — Total, In Progress, Submitted, Terminated, Average Score, Violations
-- **Listahan ng attempts** — bawat student na may:
+- **List of attempts** — each student with:
   - Name, email
   - Status (In Progress / Submitted / Terminated)
-  - Score at percentage
-  - Violation count (kung meron)
+  - Score and percentage
+  - Violation count (if any)
+  - **Grading status** badge (Ungraded / Graded) for quizzes with essays
 
-### Paano Mag-search at Mag-filter
+### Search, Filter, Sort
 
-Sa attempts page:
+On the attempts page:
 
-- **Search box** — hanapin ang student by name o email
-- **Filter button** — i-filter by status (All / In Progress / Submitted / Terminated)
+- **Search box** — find a student by name or email
+- **Filter** — by status (All / In Progress / Submitted / Terminated)
 - **Sort** — by name, score (high/low), recent, oldest
 
-### Paano Mag-export to CSV
+### Exporting to CSV
 
-1. Sa attempts page, tap **"Export CSV"**
-2. Auto-download lahat ng attempts (o yung selected lang)
-3. Buksan sa Excel/Sheets para sa grading records
+1. On the attempts page, tap **"Export CSV"**
+2. The file downloads automatically
+3. If you have selected attempts, only those are exported; otherwise all filtered attempts are exported
+4. Open in Excel/Sheets for grading records
 
-### Paano I-expand ang Attempt Details
+### Expanding Attempt Details
 
-1. Tap **"Show details"** sa attempt card
-2. Makikita mo:
-   - Start time at submitted time
+1. Tap **"Show details"** on an attempt card
+2. You'll see:
+   - Start time and submitted time
    - Integrity events (violations)
-   - Termination reason (kung terminated)
+   - Termination reason (if terminated)
 
-### Paano I-override ang Score
+### Overriding a Score
 
-Kung may scoring error:
+If a score needs correction:
 
-1. Expand ang attempt
-2. Sa **"Override Score"** field, i-type ang tamang score
+1. Expand the attempt
+2. In the **"Override Score"** field, enter the correct score
 3. Tap **"Save Score"**
 
-**⚠️ Note:** Permanent ang override. Walang undo.
+**⚠️ Note:** Overrides are permanent — there's no undo.
 
-### Paano Force-terminate ang Attempt
+### Force-Terminating an Attempt
 
-Kung may report na nag-cheat:
+If a student needs to be stopped:
 
-1. Expand ang attempt (dapat status = **In Progress**)
+1. Expand the attempt (must be **In Progress**)
 2. Tap **"Force Terminate"**
-3. Confirm — magiging 0 ang score, hindi na makakapag-submit
-
-### Bulk Actions — Para sa Maraming Students
-
-Kung may 50+ students:
-
-1. **Check boxes** ng mga students
-2. Sa **sticky toolbar** sa taas, tap **"Bulk Terminate"**
-3. Auto-terminate lahat ng in-progress sa selection
-
-**Quick buttons:**
-
-- **"Select all"** — piliin lahat
-- **"Select X in-progress"** — auto-select mga in-progress lang
+3. Confirm — score becomes 0, student cannot submit
 
 ---
 
-## 6. Understanding Integrity Events
+## 11. Grading Essay Answers
 
-Ang **Integrity Events** ay violations na na-detect during quiz-taking:
+When a quiz contains essay questions, submissions require **manual grading**.
+
+### Identifying Ungraded Attempts
+
+- The **Attempts page** shows an **"Ungraded"** badge (amber) on any attempt with pending essays
+- The summary counts include ungraded attempts
+
+### How to Grade an Attempt
+
+1. On the attempts page, find an attempt with the **"Ungraded"** badge
+2. Tap **"Grade Now"**
+3. You'll see each answer:
+   - **MCQ answers** — auto-scored, shown with correct/incorrect highlighting
+   - **Essay answers** — with the student's text, rubric, and inputs
+4. For each essay answer:
+   - Enter **Points Awarded** (must be between 0 and the max points)
+   - Optionally add **Feedback** (comment for that specific answer)
+5. Add **Overall Feedback** for the student (optional)
+6. Tap **"Save Grade"**
+
+### What Happens After Saving
+
+- The attempt's `grading_status` becomes **"graded"**
+- The total score is computed (MCQ auto-score + essay points)
+- The student's result page updates to show the final score
+- You can revisit and **edit grades** anytime via **"View / Edit Grade"**
+
+### Editing a Grade
+
+1. On the attempts page, find the attempt with the **"Graded"** badge
+2. Tap **"View / Edit Grade"**
+3. Adjust points, feedback, or overall comment
+4. Tap **"Save Grade"** again
+
+### Notes
+
+- A grade **overwrites the previous one** — there is no separate revision history
+- MCQ points are **locked** and cannot be edited here (use **Override Score** instead if you need to change the total)
+- The per-answer feedback is visible to the student on the result page
+
+---
+
+## 12. Bulk Actions
+
+For quizzes with many students:
+
+### Selecting Attempts
+
+- **Check the box** on each attempt you want to act on
+- Or use quick-select buttons:
+  - **"Select all"** — selects all filtered attempts
+  - **"Select X in-progress"** — selects only in-progress attempts (useful before bulk terminate)
+
+### Bulk Terminate
+
+1. Select the attempts you want to terminate
+2. In the **sticky toolbar**, tap **"Bulk Terminate"**
+3. Confirm — all selected in-progress attempts are terminated with score 0
+
+**Note:** Only **in-progress** attempts can be terminated. Submitted and already-terminated attempts are skipped.
+
+### Bulk Export
+
+1. Select attempts (optional — if none selected, all filtered are exported)
+2. Tap **"Export (N)"** or **"Export CSV"**
+3. Download the CSV
+
+---
+
+## 13. Understanding Integrity Events
+
+**Integrity Events** are violations detected during quiz-taking:
 
 | Event Type            | Meaning                                       |
 | --------------------- | --------------------------------------------- |
-| `visibility_hidden`   | Nag-switch ng tab o nag-minimize ng app       |
-| `blur`                | Nawala ang focus (notification, split screen) |
-| `fullscreen_exit`     | Nag-exit ng fullscreen mode                   |
-| `copy` / `paste`      | Nag-copy o nag-paste ng text                  |
-| `context_menu`        | Nag-right-click                               |
-| `before_unload`       | Nag-tangka mag-close ng tab o mag-back        |
-| `MAX_STRIKES_REACHED` | Auto-terminate (3 violations)                 |
+| `visibility_hidden`   | Switched tabs or minimized the app            |
+| `blur`                | Lost focus (notification, split-screen, etc.) |
+| `fullscreen_exit`     | Exited fullscreen mode                        |
+| `copy` / `paste`      | Attempted to copy or paste text               |
+| `context_menu`        | Right-clicked                                 |
+| `before_unload`       | Tried to close the tab or go back             |
+| `MAX_STRIKES_REACHED` | Auto-terminate (3rd violation)                |
 
 **3 violations = auto-terminate + score 0.**
 
-**Sa practice:**
+**In practice:**
 
-- **1 violation** = warning lang
-- **2 violations** = warning ulit
-- **3 violations** = terminated, score = 0
+- **1 violation** = warning only
+- **2 violations** = another warning
+- **3 violations** = terminated, score 0
 
----
-
-## 7. Tips for Teachers
-
-### Bago Mag-exam:
-
-- [ ] Test ang quiz mo as a student (gumawa ng test account)
-- [ ] I-publish ang quiz 5 minutes bago mag-start
-- [ ] I-remind ang students na **i-install ang app sa phone**
-- [ ] I-remind sila sa **anti-cheat rules** (3 strikes = 0)
-- [ ] I-check kung may pending invitations na hindi pa na-accept
-
-### Habang Nag-e-exam:
-
-- I-monitor ang **Attempts page** — live ang updates
-- Makikita mo ang **"In Progress"** students
-- Kung may terminated agad, kontakin ang student
-
-### Pagkatapos:
-
-- I-review ang **integrity events** ng bawat attempt
-- Kung may suspicious, i-investigate
-- I-override ang score kung kailangan
-- I-export sa CSV para sa records
-
-### Best Practices:
-
-- **Konti lang ang questions per quiz** — 10-15 per quiz, hindi 50+
-- **Time limit** — i-set para maiwasan ang Googling
-- **Hatiin ang long exams** — sa chunks
-- **I-test bago ang exam day** — para iwas technical issues
+For more on what students see, see [Student Guide](./student-guide.md).
 
 ---
 
-## 8. Troubleshooting
+## 14. Managing Student Accounts
 
-**Hindi ko makita ang students ko**
+### Resetting a Student's Password
 
-- I-check ang Profile — dapat `Teacher` ang role mo
-- Sa `/students`, dapat may listahan
+If a student forgets their password:
 
-**Hindi ko ma-invite ang student**
+1. Go to the **/students** page
+2. Find the student
+3. Tap the **"Reset Password"** button (amber key icon)
+4. Choose:
+   - **Auto-generate** — creates a secure random password
+   - **Custom** — type your own
+5. Tap **"Reset Password"**
+6. **Copy** the new password and give it to the student
 
-- Baka wala pang account — check sa `/students`
-- Baka naka-invite na — check ang "Pending Invitations"
+**Note:** The old password stops working immediately.
 
-**Hindi makapag-import ng Excel**
+### Deleting a Student Account (7-day retention)
 
-- I-verify ang column headers — exact match sa template
-- Kung may issues, i-save as `.csv` muna
+When you delete a student, the account is **not permanently removed** right away.
+
+**How to Delete:**
+
+1. On the **/students** page, tap the **"Delete"** button (red trash icon)
+2. Confirm
+3. **Countdown starts:** 7 days
+
+**During the 7-day period:**
+
+- The student **cannot log in**
+- All data is preserved (attempts, quiz history)
+- You can **restore** the account anytime
+
+**After 7 days:**
+
+- The super admin can **purge** the account permanently
+
+**How to Restore:**
+
+1. On the **/students** page, expand the **"Pending Deletion"** section
+2. Find the student
+3. Tap **"Restore"** and confirm
+4. The student can log in again
+
+---
+
+## 15. Tips for Teachers
+
+### Before an Exam
+
+- [ ] Test the quiz yourself (create a test student account)
+- [ ] Publish the quiz 5 minutes before start time
+- [ ] Remind students to **install the app on their phone**
+- [ ] Remind them of the **anti-cheat rules** (3 strikes = 0)
+- [ ] Check for pending invitations that haven't been accepted
+
+### During the Exam
+
+- Monitor the **Attempts page** — it updates live
+- Look for **"In Progress"** students
+- If someone is terminated early, contact them
+
+### After the Exam
+
+- Review the **integrity events** on each attempt
+- Investigate any suspicious activity
+- Override scores if needed
+- Export to CSV for records
+- **Grade essays** if the quiz has any (look for "Ungraded" badges)
+
+### Best Practices
+
+- **Keep quizzes short** — 10–15 questions is better than 50+
+- **Set a time limit** — discourages Googling
+- **Split long exams** into chunks
+- **Test before exam day** — avoid technical issues
+- **Use shuffle settings** — for high-stakes quizzes
+- **Grade essays promptly** — students wait for their results
+
+---
+
+## 16. Troubleshooting
+
+**I can't see my students**
+
+- Check your Profile — your role should be `Teacher`
+- On `/students`, there should be a list
+- If empty, create students first
+
+**I can't invite a student**
+
+- They may not have an account yet — check `/students`
+- They may already be invited — check "Pending Invitations"
+- They may have declined — re-invite from "All Students"
+
+**Excel import fails**
+
+- Verify column headers — must match the template exactly
+- Try saving as `.csv` if `.xlsx` fails
 - See [Excel Import Guide](./excel-import-guide.md)
 
-**Naka-terminate agad ang student**
+**Student was terminated too quickly**
 
-- I-check ang integrity events
-- Common: tab switch, minimize, fullscreen exit
-- Kung false positive, i-override ang score
+- Check integrity events on their attempt
+- Common causes: tab switch, minimize, fullscreen exit
+- If a false positive, override the score
 
-**Hindi lumalabas ang attempts**
+**Attempts aren't showing up**
 
-- Baka hindi pa nag-start ang students
-- Baka naka-draft pa ang quiz (dapat Published)
+- Students may not have started yet
+- The quiz may still be in **Draft** — it must be **Published**
+
+**"Ungraded" badge won't go away**
+
+- The attempt still has essays waiting for grading
+- Tap **"Grade Now"**, enter points, and save
+
+**Student says they can't see their score**
+
+- If the quiz has essays, the score is **pending until you grade**
+- Grade the attempt and their result page will update
+
+**Student can't log in after I deleted them**
+
+- That's expected — during the 7-day window they're locked out
+- Restore the account from "Pending Deletion" if needed
+
+---
+
+## Related Guides
+
+- [Getting Started](./getting-started.md) — login, install, basics
+- [Excel Import Guide](./excel-import-guide.md) — bulk import details
+- [Student Guide](./student-guide.md) — what students see
+- [Admin Guide](./admin-guide.md) — for super admins
+
+---
+
+**Questions?** Contact your school's IT support.

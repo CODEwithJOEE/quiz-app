@@ -19,82 +19,81 @@ export const HELP_ARTICLES: HelpArticle[] = [
   {
     slug: "getting-started",
     title: "Getting Started",
-    description: "Login, install sa phone, at basics",
+    description: "Login, install, and basics",
     icon: "Rocket",
     roles: ["super_admin", "teacher", "student"],
     sections: [
       {
-        heading: "Paano Mag-login",
-        body: `1. Buksan ang app link: \`https://quiz-application-for-students.vercel.app\`
-2. I-enter ang **email** at **password** na binigay ng admin o teacher
+        heading: "How to Login",
+        body: `1. Open the app link: \`https://quiz-application-for-students.vercel.app\`
+2. Enter your **email** and **password**
 3. Tap **"Sign In"**
 
-**Note:** Walang "Sign Up" button. Ang account mo ay ginawa ng admin o teacher. Kung wala kang account, kontakin sila.`,
+**Note:** There is no **Sign Up** button. Your account is created by an admin or teacher. If you don't have one, contact them.`,
       },
       {
-        heading: "Paano Mag-install sa Phone",
+        heading: "Install on Phone",
         body: `**Android (Chrome):**
-1. Buksan ang app sa Chrome
-2. Tap menu (⋮) sa taas
-3. Tap **"Install app"** o **"Add to Home screen"**
-4. Tap **"Install"**
+1. Open the app in Chrome
+2. Menu (⋮) → **"Install app"**
+3. Tap **"Install"**
 
 **iPhone (Safari):**
-1. Buksan ang app sa Safari (dapat Safari)
-2. Tap Share button (⎋) sa ilalim
-3. Scroll down → **"Add to Home Screen"**
-4. Tap **"Add"**
+1. Open the app in Safari (must be Safari)
+2. Tap Share (⎋) → **"Add to Home Screen"**
+3. Tap **"Add"**
 
-**Bakit mag-install:**
-- Mabilis mag-open
-- Fullscreen mode (walang browser controls)
-- Mas secure sa quiz-taking`,
+**Why install:**
+- Opens fast, fullscreen mode
+- More secure during quizzes
+- Auto-updates`,
       },
       {
         heading: "Navigation",
-        body: `- 🏠 **Home** — Dashboard at invitations
-- 🚪 **Rooms** — Lahat ng rooms mo
-- 📋 **Quiz** — Quiz listing
-- 🎓 **Students** — (Teacher only) Manage students
-- ⚙️ **Users** — (Admin only) Manage all users
-- 👤 **Profile** — Account info, dark mode, logout, help`,
+        body: `- 🏠 **Home** — Dashboard, invitations
+- 🚪 **Rooms** — Your rooms (teacher, student)
+- 📋 **Quiz** — Quiz listing (teacher, student)
+- 🎓 **Students** — Manage students (teacher)
+- ⚙️ **Dashboard** — System overview (super admin)
+- 👤 **Profile** — Account, dark mode, help, logout
+
+The items you see depend on your role.`,
       },
       {
         heading: "Dark Mode",
-        body: `1. Puntahan ang **Profile** page
-2. Sa **Appearance** section, pumili:
+        body: `1. Go to **Profile**
+2. Under **Appearance**, choose:
    - **Light** — Light theme
    - **Dark** — Dark theme
-   - **System** — Auto (sumusunod sa phone settings)`,
+   - **System** — Follows phone settings`,
       },
       {
         heading: "Help Center",
-        body: `Para sa lahat ng guides:
-1. Puntahan ang **Profile** page
-2. Hanapin ang **"Help"** section
-3. Click **"Documentation"**
+        body: `1. Go to **Profile**
+2. Find the **"Help"** section
+3. Tap **"Documentation"**
 
-Makikita mo ang lahat ng guides base sa role mo.`,
+You'll only see guides that apply to your role.`,
       },
       {
         heading: "Common Issues",
-        body: `**Hindi maka-login**
-- I-check ang email spelling
-- Password is case-sensitive
-- Kung nalimutan, kontakin ang teacher mo (students) o super admin (teachers)
+        body: `**Can't log in**
+- Check email spelling
+- Passwords are case-sensitive
+- Contact your admin (teachers) or teacher (students) to reset
 
-**Wala kang makitang room**
-- I-accept ang invitation sa Home page
-- Hintayin ang teacher mag-invite
+**No rooms**
+- Students: accept the invitation first
+- Check the Home page under **Room Invitations**
 
-**Hindi lumalabas ang app icon**
-- iPhone: dapat **Safari** (hindi Chrome)
-- Android: dapat **Chrome** (hindi Firefox)
+**No app icon**
+- iPhone: use Safari, not Chrome
+- Android: use Chrome, not Firefox
 
-**Nag-crash habang nag-take ng quiz**
-- I-refresh ang browser (pull down)
-- Naka-save ang progress mo
-- Kung hindi pa rin, kontakin ang teacher`,
+**Quiz froze**
+- Don't close the app
+- Refresh the browser
+- Your progress is saved`,
       },
     ],
   },
@@ -105,197 +104,231 @@ Makikita mo ang lahat ng guides base sa role mo.`,
   {
     slug: "teacher-guide",
     title: "Teacher Guide",
-    description: "Rooms, quizzes, at students",
+    description: "Students, rooms, quizzes, grading",
     icon: "GraduationCap",
     roles: ["teacher", "super_admin"],
     sections: [
       {
         heading: "Managing Students",
-        body: `**Paano Gumawa ng Student (Manu-mano)**
-1. Tap **"Students"** sa bottom nav
-2. Sa "Create New User" form, i-fill:
-   - **Full Name** — e.g. Juan Dela Cruz
-   - **Email** — valid email
-   - **Password** — minimum 6 characters
-   - **Section** — e.g. Grade 8-A (optional but recommended)
-3. Tap **"Create User"**
+        body: `**Create manually:**
+1. Tap **"Students"** in the bottom nav
+2. Fill in: Full Name, Email, Password
+3. Optionally add Grade Level and Section
+4. Tap **"Create User"**
 
-**Note:** Ang students na ginawa mo ay makikita rin ng ibang teachers sa kanilang "All Students" tab — kaya isang account lang per student, kahit 8 teachers siya.`,
+**Note:** Other teachers can still invite your students via the **"All Students"** tab in their rooms — one account works for every teacher.`,
       },
       {
         heading: "Bulk Import Students",
-        body: `Para sa 20+ students, mas mabilis gamitin ang bulk import.
+        body: `**Format (.csv or .xlsx):**
+Columns: \`full_name\`, \`email\`, \`grade_level\`, \`section\`
 
-**Format (Excel/CSV):**
-\`\`\`
-full_name        | email                  | section
-Juan Dela Cruz   | juan@school.com        | Grade 8-A
-Maria Santos     | maria@school.com       | Grade 8-A
-\`\`\`
-
-**Paano:**
-1. Puntahan **/students** page
-2. Click **"Bulk Import"** (green button)
-3. Download ang **CSV template**
-4. Fill in sa Google Sheets o Excel
-5. Save as **.csv** o **.xlsx**
-6. Upload pabalik sa app
-7. **Preview** ang list
-8. Click **"Import"**
-9. **Print** o i-copy ang credentials
-10. Ibigay sa students
+**How:**
+1. Go to **/students**
+2. Tap **"Bulk Import"**
+3. Download the template
+4. Fill in Excel/Sheets
+5. Upload back
+6. Preview → Import
+7. **Print credentials** and give to students
 
 **Limits:**
 - Max **100 students** per batch
-- Auto-generated ang passwords (8 chars)
-- I-print ang credentials at ibigay sa students`,
+- Passwords are auto-generated (8 characters)`,
       },
       {
-        heading: "Cross-Teacher Invite (High School)",
-        body: `**Scenario:** Ikaw ay subject teacher (Filipino), pero ibang teacher (Science) ang gumawa ng students.
+        heading: "Cross-Teacher Invite",
+        body: `If a student was created by another teacher, you can still invite them.
 
-**Flow:**
-1. Buksan ang room mo
-2. Sa **"Invite Students"** panel, may 2 tabs:
-   - **My Students** — sarili mong ginawa
-   - **All Students** — lahat ng students sa system
-3. Click **"All Students"** tab
-4. Search by name, email, o section
-5. Pumili ng students → **Invite**
+1. Open your room
+2. Tap **"Invite Students"**
+3. Choose the **"All Students"** tab
+4. Search by name, email, or section
+5. Select → **Invite**
 
-**Note:** Ang students ay may badge na **"From other teacher"** para malaman mo kung kanino galing.
+Look for the **"From other teacher"** badge to know who created them.`,
+      },
+      {
+        heading: "Student Photo Approval",
+        body: `Students need **teacher approval** for their profile photos.
 
-**Result:** Isang account lang per student kahit 8 subjects pa siya.`,
+1. Go to **Profile** → **Student Photos**
+2. Tap **"Review Pending Photos"**
+3. For each photo: **Approve** or **Reject**
+
+**Rejecting:** optionally enter a reason. The photo is deleted and the student can upload again.
+
+Teachers and admins don't need approval — their photos are auto-approved.`,
       },
       {
         heading: "Creating Rooms",
-        body: `Ang **Room** ay parang section o class. Naglalaman ito ng:
-- Listahan ng students
-- Lahat ng quizzes para sa class
+        body: `A Room is like a class. It holds students and quizzes.
 
-**Paano Gumawa:**
 1. Tap **"Rooms"** → **"+ New Room"**
-2. Fill in:
-   - **Room Name** — e.g. Science 8-A
-   - **Subject** — e.g. Science
-   - **Description** — optional
-3. Tap **"Create Room"**`,
+2. Fill in: Room Name, Subject, Description
+3. Tap **"Create Room"**
+
+**To edit:** tap the pencil icon next to the room name.
+
+**To remove students:** select one or more on the room page and use **Remove** or **Bulk Remove**. Attempts are preserved.`,
       },
       {
         heading: "Creating Quizzes",
-        body: `Ang **Quiz** ay nasa loob ng isang room. May 3 status:
-- **Draft** — hindi visible sa students, pwedeng i-edit
-- **Published** — visible, pwedeng mag-take
-- **Closed** — hindi na pwedeng mag-take
+        body: `1. Open a room → **"+ New Quiz"**
+2. Fill in: Title, Description, Time Limit (optional)
+3. Optional: **Shuffle questions** and **Shuffle options**
+   - Each student gets a different order
+4. Tap **"Create Quiz"**
 
-**Paano Gumawa:**
-1. Buksan ang room → **"+ New Quiz"**
-2. Fill in:
-   - **Quiz Title** — e.g. Chapter 1 Quiz
-   - **Description** — optional
-   - **Time Limit** — optional (minutes)
-   - ✅ **Shuffle questions** — iba-ibang order per student
-   - ✅ **Shuffle options** — iba-ibang A/B/C/D per student
-3. Tap **"Create Quiz"**`,
+**Statuses:**
+- **Draft** — not visible to students
+- **Published** — students can take it
+- **Closed** — no new attempts`,
       },
       {
         heading: "Adding Questions",
-        body: `**Manu-mano:**
-1. Sa quiz editor, fill in:
-   - **Question text**
-   - **Options A, B, C, D**
-   - **Tap ang letter button** para i-mark ang correct answer (magiging green)
-   - **Points** — default 1
-2. Tap **"Add Question"**
+        body: `**Multiple Choice:**
+1. In the quiz editor, choose **"Multiple Choice"**
+2. Fill question text and options A–D
+3. Tap the letter to mark the correct answer (turns green)
+4. Set points (default 1)
+5. Tap **"Add Question"**
 
-**Bulk (Excel/CSV):**
-1. Sa quiz, tap **"Import"** tab
-2. Tap **"Download Template"**
-3. Fill in sa Excel/Sheets
-4. Save as .xlsx o .csv
-5. Upload pabalik sa app`,
+**Essay:**
+1. Choose **"Essay"**
+2. Fill question text, points (usually higher)
+3. Optional: **Min Words**, **Max Words**, **Rubric**
+4. Tap **"Add Question"**
+
+**Notes:**
+- Essay questions are **manually graded**
+- The rubric is shown to students and to you during grading
+- You can mix both types in one quiz`,
       },
       {
-        heading: "Publishing a Quiz",
-        body: `1. Verify na may at least 1 question
-2. Sa quiz header, tap **"Publish"**
-3. **Status:** Draft → Published
-4. Ready na para mag-take ang students
+        heading: "Importing from Excel",
+        body: `1. In the quiz editor, tap **"Import"**
+2. Download the template
+3. Fill in Excel/Sheets
+4. Save as .xlsx or .csv
+5. Upload back to the app
 
-**Para i-close:** Tap **"Close"** — hindi na makakapag-take ng bago`,
+The template includes both MCQ and Essay examples.
+
+**See:** the Excel Import Guide for full column details.`,
+      },
+      {
+        heading: "Publishing & Closing",
+        body: `**Publish:**
+- At least 1 question required
+- Tap **"Publish"** in the quiz header
+
+**Close:**
+- Tap **"Close"** — no new attempts allowed
+- Reopen anytime via **"Re-open"**`,
       },
       {
         heading: "Monitoring Results",
-        body: `1. Buksan ang quiz → **"Attempts"** button
-2. Makikita mo:
-   - **Summary stats** — total, in-progress, submitted, terminated, average
-   - **Listahan ng attempts** — may search, filter, sort
-3. **Search box** — hanapin ang student
-4. **Filter** — by status
-5. **Export CSV** — download sa Excel
-6. Click **"Show details"** — makita ang integrity events
-7. **Override Score** — manual adjustment
+        body: `1. Open a quiz → tap **"Attempts"**
+2. You'll see summary stats and the attempt list
 
-**Bulk actions:**
-- Select multiple attempts → **Bulk Terminate**
-- **"Select X in-progress"** quick button`,
+**Search** by name/email. **Filter** by status. **Sort** by name, score, or date.
+
+**Export CSV** — tap the button to download (or select specific attempts first).
+
+**Expand an attempt** to see integrity events and timing.`,
+      },
+      {
+        heading: "Grading Essays",
+        body: `Attempts with essays show an **"Ungraded"** badge.
+
+1. On the Attempts page, tap **"Grade Now"**
+2. For each essay:
+   - Enter **Points Awarded** (0 to max)
+   - Optionally add per-answer **Feedback**
+3. Add **Overall Feedback** (optional)
+4. Tap **"Save Grade"**
+
+Once saved:
+- The badge becomes **"Graded"**
+- The score is computed (MCQ + essay points)
+- The student's result page updates
+
+**Edit anytime:** tap **"View / Edit Grade"** on a graded attempt.`,
+      },
+      {
+        heading: "Override & Terminate",
+        body: `**Override a score:**
+1. Expand the attempt
+2. Enter the correct score in **"Override Score"**
+3. Tap **"Save Score"**
+
+**Force terminate:**
+1. Expand an **In Progress** attempt
+2. Tap **"Force Terminate"**
+3. Confirm — score becomes 0, student cannot submit`,
+      },
+      {
+        heading: "Bulk Actions",
+        body: `**Bulk Terminate:**
+1. Check the attempts you want to terminate
+2. Tap **"Bulk Terminate"** in the sticky toolbar
+3. Only in-progress attempts are terminated
+
+**Quick select:**
+- **"Select all"** — everything filtered
+- **"Select X in-progress"** — in-progress only
+
+**Bulk Export:** select attempts first, then tap **"Export (N)"**.`,
       },
       {
         heading: "Password Reset (Students)",
-        body: `Kung nakalimutan ng student ang password:
+        body: `1. Go to **/students**
+2. Find the student
+3. Tap the **"Reset Password"** button (amber key)
+4. Choose **Auto-generate** or **Custom**
+5. Copy the password and give it to the student
 
-1. Puntahan **/students** page
-2. Hanapin ang student
-3. Click **"Reset Password"** button (amber)
-4. Pumili:
-   - **Auto-generate** — secure random password
-   - **Custom** — type your own
-5. Click **"Reset Password"**
-6. **Copy** ang password → ibigay sa student
-
-**Note:** Hindi na gagana ang lumang password.`,
+The old password stops working immediately.`,
       },
       {
-        heading: "Delete Student Account",
-        body: `**7-day retention system:** Hindi tuluyang nabura agad.
+        heading: "Delete Student (7-Day Retention)",
+        body: `Deletion is **not permanent** right away.
 
-**Paano:**
-1. Sa **/students** page, click **"Delete"** (red)
-2. Confirm ang delete
-3. **Countdown starts:** 7 days
+**To delete:**
+1. On **/students**, tap **"Delete"** (red trash)
+2. Confirm → 7-day countdown starts
 
-**During 7-day period:**
-- Student **hindi na makaka-login**
-- **Naka-save pa ang data** (attempts, quizzes)
-- **Pwedeng i-restore** anytime
+**During 7 days:**
+- Student can't log in
+- Data is preserved
+- You can **restore** anytime
 
-**After 7 days:**
-- Permanent delete (once admin purges)
+**After 7 days:** the super admin purges permanently.
 
-**Restore:**
-1. Hanapin ang student sa **"Pending Deletion"** section
-2. Click **"Restore"** → confirm
-3. Student can login again`,
+**To restore:**
+1. Expand **"Pending Deletion"** on /students
+2. Tap **"Restore"** on the student's card`,
       },
       {
         heading: "Anti-Cheat Rules",
-        body: `**Bawal sa students:**
-- Mag-switch ng tab
-- Mag-switch ng app
-- Mag-minimize
-- I-exit ang fullscreen
-- Mag-copy / paste
-- Mag-right-click
-- Mag-back button
+        body: `Students are flagged for:
+- Switching tabs or apps
+- Minimizing
+- Exiting fullscreen
+- Copy/paste
+- Right-click
+- Browser back button
 
-**3 violations = auto-terminate + score 0.**
+**3 violations = auto-terminate, score 0.**
 
 **Violation types:**
-- \`visibility_hidden\` — nag-switch ng tab
-- \`blur\` — nawala ang focus
-- \`fullscreen_exit\` — nag-exit ng fullscreen
-- \`copy\` / \`paste\` — nag-copy/paste
-- \`MAX_STRIKES_REACHED\` — 3rd violation`,
+- \`visibility_hidden\` — switched tab
+- \`blur\` — lost focus
+- \`fullscreen_exit\` — exited fullscreen
+- \`copy\` / \`paste\`
+- \`context_menu\` — right-clicked
+- \`MAX_STRIKES_REACHED\` — 3rd strike`,
       },
     ],
   },
@@ -306,78 +339,127 @@ Maria Santos     | maria@school.com       | Grade 8-A
   {
     slug: "student-guide",
     title: "Student Guide",
-    description: "Taking quizzes at rules",
+    description: "Taking quizzes and rules",
     icon: "BookOpen",
     roles: ["student"],
     sections: [
       {
         heading: "Joining a Room",
-        body: `Ang teacher mo ang mag-a-invite sa'yo.
+        body: `Your teacher invites you. You just need to accept.
 
-**Paano Mag-accept:**
-1. Buksan ang **Home** page
-2. Hanapin ang **"Room Invitations"**
-3. Tap **"Accept"** para sumali, o **"Decline"**
+1. Open the **Home** page
+2. Find **"Room Invitations"**
+3. Tap **"Accept"** or **"Decline"**
 
-Pag na-accept, lalabas ang room sa **Rooms** page.
+Once accepted, the room appears on your **Rooms** page.
 
-**Note:** Kung may 8 subjects ka, lahat ng teachers mo ay makakapag-invite sa **isang account** mo. Hindi mo kailangan ng iba't-ibang accounts.`,
+**Note:** One account works for every teacher — even 8 subjects.`,
+      },
+      {
+        heading: "Viewing Classmates",
+        body: `On the room page, scroll to **"Classmates"**.
+
+You'll see names, emails, and Grade/Section badges.
+
+Use the **search box** (visible with more than 3 classmates) to find someone specific.`,
       },
       {
         heading: "Taking a Quiz",
-        body: `**Bago mag-start:**
-1. Rooms → open room
-2. Tap quiz under "Available Quizzes"
-3. Basahin ang warning card
-4. Tap **"Start Quiz"**
-5. Allow fullscreen
+        body: `**Before you start:**
+1. On the room page, tap the quiz
+2. Read the warning card
+3. Tap **"Start Quiz"**
+4. Allow fullscreen
 
-**Habang nag-take:**
-- Tap ang sagot — may checkmark
-- **Next →** para sa susunod
-- **← Prev** para bumalik
-- Number grid sa ibaba para mag-jump
-- Tap **"Submit Quiz"** pag tapos
+**While taking:**
+- Tap an answer → checkmark appears
+- **Next →** / **← Prev** to move
+- Number grid at the bottom to jump
+- Tap **"Submit Quiz"** when done
 
-**Kung may timer:**
-- May countdown sa taas
-- Pag nag-0, auto-submit`,
+**Timer:** if enabled, a countdown shows at the top. It pulses red under 1 minute and auto-submits at 0.`,
+      },
+      {
+        heading: "Taking an Essay Quiz",
+        body: `Some quizzes include essay questions.
+
+**How they look:**
+- A text box instead of choices
+- A word counter
+- Optional word limit and rubric
+
+**Answering:**
+- Type your answer
+- Your answer auto-saves when you leave the box
+- Watch the word counter (turns amber if below the minimum)
+- Tap **"Next →"** when ready
+
+**After submitting:** MCQ answers score instantly. Essay answers wait for your teacher. Your result page shows **"Pending Grading"** until then.`,
+      },
+      {
+        heading: "Understanding Your Result",
+        body: `**Pending Grading** (essay quizzes)
+- Amber clock icon
+- Your MCQ score so far
+- Wait for your teacher to grade
+
+**Passed / Keep Practicing**
+- Score, percentage, submitted time
+- 60%+ = Passed (default threshold)
+
+**Terminated**
+- 🚫 Exam Terminated
+- Reason shown (e.g. \`max_strikes:visibility_hidden\`)
+- Score: 0`,
       },
       {
         heading: "My Quiz History",
-        body: `Tingnan lahat ng past quizzes mo:
+        body: `See all your past attempts.
 
-1. Puntahan ang **Profile** page
-2. Click **"Quiz History"** sa **"My Progress"** section
-3. Makikita mo:
-   - **Stats** — total quizzes taken, average score, best score, terminated count
-   - **Listahan** ng lahat ng attempts
-   - **Search** — hanapin ang quiz or room
-   - **Filter** — by status
-   - **Sort** — by recent, oldest, score
+1. Go to **Profile**
+2. Under **My Progress**, tap **"Quiz History"**
 
-Click any attempt → makita ang detailed result.`,
+**You'll see:**
+- Stats: Quizzes Taken, Average Score, Best Score, Terminated
+- All attempts with quiz name, room, status, and score
+
+**Search, filter, and sort** to find specific attempts.
+
+Tap any attempt to open the detailed result.`,
       },
       {
         heading: "Anti-Cheat Rules",
-        body: `**Bawal gawin:**
-- ❌ Mag-switch ng tab
-- ❌ Mag-switch ng app (WhatsApp, Messenger)
-- ❌ I-minimize
-- ❌ I-exit ang fullscreen
-- ❌ Mag-copy / paste
-- ❌ Mag-right-click
+        body: `**Do NOT:**
+- ❌ Switch tabs
+- ❌ Switch apps (Messenger, etc.)
+- ❌ Minimize the app
+- ❌ Exit fullscreen
+- ❌ Copy or paste
+- ❌ Right-click
+- ❌ Use the browser back button
 
 **Consequences:**
 - 1st violation — warning
-- 2nd violation — warning ulit
+- 2nd violation — warning
 - 3rd violation — **auto-terminate, score 0**
 
 **Tips:**
-- ✅ I-install ang app
-- ✅ I-DND ang phone
-- ✅ I-close ang ibang apps
-- ✅ I-inform ang pamilya`,
+- ✅ Install the app
+- ✅ Turn on Do Not Disturb
+- ✅ Close other apps
+- ✅ Tell your family you're taking an exam`,
+      },
+      {
+        heading: "Profile & Settings",
+        body: `**Edit your name:** tap **"Edit name"** under your profile.
+
+**Upload photo:** tap **"Upload photo"**, crop, and apply. Requires **teacher approval** — you'll see ⏳ until approved.
+
+**Change password:** tap **"Change Password"** under Security.
+
+**Dark mode:** Profile → Appearance → Light / Dark / System.
+
+**Log out:** scroll to the bottom of Profile and tap **"Log Out"**.`,
       },
       {
         heading: "Understanding Your Score",
@@ -385,26 +467,30 @@ Click any attempt → makita ang detailed result.`,
 |-------|---------|
 | **60%+** | ✅ Passed |
 | **< 60%** | 📝 Keep Practicing |
-| **Terminated** | 🚫 0 score dahil sa violations |
+| **Terminated** | 🚫 0 due to violations |
+| **Pending** | ⏳ Waiting for teacher |
 
-Ang teacher mo ang mag-set ng passing threshold.`,
+Your teacher sets the passing threshold (60% is the default).`,
       },
       {
         heading: "FAQ",
-        body: `**Pwede bang mag-retake?**
-Hindi. One attempt lang per quiz.
+        body: `**Can I retake a quiz?**
+No. One attempt per quiz. Contact your teacher if you need a retake.
 
-**Makikita ba ng teacher kung nag-switch ako?**
-Oo. Naka-log lahat ng violations.
+**Can my teacher see if I switched apps?**
+Yes. All violations are logged.
 
-**Bakit zero ang score ko?**
-Either terminated (3 violations) o mali lahat ng sagot.
+**Why is my score zero?**
+Either terminated (3 violations) or all answers were wrong. Check the result page.
 
-**Nakalimutan ko ang password ko, ano gagawin?**
-Kontakin ang teacher mo. Pwede nilang i-reset ang password mo.
+**What if my score is wrong?**
+Contact your teacher — they can override it.
 
-**Paano kung mali ang score?**
-Kontakin ang teacher mo — pwede nilang i-override.`,
+**Can I see my past attempts?**
+Yes. Go to **Profile → My Progress → Quiz History**.
+
+**Why is my essay score not showing?**
+Your teacher grades essays manually. You'll see **"Pending Grading"** until then. MCQ points are already counted.`,
       },
     ],
   },
@@ -415,27 +501,38 @@ Kontakin ang teacher mo — pwede nilang i-override.`,
   {
     slug: "admin-guide",
     title: "Admin Guide",
-    description: "User management at system admin",
+    description: "Users and system management",
     icon: "Shield",
     roles: ["super_admin"],
     sections: [
       {
+        heading: "Admin Dashboard",
+        body: `When you log in, you land on the **Dashboard**.
+
+**What you'll see:**
+- **User stats** — Admins, Teachers, Students
+- **Content stats** — Rooms, Quizzes, Attempts
+- **Needs Attention** — Pending Deletions, Pending Photos
+- **Recent Activity** — new users, published quizzes, violations
+- **Quick Links** — jump to Manage Users
+
+**Note:** The bottom nav shows **Dashboard**, not "Users". Reach user management from the Dashboard.`,
+      },
+      {
         heading: "Managing Users",
-        body: `**Paano Gumawa ng Teacher:**
-1. Tap **"Users"** sa bottom nav
-2. Sa form:
-   - **Full Name** — e.g. Maria Santos
-   - **Email** — e.g. maria@school.com
-   - **Password** — min 6 chars
-   - **Role** — select **"Teacher"**
+        body: `**Create a Teacher:**
+1. Dashboard → **Manage Users** (or the Users stat card)
+2. Fill in: Full Name, Email, Password, Role = Teacher
 3. Tap **"Create User"**
 
-**Para sa Student:** Same, pero **Role = Student**.
+**Create a Student:**
+Same, but Role = Student. Optionally add Grade Level and Section.
 
-**Stats cards:**
-- Admins count
-- Teachers count
-- Students count`,
+**View all users:**
+- Stats cards at the top
+- Collapsible sections: Admins, Teachers, Students
+- **Search** by name/email
+- **Filter** by role`,
       },
       {
         heading: "Roles & Permissions",
@@ -443,60 +540,90 @@ Kontakin ang teacher mo — pwede nilang i-override.`,
 |--------|:-----:|:-------:|:-------:|
 | Manage all users | ✅ | ❌ | ❌ |
 | Create teachers | ✅ | ❌ | ❌ |
-| Create students | ✅ | ✅ (any) | ❌ |
+| Create students | ✅ | ✅ (own) | ❌ |
 | Create rooms | ✅ | ✅ (own) | ❌ |
 | Create quizzes | ✅ | ✅ (own) | ❌ |
-| Invite students | ✅ | ✅ (any) | ❌ |
 | Take quizzes | ❌ | ❌ | ✅ |
-| Reset passwords | ✅ | ✅ (own students) | ❌ |
-| Delete accounts | ✅ | ✅ (own students) | ❌ |`,
+| Override scores | ✅ | Own only | ❌ |
+| Reset passwords | ✅ | Own students | ❌ |
+| Purge deletions | ✅ | ❌ | ❌ |`,
       },
       {
         heading: "Password Reset",
-        body: `**Para sa Teachers (kung nalimutan):**
-1. Login as **super admin**
-2. Puntahan **/admin/users**
-3. Hanapin ang teacher
-4. Click **"Reset Password"** (amber button)
-5. Auto-generate o custom password
-6. **Copy** at ibigay sa teacher (secure channel)
+        body: `**In-app (recommended):**
+1. Go to **/admin/users**
+2. Find the user
+3. Tap **"Reset Password"** (amber key icon)
+4. Auto-generate or custom
+5. Copy and give to the user
 
-**Note:** Pwede ring i-reset ang students mula dito.
-
-**Manual recovery via Supabase:**
-Kung naka-lock out ka mismo:
+**Manual via Supabase (emergency):**
 1. Supabase dashboard → Authentication → Users
-2. Hanapin ang email
+2. Find the email
 3. **"..."** menu → **"Reset password"**`,
       },
       {
-        heading: "Delete Users",
+        heading: "Deleting Users",
         body: `**7-day retention system:**
 
-1. Sa **/admin/users**, hanapin ang user
-2. Click **"Delete"** (red)
-3. Confirm → countdown starts
+1. On **/admin/users**, tap **"Delete"** on a user
+2. Confirm → countdown starts
 
 **During 7 days:**
-- User cannot login
-- Data preserved
-- Pwedeng i-restore
+- User can't log in
+- Data is preserved
+- Restorable anytime
 
-**After 7 days:**
-- **Purge** — pwede i-trigger manually via admin action (future: cron job)
+**After 7 days:** you can **purge** the account permanently.
 
-**Restore:**
-- Hanapin sa **"Pending Deletion"** section
-- Click **"Restore"**`,
+**Restore:** expand **"Pending Deletion"** and tap **"Restore"**.
+
+**Purge:** run the purge action from /admin/users or /students. Only super admins can do this.`,
+      },
+      {
+        heading: "Pending Photo Approvals",
+        body: `Students need approval for profile photos.
+
+1. Dashboard → **Pending Photo Approvals** flag
+2. You'll land on **/admin/pending-photos**
+3. For each card: **Approve** or **Reject**
+
+As super admin, you can approve **any** student's photo (teachers can only approve their own students' photos).`,
+      },
+      {
+        heading: "Auditing Data",
+        body: `Log in to **Supabase → SQL Editor** for advanced queries.
+
+**Common queries:**
+
+\`\`\`sql
+-- All students
+select full_name, email, created_at
+from profiles where role = 'student';
+
+-- Pending deletions
+select full_name, email, deletion_scheduled_for
+from profiles where deletion_scheduled_for is not null;
+
+-- Recent terminations
+select p.full_name, q.title, a.termination_reason, a.submitted_at
+from attempts a
+join profiles p on p.id = a.student_id
+join quizzes q on q.id = a.quiz_id
+where a.status = 'terminated'
+order by a.submitted_at desc;
+\`\`\``,
       },
       {
         heading: "Security Notes",
-        body: `- ⚠️ **Never** i-share ang admin credentials
-- ⚠️ **Never** i-commit ang \`.env.local\` sa Git
-- ✅ I-enable ang Row Level Security (naka-set na)
-- ✅ I-review ang terminated attempts regularly
-- ✅ I-backup ang database weekly
-- ✅ I-setup ang **backup super admin account** as fallback`,
+        body: `- ⚠️ Never share your credentials
+- ⚠️ Never commit \`.env.local\` to Git
+- ✅ RLS is enabled — keep it that way
+- ✅ Review terminated attempts regularly
+- ✅ Back up the database weekly
+- ✅ Set up a backup super admin account
+- ✅ Purge expired deletions weekly
+- ✅ Rotate admin passwords every school year`,
       },
     ],
   },
@@ -507,16 +634,16 @@ Kung naka-lock out ka mismo:
   {
     slug: "excel-import",
     title: "Excel Import Guide",
-    description: "Bulk quiz at student import format",
+    description: "Bulk quiz and student import",
     icon: "FileSpreadsheet",
     roles: ["teacher", "super_admin"],
     sections: [
       {
-        heading: "Quiz Questions Import",
-        body: `**Column Headers (Row 1):**
-
+        heading: "Quiz Import — MCQ",
+        body: `**Columns:**
 | Header | Required | Example |
 |--------|:--------:|---------|
+| \`question_type\` | ⚪ | multiple_choice |
 | \`question\` | ✅ | What is 2+2? |
 | \`option_a\` | ✅ | 3 |
 | \`option_b\` | ✅ | 4 |
@@ -525,62 +652,70 @@ Kung naka-lock out ka mismo:
 | \`correct\` | ✅ | B |
 | \`points\` | ⚪ | 1 |
 
-**⚠️ Important:**
-- **Case-sensitive** ang headers
-- \`correct\` = letter lang (A, B, C, D)
-- Pwedeng 2, 3, o 4 options`,
+**Rules:**
+- Headers are **case-sensitive**
+- \`correct\` = single letter A / B / C / D
+- 2 to 4 options (at least 2)`,
       },
       {
-        heading: "Quiz Questions Example",
-        body: `| question | option_a | option_b | option_c | option_d | correct | points |
-|----------|----------|----------|----------|----------|---------|--------|
-| What is 2+2? | 3 | 4 | 5 | 6 | B | 1 |
-| Capital of France? | London | Berlin | Paris | Rome | C | 1 |
-| The sun is a star. | True | False | | | A | 1 |`,
-      },
-      {
-        heading: "Students Bulk Import",
-        body: `**Column Headers (Row 1):**
+        heading: "Quiz Import — Essay",
+        body: `**Columns:**
+| Header | Required | Example |
+|--------|:--------:|---------|
+| \`question_type\` | ✅ | essay |
+| \`question\` | ✅ | Explain photosynthesis. |
+| \`points\` | ⚪ | 20 |
+| \`word_limit_min\` | ⚪ | 50 |
+| \`word_limit_max\` | ⚪ | 300 |
+| \`rubric\` | ⚪ | Content: 10pts, Grammar: 5pts |
 
+**Rules:**
+- Leave \`option_a..d\` and \`correct\` blank
+- Essay answers are **manually graded** by you
+- Rubric is shown to students and used during grading
+
+**Mix both types** in one file — just set \`question_type\` per row.`,
+      },
+      {
+        heading: "Students Import",
+        body: `**Columns:**
 | Header | Required | Example |
 |--------|:--------:|---------|
 | \`full_name\` | ✅ | Juan Dela Cruz |
 | \`email\` | ✅ | juan@school.com |
-| \`section\` | ⚪ | Grade 8-A |
+| \`grade_level\` | ⚪ | Grade 8 |
+| \`section\` | ⚪ | A Hydrogen |
 
-**⚠️ Important:**
-- Email ay dapat **unique** — hindi pwede duplicate
-- Password ay **auto-generated** (8 chars)
+**Rules:**
+- Emails must be **unique**
+- Passwords are **auto-generated** (8 chars)
 - Max **100 students** per batch
+- \`grade_level\` and \`section\` are **separate columns**
 
-**Paano:**
-1. Puntahan **/students** page
-2. Click **"Bulk Import"**
+**How:**
+1. Go to **/students**
+2. Tap **"Bulk Import"**
 3. Download template
-4. Fill in sa Excel/Sheets
-5. Save as .xlsx o .csv
-6. Upload pabalik sa app
-7. **Print credentials** at ibigay sa students`,
-      },
-      {
-        heading: "Students Bulk Example",
-        body: `| full_name | email | section |
-|-----------|-------|---------|
-| Juan Dela Cruz | juan@school.com | Grade 8-A |
-| Maria Santos | maria@school.com | Grade 8-A |
-| Pedro Reyes | pedro@school.com | Grade 8-A |
-| Ana Garcia | ana@school.com | Grade 8-B |`,
+4. Fill in Excel/Sheets
+5. Upload back
+6. Print credentials for students`,
       },
       {
         heading: "Common Mistakes",
-        body: `| ❌ Mali | ✅ Tama | Bakit |
-|--------|--------|-------|
+        body: `| ❌ Wrong | ✅ Correct | Why |
+|----------|-----------|-----|
 | \`Question\` | \`question\` | Case-sensitive |
-| \`A. 3\` | \`3\` | Walang prefix |
-| \`true\` sa correct | \`A\` | Letter lang |
-| 5+ options | Max 4 | Hindi supported |
-| \`Full Name\` | \`full_name\` | Exact header |
-| Duplicate email | Unique emails | Import mag-fail |`,
+| \`A. 3\` | \`3\` | No letter prefix |
+| \`true\` in correct | \`A\` | Letter only |
+| 5+ options | Max 4 | Not supported |
+| \`MCQ\` in question_type | \`multiple_choice\` | Full value required |
+| Grade + section combined | Two columns | Separate headers |
+| Duplicate emails | Unique emails | Import fails |
+
+**Tips:**
+- Save as .xlsx or .csv
+- Refresh the page after import if questions don't appear
+- Check the quiz editor to verify imported rows`,
       },
     ],
   },

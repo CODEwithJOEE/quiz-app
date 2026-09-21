@@ -1,304 +1,485 @@
 # 👨‍🎓 Student Guide
 
-Kompletong gabay para sa mga students.
+Complete guide for students — joining rooms, taking quizzes, and understanding your results.
+
+---
+
+## Table of Contents
+
+1. [Login](#1-login)
+2. [Home Dashboard](#2-home-dashboard)
+3. [Joining a Room](#3-joining-a-room)
+4. [Viewing Classmates](#4-viewing-classmates)
+5. [Taking a Quiz](#5-taking-a-quiz)
+6. [Taking a Quiz with Essays](#6-taking-a-quiz-with-essays)
+7. [Understanding Your Result](#7-understanding-your-result)
+8. [My Quiz History](#8-my-quiz-history)
+9. [Anti-Cheat Rules](#9-anti-cheat-rules)
+10. [Understanding Your Score](#10-understanding-your-score)
+11. [Profile & Settings](#11-profile--settings)
+12. [Install on Phone](#12-install-on-phone)
+13. [Best Practices](#13-best-practices)
+14. [Troubleshooting](#14-troubleshooting)
+15. [FAQ](#15-faq)
 
 ---
 
 ## 1. Login
 
-1. Buksan ang app link na binigay ng teacher mo
-2. I-enter ang email at password na binigay ng teacher
+1. Open the app link provided by your teacher
+2. Enter the **email** and **password** given to you
 3. Tap **"Sign In"**
 
-**⚠️ Note:** Walang sign-up. Kung wala kang account, humingi sa teacher mo.
+**⚠️ Note:** There is no sign-up. If you don't have an account, ask your teacher.
 
 ---
 
 ## 2. Home Dashboard
 
-Pag naka-login ka, ito ang makikita mo sa **Home**:
+When you're logged in, the **Home** page shows:
 
-- **Greeting** — "Good morning, [Pangalan]!"
-- **Room Invitations** — kung may bagong invitations from teachers
-- **Quick Actions** — shortcuts papunta sa Rooms
+- **Greeting** — "Good morning, [Name]!"
+- **Room Invitations** — any new invitations from teachers
+- **Quick Actions** — shortcuts to Rooms and Quiz History
 
-Kung may **red badge** sa Home icon sa bottom nav, ibig sabihin may pending invitations ka.
+If you see a **red badge** on the Home icon in the bottom nav, you have pending invitations.
 
 ---
 
 ## 3. Joining a Room
 
-Ang teacher mo ang mag-a-invite sa'yo. Ikaw ay kailangan lang mag-accept.
+Your teacher invites you. You just need to accept.
 
-### Paano Mag-accept ng Invitation
+### How to Accept an Invitation
 
-1. Buksan ang **Home** page
-2. Hanapin ang **"Room Invitations"** section
-3. I-check ang room details:
+1. Open the **Home** page
+2. Find the **"Room Invitations"** section
+3. Review the room details:
    - Room name
    - Subject
-   - Description (kung meron)
-4. **Tap "Accept"** para sumali, o **"Decline"** kung ayaw mo
+   - Description (if any)
+4. Tap **"Accept"** to join, or **"Decline"** to skip
 
-Pag na-accept, lalabas ang room sa **Rooms** page mo.
+Once accepted, the room appears on your **Rooms** page.
 
-### Paano Mag-view ng Rooms
+### How to View Your Rooms
 
-1. Tap **"Rooms"** sa bottom nav
-2. Makikita mo lahat ng rooms na sinasalihan mo
-3. Tap ang room para makita ang:
+1. Tap **"Rooms"** in the bottom nav
+2. You'll see all rooms you've joined
+3. Tap a room to see:
    - **Classmates** list
-   - **Available Quizzes** (kung meron)
+   - **Available Quizzes**
    - Room description
+
+**Note:** Even if you have 8 subjects with 8 different teachers, you only need **one account**. All teachers can invite you to their rooms.
 
 ---
 
-## 4. Taking a Quiz
+## 4. Viewing Classmates
 
-### Bago Mag-start
+On the room page, scroll down to the **"Classmates"** section.
 
-1. Sa room page, hanapin ang **"Available Quizzes"**
-2. Tap ang quiz na gusto mong i-take
-3. Basahin ang **warning card**:
-   - Once mag-start, hindi ka na pwedeng mag-back
-   - Huwag lumipat ng tab o mag-minimize
+You'll see:
+
+- Names and emails of your classmates
+- Grade and Section badges (if set)
+- A **search box** (visible when there are more than 3 classmates)
+
+You can search by name or email to find a specific classmate.
+
+---
+
+## 5. Taking a Quiz
+
+### Before You Start
+
+1. On the room page, find the **"Available Quizzes"**
+2. Tap the quiz you want to take
+3. Read the **warning card**:
+   - Once you start, you can't go back
+   - Don't switch tabs or minimize
    - 3 violations = auto-terminate + score 0
    - One attempt only
 
-### Anti-Cheat Rules (Important!)
+### Anti-Cheat Rules
 
-**Bawal gawin:**
+**Do NOT:**
 
-- ❌ Mag-switch ng tab
-- ❌ Mag-switch ng app (WhatsApp, Messenger, etc.)
-- ❌ I-minimize ang app
-- ❌ I-exit ang fullscreen mode
-- ❌ Mag-copy / mag-paste
-- ❌ Mag-right-click
-- ❌ Mag-back button sa browser
+- ❌ Switch tabs
+- ❌ Switch apps (WhatsApp, Messenger, etc.)
+- ❌ Minimize the app
+- ❌ Exit fullscreen mode
+- ❌ Copy or paste
+- ❌ Right-click
+- ❌ Use the browser back button
 
-**Paano ito na-detect:**
+**How it's detected:**
 
-- Nakikita ng system ang bawat switch
-- Naka-log lahat
-- Pag naka-3 violations = auto-terminate, score 0
+- The system sees every action
+- Everything is logged
+- 3 violations = auto-terminate, score 0
 
-**Tips para hindi ma-flag:**
+**Tips to avoid getting flagged:**
 
-- ✅ I-install ang app sa phone
-- ✅ I-DND ang phone bago mag-start
-- ✅ I-close ang lahat ng ibang apps
-- ✅ I-inform ang pamilya na may exam ka
-- ✅ I-off ang WiFi calling
+- ✅ Install the app on your phone
+- ✅ Turn on Do Not Disturb before starting
+- ✅ Close all other apps
+- ✅ Tell your family you have an exam
+- ✅ Turn off WiFi calling
 
-### Paano Mag-take ng Quiz
+### How to Take the Quiz
 
 1. Tap **"🚀 Start Quiz"**
-2. **Pumayag sa fullscreen request** — automatic na lalabas
-3. Basahin ang question
-4. **Tap ang sagot** — may checkmark na lalabas
-5. Tap **"Next →"** para sa susunod
-6. Tap **"← Prev"** para bumalik
-7. Gamitin ang **number buttons** sa ibaba para mag-jump sa specific question
-8. Pag tapos na lahat, tap **"✓ Submit Quiz"**
+2. **Allow the fullscreen request** — it appears automatically
+3. Read the question
+4. **Tap your answer** — a checkmark appears
+5. Tap **"Next →"** for the next question
+6. Tap **"← Prev"** to go back
+7. Use the **number buttons** at the bottom to jump to a specific question
+8. When done, tap **"✓ Submit Quiz"**
 
-### Kung May Timer
+### If There's a Timer
 
-- May **timer** sa taas (amber color)
-- Pag malapit na matapos (less than 1 min), magiging **red at pulse**
-- Pag nag-0 ang timer, **auto-submit** ang quiz
+- A **timer** appears at the top (amber color)
+- When time is running low (under 1 minute), it turns **red and pulses**
+- When the timer hits 0, the quiz **auto-submits**
 
-### Paano Mag-navigate Between Questions
+### Navigating Between Questions
 
-- **Prev/Next buttons** — isa-isang
-- **Number grid sa ibaba** — jump sa specific question
+- **Prev/Next buttons** — move one at a time
+- **Number grid at the bottom** — jump to a specific question
   - 🔵 **Blue** = current question
-  - 🟢 **Green** = answered na
-  - ⚪ **Gray** = hindi pa nasagot
+  - 🟢 **Green** = answered
+  - ⚪ **Gray** = not yet answered
 
-### Paano Makita ang Progress
+### Checking Your Progress
 
-Sa taas ng screen:
+At the top of the screen:
 
 - **"Q5 / 20"** — question 5 of 20
-- **"12 answered"** — bilang ng nasagot mo
+- **"12 answered"** — how many you've answered
 - **Progress bar** — visual indicator
 
-### Pag Naka-violation Ka
+### If You Get a Violation
 
-Lalabas ang **red warning banner**:
+A **red warning banner** appears:
 
 - "⚠️ Violation 1 / 3"
-- Naka-log na ito sa system
+- This is logged in the system
 
 **Consequences:**
 
-- **1st violation** — Warning lang
-- **2nd violation** — Warning ulit
+- **1st violation** — warning only
+- **2nd violation** — another warning
 - **3rd violation** — 🚫 **Auto-terminate! Score = 0**
 
-### Pag Tapos Na — Result Page
+---
 
-Makikita mo:
+## 6. Taking a Quiz with Essays
 
-- **Score** — X / Y (e.g., 18/20)
-- **Percentage** — (e.g., 90%)
-- **PASSED / Keep Practicing** — kung 60%+ = passed
-- **Submitted time**
+Some quizzes include **essay questions** in addition to multiple choice.
 
-Kung terminated:
+### How Essays Look
+
+- Instead of answer choices, you'll see a **text box**
+- A **word counter** shows your current word count
+- If set, a **word limit** and **rubric** are shown above the box
+
+### Answering an Essay
+
+1. Type your answer in the text box
+2. Your answer auto-saves when you leave the box
+3. Watch the word counter — it turns amber if you're below the minimum
+4. Tap **"Next →"** when ready
+
+### What Happens After Submitting
+
+- Multiple choice answers are **auto-scored** immediately
+- Essay answers are **not scored yet** — your teacher grades them manually
+- Your result page shows **"Pending Grading"** until the teacher finishes
+- Your **current score** shows MCQ points only at this stage
+
+Once your teacher grades the essay:
+
+- Your result page updates with the final score
+- Any feedback from your teacher appears on the result page
+
+**You don't need to do anything** — just wait for your teacher.
+
+---
+
+## 7. Understanding Your Result
+
+After submitting, the **Result page** shows one of three states:
+
+### 1. Pending Grading (essay quizzes)
+
+- An amber clock icon
+- "Pending Grading"
+- Your current score with a note that essay points are pending
+- Your teacher will grade it soon
+
+### 2. Passed / Keep Practicing (fully scored)
+
+- **Score** — X / Y (e.g. 18/20)
+- **Percentage** — (e.g. 90%)
+- **PASSED** if 60%+, otherwise **Keep Practicing**
+- Submitted time
+
+### 3. Terminated
 
 - 🚫 **Exam Terminated**
-- **Reason:** halimbawa `max_strikes:visibility_hidden`
+- **Reason** — e.g. `max_strikes:visibility_hidden`
 - **Score: 0**
 
----
-
-## 5. Understanding Your Score
-
-| Score          | Meaning                        |
-| -------------- | ------------------------------ |
-| **60%+**       | ✅ Passed                      |
-| **< 60%**      | 📝 Keep Practicing             |
-| **Terminated** | 🚫 0 score dahil sa violations |
-
-**Note:** Ang teacher mo ang mag-set ng passing threshold kung gusto (default 60%).
+If your teacher left feedback, it also appears here.
 
 ---
 
-## 6. Profile & Settings
+## 8. My Quiz History
 
-### Paano Makita ang Profile Mo
+See all your past attempts in one place.
 
-1. Tap **"Profile"** sa bottom nav
-2. Makikita mo:
-   - Pangalan (may initials avatar)
+### How to Open
+
+1. Tap **"Profile"** in the bottom nav
+2. Find the **"My Progress"** section
+3. Tap **"Quiz History"**
+
+Or tap **"Quiz History"** from the Home page Quick Actions.
+
+### What You'll See
+
+**Stats at the top:**
+
+- **Quizzes Taken** — total attempts
+- **Average Score** — across all submitted quizzes
+- **Best Score** — your highest percentage
+- **Terminated** — how many quizzes were terminated
+
+**Attempt list:**
+
+- Each card shows the quiz title, room name, status, date, and score
+- **Tap a card** to open the detailed result
+
+### Search, Filter, Sort
+
+- **Search box** — find a quiz by title or room name
+- **Filter** — by status (All / Passed-Taken / Terminated)
+- **Sort** — by recent, oldest, score (high/low)
+- **Reset filters** — clears everything
+
+---
+
+## 9. Anti-Cheat Rules
+
+**Do NOT:**
+
+- ❌ Switch tabs
+- ❌ Switch apps (WhatsApp, Messenger)
+- ❌ Minimize the app
+- ❌ Exit fullscreen
+- ❌ Copy or paste
+- ❌ Right-click
+- ❌ Use the browser back button
+
+**Consequences:**
+
+- 1st violation — warning
+- 2nd violation — another warning
+- 3rd violation — **auto-terminate, score 0**
+
+**Tips:**
+
+- ✅ Install the app
+- ✅ Turn on Do Not Disturb
+- ✅ Close other apps
+- ✅ Tell your family you're taking an exam
+
+---
+
+## 10. Understanding Your Score
+
+| Score          | Meaning                                |
+| -------------- | -------------------------------------- |
+| **60%+**       | ✅ Passed                              |
+| **< 60%**      | 📝 Keep Practicing                     |
+| **Terminated** | 🚫 0 score due to violations           |
+| **Pending**    | ⏳ Waiting for teacher to grade essays |
+
+**Note:** Your teacher sets the passing threshold (60% is the default).
+
+---
+
+## 11. Profile & Settings
+
+### Viewing Your Profile
+
+1. Tap **"Profile"** in the bottom nav
+2. You'll see:
+   - Your name and avatar
    - Email
    - Role: Student
-   - Theme toggle (Light / Dark / System)
+   - Grade Level and Section (if set)
+
+### Changing Your Name
+
+1. Tap **"Edit name"** under your profile
+2. Enter the new name
+3. Tap **"Save"**
+
+### Uploading a Photo
+
+1. Tap **"Upload photo"** under your profile
+2. Pick an image (max 2 MB, JPEG/PNG/WebP)
+3. Crop it to a circle
+4. Tap **"Apply"**
+
+**Note:** Your photo needs **teacher approval** before it appears. You'll see a ⏳ pending indicator until then. If rejected, you'll see the reason and can upload a new one.
+
+### Changing Your Password
+
+1. On the Profile page, look for the **"Security"** section
+2. Tap **"Change Password"**
+3. Enter your current password, then the new one twice
+4. Tap **"Update Password"**
 
 ### Dark Mode
 
-1. Sa Profile page, hanapin ang **"Appearance"** section
-2. Pumili:
-   - **Light** — Light theme
-   - **Dark** — Dark theme
-   - **System** — Auto (sumusunod sa phone settings)
+1. On the Profile page, find the **"Appearance"** section
+2. Choose:
+   - **Light** — light theme
+   - **Dark** — dark theme
+   - **System** — follows your phone settings
 
-### Paano Mag-logout
+Your preference is saved on your device.
 
-1. Sa Profile page, scroll sa ilalim
+### Logging Out
+
+1. On the Profile page, scroll to the bottom
 2. Tap **"Log Out"**
 3. Confirm
 
 ---
 
-## 7. Install sa Phone (Highly Recommended!)
+## 12. Install on Phone
 
-Ang installed app ay may **fullscreen mode** — mas safe sa quiz at hindi ka basta ma-flag sa violations.
+The installed app has **fullscreen mode** — safer for quizzes and less likely to trigger violations.
 
-### Android:
+### Android
 
-1. Buksan ang app sa **Chrome**
+1. Open the app in **Chrome**
 2. Menu (⋮) → **"Install app"**
 3. Tap **"Install"**
 
-### iPhone:
+### iPhone
 
-1. Buksan ang app sa **Safari** (⚠️ hindi Chrome)
+1. Open the app in **Safari** (⚠️ not Chrome)
 2. Share button (⎋) → **"Add to Home Screen"**
 3. Tap **"Add"**
 
 ---
 
-## 8. Troubleshooting
+## 13. Best Practices
 
-**Hindi ako maka-login**
+### Before the Exam
 
-- I-check ang email spelling
+- ✅ Charge your phone (at least 50%)
+- ✅ Connect to stable WiFi
+- ✅ Install the app on your phone
+- ✅ Turn on Do Not Disturb — silence notifications
+- ✅ Close all other apps
+- ✅ Tell your family you have an exam
+- ✅ Go to a quiet place
+
+### During the Exam
+
+- ✅ Read each question carefully
+- ✅ Don't rush
+- ✅ Watch the timer if there's a time limit
+- ✅ Use the number grid to jump to unanswered questions
+- ❌ Do not switch apps
+- ❌ Do not Google (auto-flagged)
+
+### After the Exam
+
+- ✅ Check the result page
+- ✅ If there's a dispute, contact your teacher immediately
+- ✅ Don't share questions with classmates who haven't taken the quiz yet
+
+---
+
+## 14. Troubleshooting
+
+**I can't log in**
+
+- Check your email spelling
 - Password is case-sensitive
-- Kung nalimutan, kontakin ang teacher
+- If you forgot it, contact your teacher
 
-**Walang invitations sa Home**
+**No invitations on Home**
 
-- Baka hindi ka pa na-invite ng teacher
-- Kontakin ang teacher mo
+- Your teacher may not have invited you yet
+- Contact your teacher
 
-**Nag-crash yung quiz habang nag-take**
+**The quiz crashed while I was taking it**
 
-- I-refresh ang browser (pull down sa mobile)
-- Naka-save ang answers — tuloy ka lang
-- Kung ayaw pa rin, kontakin ang teacher
+- Refresh the browser (pull down on mobile)
+- Your answers are saved — continue where you left off
+- If it still doesn't work, contact your teacher
 
-**Na-terminate ako bigla**
+**I was terminated suddenly**
 
-- Naka-3 violations ka (tab switch, minimize, etc.)
-- I-check ang result page para sa reason
-- Kontakin ang teacher kung may dispute
+- You may have hit 3 violations (tab switch, minimize, etc.)
+- Check the result page for the reason
+- Contact your teacher if you disagree
 
-**Hindi ko ma-close yung quiz**
+**I can't close the quiz**
 
-- Yan ay by design — para hindi maka-escape
-- Pwede lang i-close via submit
-- Kung stuck, force-close ang app at i-reopen — naka-save ang progress
+- That's by design — to prevent escaping
+- You can only close it by submitting
+- If you're stuck, force-close the app and reopen it — your progress is saved
 
-**Hindi ko makita yung "Start Quiz" button**
+**I can't find the "Start Quiz" button**
 
-- Baka hindi pa naka-publish ang quiz
-- Baka tapos ka nang mag-take (one attempt only)
-- I-check kung na-accept mo yung invitation sa room
+- The quiz may not be published yet
+- You may have already taken it (one attempt only)
+- Check if you've accepted the room invitation
 
----
+**My score shows "Pending Grading"**
 
-## 9. Best Practices
-
-### Bago Mag-exam:
-
-- ✅ I-charge ang phone (at least 50%)
-- ✅ I-connect sa stable WiFi
-- ✅ I-install ang app sa phone
-- ✅ I-DND ang phone — patayin notifications
-- ✅ I-close ang lahat ng ibang apps
-- ✅ I-inform ang pamilya na may exam
-- ✅ Pumunta sa tahimik na lugar
-
-### Habang Nag-e-exam:
-
-- ✅ Basahin mabuti ang bawat question
-- ✅ Huwag mag-madali
-- ✅ I-check ang timer kung may time limit
-- ✅ Gamitin ang number grid para mag-jump sa hindi pa nasagot
-- ❌ Huwag lumipat ng app
-- ❌ Huwag mag-search sa Google (auto-flagged)
-
-### Pagkatapos:
-
-- ✅ I-check ang result page
-- ✅ Kung may dispute, kontakin ang teacher agad
-- ✅ Huwag mag-share ng questions sa classmates na hindi pa nag-take
+- The quiz has essay questions your teacher hasn't graded yet
+- Your MCQ score is already counted
+- Wait for your teacher — the score will update automatically
 
 ---
 
-## 10. FAQ
+## 15. FAQ
 
-**Pwede bang mag-retake?**
-Hindi. One attempt lang per quiz. Kung gusto mong mag-retake, kontakin ang teacher mo.
+**Can I retake a quiz?**
+No. One attempt per quiz. Contact your teacher if you need a retake.
 
-**Makikita ba ng teacher ko kung nag-switch ako ng app?**
-Oo. Naka-log lahat ng violations sa system.
+**Can my teacher see if I switched apps?**
+Yes. All violations are logged in the system.
 
-**Paano kung may emergency?**
-Kung kailangan mong umalis (CR, etc.), sabihin sa teacher mo bago mag-take. Or mag-take ka na lang pagkatapos.
+**What if there's an emergency?**
+If you need to leave (restroom, etc.), tell your teacher before starting. Or take the quiz later.
 
-**Bakit zero ang score ko?**
-Either terminated ka (3 violations) o mali lahat ng sagot. Check ang result page for details.
+**Why is my score zero?**
+Either you were terminated (3 violations), or you got all questions wrong. Check the result page for details.
 
-**Paano kung mali yung score na nakuha ko?**
-Kontakin ang teacher mo agad. Pwede nilang i-override ang score.
+**What if my score is wrong?**
+Contact your teacher immediately. They can override the score.
 
-**Makikita ko ba ang past attempts ko?**
-Sa ngayon, hindi pa. Pwede mong balikan ang specific quiz para makita ang result. (Future feature.)
+**Can I see my past attempts?**
+Yes! Go to **Profile → My Progress → Quiz History**. You'll see all your attempts, stats, and can search, filter, and sort them.
+
+**Why is my essay score not showing yet?**
+Your teacher grades essays manually. Until then, you'll see **"Pending Grading"** on the result page. MCQ points are already counted.
+
+**Can I see teacher feedback?**
+Yes — if your teacher added comments while grading, they appear on your result page.
 
 ---
 
-**Good luck sa exams mo!** 📚
+**Good luck on your exams!** 📚
