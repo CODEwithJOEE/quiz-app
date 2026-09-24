@@ -45,3 +45,17 @@ export async function getTeacherPendingCount(
 
   return count ?? 0;
 }
+export async function getTeacherPendingPhotosCount(
+  teacherId: string,
+): Promise<number> {
+  const supabase = await createClient();
+
+  const { count } = await supabase
+    .from("profiles")
+    .select("*", { count: "exact", head: true })
+    .eq("avatar_pending", true)
+    .not("avatar_url", "is", null)
+    .eq("created_by", teacherId);
+
+  return count ?? 0;
+}

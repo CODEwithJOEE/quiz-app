@@ -32,6 +32,7 @@ import Avatar from "@/components/Avatar";
 import AvatarUpload from "./AvatarUpload";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { setRequestLocale, getTranslations } from "next-intl/server";
+import { getTeacherPendingPhotosCount } from "@/lib/notifications"; // ✅ ADD
 
 const APP_VERSION = "1.0.0";
 
@@ -54,6 +55,10 @@ export default async function ProfilePage({
 
   const stats = await getProfileStats();
 
+  let pendingPhotosCount = 0;
+  if (me.role === "teacher") {
+    pendingPhotosCount = await getTeacherPendingPhotosCount(me.id);
+  }
   const roleVariant: Record<string, "info" | "success" | "danger"> = {
     super_admin: "danger",
     teacher: "info",
@@ -188,7 +193,15 @@ export default async function ProfilePage({
                     {t("approveOrReject")}
                   </p>
                 </div>
-                <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                {/* ✅ ADD: Badge + Arrow group */}
+                <div className="flex items-center gap-2">
+                  {pendingPhotosCount > 0 && (
+                    <Badge variant="warning">
+                      {pendingPhotosCount > 99 ? "99+" : pendingPhotosCount}
+                    </Badge>
+                  )}
+                  <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                </div>
               </div>
             </Card>
           </Link>
