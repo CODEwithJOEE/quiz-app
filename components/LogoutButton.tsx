@@ -1,20 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
 import { LogOut } from "lucide-react";
 import { Button } from "./ui/Button";
 
 export default function LogoutButton() {
-  const router = useRouter();
+  const t = useTranslations("Logout");
+  const locale = useLocale(); // ✅ Get current locale
   const [loading, setLoading] = useState(false);
 
   async function handleLogout() {
-    if (!confirm("Log out?")) return;
+    if (!confirm(t("confirm"))) return;
     setLoading(true);
-    await fetch("/api/auth/logout", { method: "POST" });
-    router.push("/login");
-    router.refresh();
+
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+
+      // ✅ Hard redirect WITH locale prefix
+      window.location.href = `/${locale}/login`;
+    } catch (err) {
+      setLoading(false);
+      console.error("Logout error:", err);
+    }
   }
 
   return (
@@ -26,7 +34,7 @@ export default function LogoutButton() {
       onClick={handleLogout}
     >
       {!loading && <LogOut className="w-4 h-4" />}
-      {loading ? "Logging out..." : "Log Out"}
+      {loading ? t("loggingOut") : t("logOut")}
     </Button>
   );
 }

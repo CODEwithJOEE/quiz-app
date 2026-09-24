@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import {
   Upload,
   Download,
@@ -11,8 +11,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { parseQuizExcel } from "@/lib/quiz/parseExcel";
-import { bulkInsertQuestions } from "@/app/(dashboard)/quiz/[quizId]/question-actions";
-import { Button } from "@/components/ui/Button";
+import { bulkInsertQuestions } from "@/src/app/[locale]/(dashboard)/quiz/[quizId]/question-actions";
 import { Card } from "@/components/ui/Card";
 
 export default function ExcelImport({ quizId }: { quizId: string }) {

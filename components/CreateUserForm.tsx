@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import {
   UserPlus,
   User,
@@ -22,6 +23,8 @@ export default function CreateUserForm({
 }: {
   allowedRoles: AllowedRole[];
 }) {
+  const t = useTranslations("CreateUser");
+  const tRoles = useTranslations("Roles");
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -57,11 +60,14 @@ export default function CreateUserForm({
     setLoading(false);
 
     if (!res.ok) {
-      setMessage({ type: "err", text: data.error ?? "Something went wrong" });
+      setMessage({ type: "err", text: data.error ?? t("errorGeneric") });
       return;
     }
 
-    setMessage({ type: "ok", text: `Created ${role}: ${email}` });
+    setMessage({
+      type: "ok",
+      text: t("createdMessage", { role: tRoles(role), email }),
+    });
     setEmail("");
     setPassword("");
     setFullName("");
@@ -77,11 +83,9 @@ export default function CreateUserForm({
           <UserPlus className="w-4 h-4" />
         </div>
         <div>
-          <h2 className="font-semibold text-sm">Create New User</h2>
+          <h2 className="font-semibold text-sm">{t("title")}</h2>
           <p className="text-xs text-muted-foreground">
-            {allowedRoles.length > 1
-              ? "Add teachers or students"
-              : "Add a student"}
+            {allowedRoles.length > 1 ? t("subtitle") : t("subtitleStudent")}
           </p>
         </div>
       </div>
@@ -107,8 +111,8 @@ export default function CreateUserForm({
         <div className="relative">
           <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground z-10 pointer-events-none mt-[10px]" />
           <Input
-            label="Full Name"
-            placeholder="Juan Dela Cruz"
+            label={t("fullName")}
+            placeholder={t("fullNamePlaceholder")}
             required
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
@@ -119,9 +123,9 @@ export default function CreateUserForm({
         <div className="relative">
           <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground z-10 pointer-events-none mt-[10px]" />
           <Input
-            label="Email"
+            label={t("email")}
             type="email"
-            placeholder="user@school.com"
+            placeholder={t("emailPlaceholder")}
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -132,9 +136,9 @@ export default function CreateUserForm({
         <div className="relative">
           <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground z-10 pointer-events-none mt-[10px]" />
           <Input
-            label="Password"
+            label={t("password")}
             type="text"
-            placeholder="min 6 characters"
+            placeholder={t("passwordPlaceholder")}
             required
             minLength={6}
             value={password}
@@ -145,7 +149,9 @@ export default function CreateUserForm({
 
         {allowedRoles.length > 1 && (
           <div>
-            <label className="text-sm font-medium text-foreground">Role</label>
+            <label className="text-sm font-medium text-foreground">
+              {t("role")}
+            </label>
             <div className="grid grid-cols-2 gap-2 mt-1.5">
               {allowedRoles.map((r) => (
                 <button
@@ -158,33 +164,33 @@ export default function CreateUserForm({
                       : "border-border text-muted-foreground hover:border-muted-foreground"
                   }`}
                 >
-                  {r === "teacher" ? "Teacher" : "Student"}
+                  {r === "teacher" ? t("teacher") : t("student")}
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        {/* ✅ Grade Level + Section — para sa students lang */}
+        {/* Grade Level + Section — students only */}
         {role === "student" && (
           <div className="space-y-3 pt-2">
             <div className="flex items-center gap-1.5">
               <GraduationCap className="w-3.5 h-3.5 text-brand" />
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                Grade & Section (Optional)
+                {t("gradeSection")}
               </p>
             </div>
 
             <Input
-              label="Grade Level"
-              placeholder="e.g. Grade 8"
+              label={t("gradeLevel")}
+              placeholder={t("gradeLevelPlaceholder")}
               value={gradeLevel}
               onChange={(e) => setGradeLevel(e.target.value)}
             />
 
             <Input
-              label="Section"
-              placeholder="e.g. A Hydrogen"
+              label={t("section")}
+              placeholder={t("sectionPlaceholder")}
               value={section}
               onChange={(e) => setSection(e.target.value)}
             />
@@ -192,7 +198,7 @@ export default function CreateUserForm({
         )}
 
         <Button type="submit" size="lg" className="w-full" loading={loading}>
-          {loading ? "Creating..." : "Create User"}
+          {loading ? t("creating") : t("create")}
         </Button>
       </form>
     </Card>

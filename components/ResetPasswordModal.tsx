@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import {
   KeyRound,
   X,
@@ -12,7 +13,7 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
-import { resetStudentPassword } from "@/app/(dashboard)/students/actions";
+import { resetStudentPassword } from "@/src/app/[locale]/(dashboard)/students/actions";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
@@ -34,6 +35,7 @@ export default function ResetPasswordModal({
   studentName: string;
   studentEmail: string;
 }) {
+  const t = useTranslations("ResetPassword");
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [password, setPassword] = useState("");
@@ -63,7 +65,7 @@ export default function ResetPasswordModal({
     setCopied(false);
 
     if (password.trim().length < 6) {
-      setError("Password must be at least 6 characters");
+      setError(t("minLength"));
       return;
     }
 
@@ -100,8 +102,8 @@ export default function ResetPasswordModal({
           setOpen(true);
         }}
         className="inline-flex items-center justify-center w-8 h-8 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950 rounded-lg transition-colors"
-        title="Reset Password"
-        aria-label="Reset Password"
+        title={t("reset")}
+        aria-label={t("reset")}
       >
         <KeyRound className="w-4 h-4" />
       </button>
@@ -118,7 +120,7 @@ export default function ResetPasswordModal({
               <KeyRound className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="font-semibold text-sm">Reset Password</h2>
+              <h2 className="font-semibold text-sm">{t("reset")}</h2>
               <p className="text-xs text-muted-foreground truncate max-w-[180px]">
                 {studentName}
               </p>
@@ -128,7 +130,7 @@ export default function ResetPasswordModal({
             onClick={handleClose}
             disabled={pending}
             className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors"
-            aria-label="Close"
+            aria-label={t("cancel")}
           >
             <X className="w-4 h-4" />
           </button>
@@ -140,17 +142,15 @@ export default function ResetPasswordModal({
             <div className="flex items-start gap-2 p-3 rounded-xl bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300 text-sm">
               <Check className="w-4 h-4 shrink-0 mt-0.5" />
               <div className="flex-1">
-                <p className="font-medium">Password reset successful!</p>
-                <p className="text-xs mt-0.5">
-                  Ibigay ito sa student — huwag kalimutan!
-                </p>
+                <p className="font-medium">{t("successTitle")}</p>
+                <p className="text-xs mt-0.5">{t("successHint")}</p>
               </div>
             </div>
 
             {/* Show password */}
             <div className="space-y-1.5">
               <label className="text-xs text-muted-foreground font-medium">
-                New Password
+                {t("newPassword")}
               </label>
               <div className="flex gap-2">
                 <div className="flex-1 h-10 px-3 rounded-xl border border-border bg-muted font-mono text-sm flex items-center select-all">
@@ -159,7 +159,7 @@ export default function ResetPasswordModal({
                 <button
                   onClick={handleCopy}
                   className="w-10 h-10 rounded-xl border border-border bg-card hover:bg-muted flex items-center justify-center shrink-0 transition-colors"
-                  aria-label="Copy password"
+                  aria-label={t("copyPassword")}
                 >
                   {copied ? (
                     <Check className="w-4 h-4 text-green-600" />
@@ -169,12 +169,13 @@ export default function ResetPasswordModal({
                 </button>
               </div>
               <p className="text-xs text-muted-foreground">
-                Ibigay sa: <b>{studentEmail}</b>
+                {t("giveTo")}
+                <b>{studentEmail}</b>
               </p>
             </div>
 
             <Button onClick={handleClose} className="w-full">
-              Done
+              {t("done")}
             </Button>
           </div>
         ) : (
@@ -189,7 +190,7 @@ export default function ResetPasswordModal({
 
             {/* Warning */}
             <div className="bg-amber-50 dark:bg-amber-950 text-amber-800 dark:text-amber-300 p-3 rounded-xl text-xs">
-              ⚠️ Ang lumang password ay hindi na gagana pagkatapos i-reset.
+              {t("warning")}
             </div>
 
             {/* Auto-generate button */}
@@ -200,7 +201,7 @@ export default function ResetPasswordModal({
               className="w-full"
             >
               <RefreshCw className="w-4 h-4" />
-              Auto-generate Password
+              {t("autoGenerate")}
             </Button>
 
             <div className="flex items-center gap-3">
@@ -212,18 +213,18 @@ export default function ResetPasswordModal({
             {/* Custom input */}
             <div className="relative">
               <Input
-                label="Custom Password"
+                label={t("customPassword")}
                 type={showPw ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Min 6 characters"
+                placeholder={t("customPlaceholder")}
                 autoFocus
               />
               <button
                 type="button"
                 onClick={() => setShowPw((s) => !s)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground mt-[10px]"
-                aria-label="Toggle password visibility"
+                aria-label={t("togglePassword")}
               >
                 {showPw ? (
                   <EyeOff className="w-4 h-4" />
@@ -241,7 +242,7 @@ export default function ResetPasswordModal({
                 disabled={pending}
                 className="flex-1"
               >
-                Cancel
+                {t("cancel")}
               </Button>
               <Button
                 onClick={handleSubmit}
@@ -249,7 +250,7 @@ export default function ResetPasswordModal({
                 disabled={pending || password.length < 6}
                 className="flex-1"
               >
-                {pending ? "Resetting..." : "Reset Password"}
+                {pending ? t("resetting") : t("reset")}
               </Button>
             </div>
           </>

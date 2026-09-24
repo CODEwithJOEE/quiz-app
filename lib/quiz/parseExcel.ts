@@ -26,7 +26,7 @@ export function parseQuizExcel(file: File): Promise<ParsedQuestion[]> {
         const rows: any[] = XLSX.utils.sheet_to_json(sheet, { defval: "" });
 
         if (rows.length === 0) {
-          reject(new Error("Walang laman ang file."));
+          reject(new Error("File is empty."));
           return;
         }
 
@@ -36,11 +36,9 @@ export function parseQuizExcel(file: File): Promise<ParsedQuestion[]> {
           return;
         }
 
-        // Check if new format has question_type
         const hasTypeColumn = "question_type" in firstRow;
 
         const parsed: ParsedQuestion[] = rows.map((r, i) => {
-          // Determine question type
           const type = hasTypeColumn
             ? String(r.question_type ?? "multiple_choice")
                 .trim()
@@ -61,7 +59,6 @@ export function parseQuizExcel(file: File): Promise<ParsedQuestion[]> {
           const points = Number(r.points) || 1;
 
           if (type === "essay") {
-            // Essay parsing
             return {
               question_text: questionText,
               question_type: "essay",
@@ -77,7 +74,6 @@ export function parseQuizExcel(file: File): Promise<ParsedQuestion[]> {
             };
           }
 
-          // MCQ parsing (existing logic)
           const correctLetter = String(r.correct ?? "")
             .trim()
             .toUpperCase();

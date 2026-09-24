@@ -1,12 +1,15 @@
+import { useTranslations } from "next-intl";
 import { FileEdit, CheckCircle2, Lock } from "lucide-react";
 import { Badge } from "./ui/Badge";
 
 export default function QuizStatusBadge({ status }: { status: string }) {
+  const t = useTranslations("QuizStatus");
+
   if (status === "published") {
     return (
       <Badge variant="success">
         <CheckCircle2 className="w-3 h-3" />
-        Published
+        {t("published")}
       </Badge>
     );
   }
@@ -15,7 +18,7 @@ export default function QuizStatusBadge({ status }: { status: string }) {
     return (
       <Badge variant="default">
         <Lock className="w-3 h-3" />
-        Closed
+        {t("closed")}
       </Badge>
     );
   }
@@ -23,7 +26,7 @@ export default function QuizStatusBadge({ status }: { status: string }) {
   return (
     <Badge variant="warning">
       <FileEdit className="w-3 h-3" />
-      Draft
+      {t("draft")}
     </Badge>
   );
 }

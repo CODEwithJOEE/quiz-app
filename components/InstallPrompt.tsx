@@ -1,17 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Download, X } from "lucide-react";
 
 export default function InstallPrompt() {
+  const t = useTranslations("Install");
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Already installed?
     if (window.matchMedia("(display-mode: standalone)").matches) return;
-
-    // Dismissed before?
     if (localStorage.getItem("installPromptDismissed") === "1") return;
 
     const handler = (e: Event) => {
@@ -19,21 +18,15 @@ export default function InstallPrompt() {
       setDeferredPrompt(e);
       setVisible(true);
     };
-
     window.addEventListener("beforeinstallprompt", handler);
-
-    return () => {
-      window.removeEventListener("beforeinstallprompt", handler);
-    };
+    return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
   async function install() {
     if (!deferredPrompt) return;
     deferredPrompt.prompt();
     const result = await deferredPrompt.userChoice;
-    if (result.outcome === "accepted") {
-      setVisible(false);
-    }
+    if (result.outcome === "accepted") setVisible(false);
     setDeferredPrompt(null);
   }
 
@@ -50,21 +43,19 @@ export default function InstallPrompt() {
         <Download className="w-5 h-5" />
       </div>
       <div className="flex-1 text-sm min-w-0">
-        <p className="font-semibold">Install Quiz App</p>
-        <p className="text-xs opacity-90 truncate">
-          I-add sa home screen for a native experience.
-        </p>
+        <p className="font-semibold">{t("title")}</p>
+        <p className="text-xs opacity-90 truncate">{t("description")}</p>
       </div>
       <button
         onClick={install}
         className="bg-white text-brand px-3 py-1.5 rounded-lg text-xs font-semibold shrink-0"
       >
-        Install
+        {t("install")}
       </button>
       <button
         onClick={dismiss}
         className="text-white/70 hover:text-white shrink-0"
-        aria-label="Dismiss"
+        aria-label={t("dismiss")}
       >
         <X className="w-4 h-4" />
       </button>

@@ -26,6 +26,7 @@ export function useAntiCheat({
   onMaxStrikes,
 }: Options) {
   const strikesRef = useRef(0);
+  const lastEventRef = useRef<number>(0);
   const [warning, setWarning] = useState<{
     type: ViolationType;
     count: number;
@@ -35,7 +36,6 @@ export function useAntiCheat({
     (type: ViolationType) => {
       if (!enabled) return;
 
-      // Debounce: ignore duplicate events within 500ms
       const now = Date.now();
       if (now - lastEventRef.current < 500) return;
       lastEventRef.current = now;
@@ -52,8 +52,6 @@ export function useAntiCheat({
     },
     [enabled, maxStrikes, onViolation, onMaxStrikes],
   );
-
-  const lastEventRef = useRef<number>(0);
 
   // Enter fullscreen on mount
   useEffect(() => {

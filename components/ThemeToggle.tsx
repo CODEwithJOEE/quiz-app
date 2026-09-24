@@ -1,16 +1,18 @@
 "use client";
 
 import { Sun, Moon, Monitor } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useTheme } from "./ThemeProvider";
 import { cn } from "@/lib/cn";
 
 export default function ThemeToggle() {
   const { theme, setTheme } = useTheme();
+  const t = useTranslations("Theme");
 
   const options = [
-    { value: "light" as const, icon: Sun, label: "Light" },
-    { value: "dark" as const, icon: Moon, label: "Dark" },
-    { value: "system" as const, icon: Monitor, label: "System" },
+    { value: "light" as const, icon: Sun, labelKey: "light" },
+    { value: "dark" as const, icon: Moon, labelKey: "dark" },
+    { value: "system" as const, icon: Monitor, labelKey: "system" },
   ];
 
   return (
@@ -30,7 +32,7 @@ export default function ThemeToggle() {
             )}
           >
             <Icon className="w-3.5 h-3.5" />
-            {opt.label}
+            {t(opt.labelKey)}
           </button>
         );
       })}
