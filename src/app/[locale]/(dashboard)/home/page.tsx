@@ -151,9 +151,18 @@ function getGreetingKey():
   | "greetingMorning"
   | "greetingAfternoon"
   | "greetingEvening" {
-  const h = new Date().getHours();
-  if (h < 12) return "greetingMorning";
-  if (h < 18) return "greetingAfternoon";
+  // ✅ Compute sa Philippine timezone (Asia/Manila)
+  const now = new Date();
+  const phHour = Number(
+    now.toLocaleString("en-US", {
+      timeZone: "Asia/Manila",
+      hour: "numeric",
+      hour12: false,
+    }),
+  );
+
+  if (phHour < 12) return "greetingMorning";
+  if (phHour < 18) return "greetingAfternoon";
   return "greetingEvening";
 }
 
