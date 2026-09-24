@@ -12,6 +12,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { useBadgeCounts } from "./useBadgeCounts";
 
 const ICONS: Record<string, LucideIcon> = {
   home: Home,
@@ -29,23 +30,16 @@ export type NavItem = {
   badge?: number;
 };
 
-/* ---------- geometry ---------- */
-const BAR_H = 64; // height ng bar
-const FAB = 52; // diameter ng floating circle
-const NOTCH_HALF = 38; // half-width ng notch opening
-const NOTCH_DEPTH = 34; // gaano kalalim ang dip
-const EDGE = 0.75; // half stroke-width offset para di ma-clip ang border
+const BAR_H = 64;
+const FAB = 52;
+const NOTCH_HALF = 38;
+const NOTCH_DEPTH = 34;
+const EDGE = 0.75;
 
-/** Pinapanatili lang ang notch sa loob ng bar — hindi na hinihila papasok
- *  nang malayo, kaya naka-align pa rin ito sa unang at huling item. */
 function clampCx(cx: number, w: number) {
   return Math.min(Math.max(cx, 4), w - 4);
 }
 
-/**
- * Bumubuo ng top-edge path ng bar. Kapag may notch (cx != null),
- * dumidip ito gamit ang dalawang cubic bezier para smooth ang shoulders.
- */
 function buildEdge(w: number, cx: number | null) {
   if (cx == null || w <= 0) return `M0,${EDGE} L${w},${EDGE}`;
 
@@ -62,7 +56,13 @@ function buildEdge(w: number, cx: number | null) {
   ].join(" ");
 }
 
-export default function BottomNav({ items }: { items: NavItem[] }) {
+export default function BottomNav({
+  items,
+  role, // ✅ NEW prop
+}: {
+  items: NavItem[];
+  role?: string;
+}) {
   const pathname = usePathname();
   const barRef = useRef<HTMLDivElement>(null);
   const cxRef = useRef(0);
@@ -70,17 +70,33 @@ export default function BottomNav({ items }: { items: NavItem[] }) {
   const [width, setWidth] = useState(0);
   const [cx, setCx] = useState(0);
 
+  // ✅ Client-side badge counts (auto-refresh)
+  const liveBadges = useBadgeCounts(role ?? "");
+
+  // ✅ Merge live badges into items
+  const mergedItems = useMemo(() => {
+    return items.map((item) => {
+      let badge = item.badge;
+
+      if (item.href === "/home") badge = liveBadges.home;
+      else if (item.href === "/rooms") badge = liveBadges.rooms;
+      else if (item.href === "/profile") badge = liveBadges.profile;
+      else if (item.href === "/admin/dashboard") badge = liveBadges.dashboard;
+
+      return { ...item, badge };
+    });
+  }, [items, liveBadges]);
+
   const activeIndex = useMemo(
     () =>
-      items.findIndex(
+      mergedItems.findIndex(
         (item) =>
           pathname === item.href ||
           (item.href !== "/home" && pathname.startsWith(item.href)),
       ),
-    [items, pathname],
+    [mergedItems, pathname],
   );
 
-  /* Sukatin ang bar (responsive + orientation change) */
   useEffect(() => {
     const el = barRef.current;
     if (!el) return;
@@ -92,13 +108,11 @@ export default function BottomNav({ items }: { items: NavItem[] }) {
     return () => ro.disconnect();
   }, []);
 
-  /* I-animate ang notch papunta sa bagong active item */
   useEffect(() => {
-    if (!width || activeIndex < 0 || items.length === 0) return;
+    if (!width || activeIndex < 0 || mergedItems.length === 0) return;
 
-    const target = (width / items.length) * (activeIndex + 0.5);
+    const target = (width / mergedItems.length) * (activeIndex + 0.5);
 
-    // first paint: walang animation, deretso na sa lugar
     if (cxRef.current === 0) {
       cxRef.current = target;
       setCx(target);
@@ -112,7 +126,7 @@ export default function BottomNav({ items }: { items: NavItem[] }) {
 
     const tick = (now: number) => {
       const p = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+      const eased = 1 - Math.pow(1 - p, 3);
       const value = from + (target - from) * eased;
       cxRef.current = value;
       setCx(value);
@@ -121,13 +135,13 @@ export default function BottomNav({ items }: { items: NavItem[] }) {
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [activeIndex, width, items.length]);
+  }, [activeIndex, width, mergedItems.length]);
 
   const notchCx = activeIndex >= 0 ? cx : null;
   const edgePath = buildEdge(width, notchCx);
   const fillPath = `${edgePath} L${width},${BAR_H} L0,${BAR_H} Z`;
 
-  const activeItem = activeIndex >= 0 ? items[activeIndex] : null;
+  const activeItem = activeIndex >= 0 ? mergedItems[activeIndex] : null;
   const ActiveIcon = activeItem ? (ICONS[activeItem.icon] ?? Home) : null;
   const activeBadge =
     activeItem?.badge != null && activeItem.badge > 0 ? activeItem.badge : null;
@@ -136,7 +150,6 @@ export default function BottomNav({ items }: { items: NavItem[] }) {
     <nav className="fixed inset-x-0 bottom-0 z-40">
       <div className="mx-auto max-w-2xl">
         <div ref={barRef} className="relative" style={{ height: BAR_H }}>
-          {/* Bar background + notch */}
           {width > 0 && (
             <svg
               width={width}
@@ -156,9 +169,8 @@ export default function BottomNav({ items }: { items: NavItem[] }) {
             </svg>
           )}
 
-          {/* Nav items */}
           <ul className="absolute inset-0 flex">
-            {items.map((item, i) => {
+            {mergedItems.map((item, i) => {
               const Icon = ICONS[item.icon] ?? Home;
               const isActive = i === activeIndex;
               const hasBadge = item.badge != null && item.badge > 0;
@@ -175,8 +187,6 @@ export default function BottomNav({ items }: { items: NavItem[] }) {
                         : "text-muted-foreground hover:text-foreground active:scale-95",
                     )}
                   >
-                    {/* Icon slot — nagiging invisible placeholder kapag active
-                        (nasa floating circle na siya) */}
                     <span
                       className={cn(
                         "relative flex h-6 w-6 items-center justify-center transition-all duration-300",
@@ -193,8 +203,6 @@ export default function BottomNav({ items }: { items: NavItem[] }) {
                       )}
                     </span>
 
-                    {/* Label — laging nakikita para sa discoverability,
-                        pero mas mabigat/makulay lang kapag active */}
                     <span
                       className={cn(
                         "text-[10px] leading-none transition-all duration-300",
@@ -209,7 +217,6 @@ export default function BottomNav({ items }: { items: NavItem[] }) {
             })}
           </ul>
 
-          {/* Floating active circle — sumusunod sa notch */}
           {ActiveIcon && width > 0 && (
             <div
               className="pointer-events-none absolute"
@@ -239,7 +246,6 @@ export default function BottomNav({ items }: { items: NavItem[] }) {
           )}
         </div>
 
-        {/* Safe-area filler (iPhone home indicator) */}
         <div
           className="bg-card"
           style={{ height: "env(safe-area-inset-bottom)" }}

@@ -17,7 +17,6 @@ import {
   HelpCircle,
   History as HistoryIcon,
   ArrowRight,
-  Camera,
   Globe,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -31,8 +30,8 @@ import { getProfileStats } from "./actions";
 import Avatar from "@/components/Avatar";
 import AvatarUpload from "./AvatarUpload";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import PendingPhotosCard from "./PendingPhotosCard"; // ✅ NEW
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { getTeacherPendingPhotosCount } from "@/lib/notifications"; // ✅ ADD
 
 const APP_VERSION = "1.0.0";
 
@@ -55,10 +54,6 @@ export default async function ProfilePage({
 
   const stats = await getProfileStats();
 
-  let pendingPhotosCount = 0;
-  if (me.role === "teacher") {
-    pendingPhotosCount = await getTeacherPendingPhotosCount(me.id);
-  }
   const roleVariant: Record<string, "info" | "success" | "danger"> = {
     super_admin: "danger",
     teacher: "info",
@@ -175,38 +170,8 @@ export default async function ProfilePage({
         </Card>
       )}
 
-      {/* Student Photos — teacher only */}
-      {me.role === "teacher" && (
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 px-1">
-            <Camera className="w-4 h-4 text-brand" />
-            <h2 className="font-semibold text-sm">{t("studentPhotos")}</h2>
-          </div>
-          <Link href="/pending-photos" locale={locale} className="block">
-            <Card className="p-4 hover:border-brand/40 transition-colors">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium">
-                    {t("reviewPendingPhotos")}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {t("approveOrReject")}
-                  </p>
-                </div>
-                {/* ✅ ADD: Badge + Arrow group */}
-                <div className="flex items-center gap-2">
-                  {pendingPhotosCount > 0 && (
-                    <Badge variant="warning">
-                      {pendingPhotosCount > 99 ? "99+" : pendingPhotosCount}
-                    </Badge>
-                  )}
-                  <ArrowRight className="w-4 h-4 text-muted-foreground" />
-                </div>
-              </div>
-            </Card>
-          </Link>
-        </div>
-      )}
+      {/* ✅ Student Photos — CLIENT component na auto-update */}
+      {me.role === "teacher" && <PendingPhotosCard />}
 
       {/* My Progress — Student only */}
       {me.role === "student" && (

@@ -24,6 +24,10 @@ export default function PendingPhotoCard({ student }: { student: any }) {
         setError(res.error);
         return;
       }
+
+      // ✅ Dispatch event para mag-refresh yung badge sa nav
+      window.dispatchEvent(new CustomEvent("badge-refresh"));
+
       router.refresh();
     });
   }
@@ -36,6 +40,10 @@ export default function PendingPhotoCard({ student }: { student: any }) {
         setError(res.error);
         return;
       }
+
+      // ✅ Dispatch event para mag-refresh yung badge sa nav
+      window.dispatchEvent(new CustomEvent("badge-refresh"));
+
       router.refresh();
     });
   }
