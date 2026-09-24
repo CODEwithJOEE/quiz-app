@@ -116,11 +116,6 @@
     "install": "Install",
     "dismiss": "Dismiss"
   },
-  "QuizStatus": {
-    "published": "Published",
-    "closed": "Closed",
-    "draft": "Draft"
-  },
   "Invitation": {
     "incomplete": "⚠️ Invitation data incomplete. Refresh the page.",
     "decline": "Decline",

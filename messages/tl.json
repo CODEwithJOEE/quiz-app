@@ -117,11 +117,6 @@
     "install": "I-install",
     "dismiss": "Isara"
   },
-  "QuizStatus": {
-    "published": "Nai-publish",
-    "closed": "Sarado",
-    "draft": "Draft"
-  },
   "Invitation": {
     "incomplete": "⚠️ Kulang ang data ng imbitasyon. I-refresh ang page.",
     "decline": "Tanggihan",
