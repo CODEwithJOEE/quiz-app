@@ -763,6 +763,15 @@
     "teacher": "Guro",
     "student": "Estudyante"
   },
+  "Login": {
+    "title": "Maligayang pagbabalik",
+    "subtitle": "Mag-sign in para magpatuloy sa Quiz App",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Mag-sign In",
+    "signingIn": "Nag-sign in...",
+    "footerNote": "Ang mga account ay ginagawa ng admin o teacher mo."
+  },
   "Roles": {
     "super_admin": "Punong Admin",
     "teacher": "Guro",

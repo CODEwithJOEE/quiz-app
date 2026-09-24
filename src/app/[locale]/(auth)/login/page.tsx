@@ -1,14 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { GraduationCap, Mail, Lock, AlertCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
+import LoginLanguageSwitcher from "@/components/LoginLanguageSwitcher";
 
 export default function LoginPage() {
+  const t = useTranslations("Login");
   const router = useRouter();
   const supabase = createClient();
 
@@ -39,15 +42,18 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      {/* ✅ Language switcher sa top-right corner */}
+      <div className="fixed top-4 right-4 z-50">
+        <LoginLanguageSwitcher />
+      </div>
+
       <div className="w-full max-w-sm space-y-6 animate-fade-in">
         <div className="text-center space-y-2">
           <div className="w-16 h-16 rounded-3xl bg-brand text-brand-foreground flex items-center justify-center mx-auto shadow-lg shadow-brand/20">
             <GraduationCap className="w-8 h-8" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">Welcome back</h1>
-          <p className="text-sm text-muted-foreground">
-            Sign in to continue to Quiz App
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
+          <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
         </div>
 
         <Card className="p-6">
@@ -62,7 +68,7 @@ export default function LoginPage() {
             <div className="relative">
               <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground z-10 pointer-events-none mt-[10px]" />
               <Input
-                label="Email"
+                label={t("email")}
                 type="email"
                 placeholder="you@school.com"
                 required
@@ -75,7 +81,7 @@ export default function LoginPage() {
             <div className="relative">
               <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground z-10 pointer-events-none mt-[10px]" />
               <Input
-                label="Password"
+                label={t("password")}
                 type="password"
                 placeholder="••••••••"
                 required
@@ -91,13 +97,13 @@ export default function LoginPage() {
               loading={loading}
               className="w-full"
             >
-              {loading ? "Signing in..." : "Sign In"}
+              {loading ? t("signingIn") : t("signIn")}
             </Button>
           </form>
         </Card>
 
         <p className="text-xs text-center text-muted-foreground">
-          Accounts are created by your admin or teacher.
+          {t("footerNote")}
         </p>
       </div>
     </div>

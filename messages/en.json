@@ -762,6 +762,15 @@
     "teacher": "Teacher",
     "student": "Student"
   },
+  "Login": {
+    "title": "Welcome back",
+    "subtitle": "Sign in to continue to Quiz App",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign In",
+    "signingIn": "Signing in...",
+    "footerNote": "Accounts are created by your admin or teacher."
+  },
   "Roles": {
     "super_admin": "Super Admin",
     "teacher": "Teacher",
