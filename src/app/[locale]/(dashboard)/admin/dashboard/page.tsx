@@ -149,7 +149,10 @@ export default async function AdminDashboardPage({
             )}
 
             {stats.pendingPhotos > 0 && (
-              <Link href={adminUsersLink} className="block">
+              <Link
+                href={`/pending-photos?from=${dashboardPath}`}
+                className="block"
+              >
                 <Card className="p-4 hover:border-amber-300 dark:hover:border-amber-900 transition-colors">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0">

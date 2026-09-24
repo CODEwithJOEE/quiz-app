@@ -7,16 +7,20 @@ import { getCurrentProfile } from "@/lib/auth";
 import { EmptyState } from "@/components/ui/EmptyState";
 import PendingPhotoCard from "./PendingPhotoCard";
 import { setRequestLocale, getTranslations } from "next-intl/server";
+import BackButton from "@/components/BackButton";
 
 export default async function PendingPhotosPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ from?: string }>;
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("PendingPhotos");
-
+  const { from } = await searchParams;
+  const backHref = from ? decodeURIComponent(from) : "/home";
   const me = await getCurrentProfile();
   if (!me) {
     redirect({ href: "/login", locale });
@@ -55,9 +59,13 @@ export default async function PendingPhotosPage({
 
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-xl font-bold">{t("title")}</h1>
-        <p className="text-xs text-muted-foreground">{t("subtitle")}</p>
+      {/* Header with back button */}
+      <div className="flex items-center gap-2">
+        <BackButton href={backHref} ariaLabel={t("title")} /> {/* 👈 ADD */}
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl font-bold">{t("title")}</h1>
+          <p className="text-xs text-muted-foreground">{t("subtitle")}</p>
+        </div>
       </div>
 
       {studentsWithUrls.length === 0 ? (
